@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hra/forgot-password.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/signup1.dart';
 import 'package:hra/login.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -30,21 +31,94 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class SignupApp extends StatelessWidget {
+class SignupApp1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SignupPage(),
+      home: SignupPage1(),
     );
   }
 }
 
-class SignupPage extends StatefulWidget {
+class SignupPage1 extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _SignupPage1State createState() => _SignupPage1State();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPage1State extends State<SignupPage1> {
+  XFile? image;
+  final ImagePicker picker = ImagePicker();
+
+  //we can upload image from camera or from gallery based on parameter
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    setState(() {
+      image = img;
+    });
+
+    const uploadUrl =
+        'https://api.cloudinary.com/v1_1/hire-easy/image/upload?upload_preset=cyberbolt';
+
+    var url = Uri.parse(uploadUrl);
+
+    var request = http.MultipartRequest("POST", url);
+    request.fields['upload_preset'] = 'cyberbolt';
+    request.files.add(await http.MultipartFile.fromPath('file', image!.path));
+
+    final response = await request.send();
+    final responseString = await response.stream.bytesToString();
+
+    print("response is: " + responseString);
+    
+  }
+
+  //show popup dialog
+  void myAlert() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: Text('Please choose media to select'),
+            content: Container(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    //if user click this button, user can upload image from gallery
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.gallery);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.image),
+                        Text('From Gallery'),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    //if user click this button. user can upload image from camera
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.camera);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.camera),
+                        Text('From Camera'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   String selectedState = '';
   @override
   Widget build(BuildContext context) {
@@ -66,7 +140,7 @@ class _SignupPageState extends State<SignupPage> {
                         padding: const EdgeInsets.only(
                             left: 10, top: 10, bottom: 10),
                         child: Text(
-                          'Enter your details',
+                          'Document Verification',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: Color(0xFF384A59),
@@ -81,42 +155,23 @@ class _SignupPageState extends State<SignupPage> {
                       padding: const EdgeInsets.all(4.0),
                       child: TextField(
                         decoration: InputDecoration(
-                            labelText: 'Full name',
+                            labelText: 'PAN number',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Your Full Name'),
+                            hintText: 'Your PAN number'),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Mobile number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Your Phone number',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'E-mail',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Your Email address',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Address',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Enter your address',
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                        child: Text(
+                          "Upload ID Proof",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -125,78 +180,40 @@ class _SignupPageState extends State<SignupPage> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                labelText: 'City',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                hintText: 'Enter your city',
-                              ),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                myAlert();
+                              },
+                              child: Text('Upload Photo'),
                             ),
                           ),
                         ),
                         SizedBox(width: 10), // Add some spacing
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'State',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  hintText: 'Enter your state',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Total Experience',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                hintText: 'Years of experience',
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10), // Add some spacing
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Speciality',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  hintText: 'Choose speciality',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                            child: image != null
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        //to show image, you type like this.
+                                        File(image!.path),
+                                        fit: BoxFit.cover,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 300,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    "No Image",
+                                    style: TextStyle(fontSize: 20),
+                                  )),
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignupPage1()),
-                        );
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
@@ -229,13 +246,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignupPage()),
-                              );
-                            },
+                            onTap: () {},
                             child: Text(
                               "Login",
                               style: TextStyle(
