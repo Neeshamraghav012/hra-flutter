@@ -1,50 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:hra/image_upload.dart';
 import 'package:hra/forgot-password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hra/signup.dart';
 
-class CustomClipPath extends CustomClipper<Path> {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 40); // Adjust points to define your shape
-    path.quadraticBezierTo(
-        size.width / 4, size.height, size.width / 2, size.height);
-    path.quadraticBezierTo(
-        3 * size.width / 4, size.height, size.width, size.height - 40);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
+  Size get preferredSize =>
+      Size.fromHeight(100); // Set the desired height of the custom app bar
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
-  }
-}
-
-class StyledVectorTop extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      flexibleSpace: ClipPath(
-        clipper:
-            CustomClipPath(), // Create a custom clipper to define the vector shape
-        child: Container(
-          height: 200, // Adjust the height according to your design
-          color: Color(0xFFFF4D4D), // Set the color of the vector
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image:
+              AssetImage('images/appbar.jpg'), // Replace with your image path
+          fit: BoxFit.cover,
         ),
+      ),
+      child: AppBar(
+        title: Text('HRA'),
+        backgroundColor:
+            Colors.transparent, // Make the app bar background transparent
+        elevation: 0, // Remove the shadow
       ),
     );
   }
-
-  @override
-  Size get preferredSize =>
-      Size.fromHeight(200); // Set the preferred height of the AppBar
 }
+
 
 class LoginApp extends StatelessWidget {
   @override
@@ -79,158 +63,177 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StyledVectorTop(),
+      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
-      body: Container(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Welcome!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF384A59),
-                    fontSize: 28,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(10), // Match the border radius
-                      child: Image(
-                        image: AssetImage('images/vector.jpg'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                      labelText: 'Email / Phone number',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      prefixIcon: Icon(Icons.email),
-                      hintText: 'Your Email / Phone number'),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    prefixIcon: Icon(Icons.password),
-                    hintText: 'Your Password',
-                  ),
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: rememberMe, 
-                      onChanged: (value) {
-                        setState(() {
-                          rememberMe = value!;
-                        });
-                      },
-                    ),
-                    Text('Remember Me'),
-                    Spacer(), 
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ForgotPage()), 
-                        );
-                      },
-                      child: Text('Forgot Password?'),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Perform login logic here
-                    fetchPost();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          30), // Adjust the value for the desired corner radius
-                    ),
-                    backgroundColor: Color(0xFFFF4D4D),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 60,
-                        vertical: 25), // Change the color to your desired color
-                  ),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white, // Text color
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        // Navigate to the signup screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ImageUploadScreen()), 
-                        );
-                      },
-                      child: Text(
-                        "Signup",
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Container(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Welcome!',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              Colors.blue, // Change the text color when clicked
+                          color: Color(0xFF384A59),
+                          fontSize: 28,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  child: Image(
-                    image: AssetImage('images/ad.jpg'),
-                    fit: BoxFit.cover,
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // Match the border radius
+                            child: Image(
+                              image: AssetImage('images/vector.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              labelText: 'Email / Phone number',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              prefixIcon: Icon(Icons.email),
+                              hintText: 'Your Email / Phone number'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            prefixIcon: Icon(Icons.password),
+                            hintText: 'Your Password',
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: rememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                rememberMe = value!;
+                              });
+                            },
+                          ),
+                          Text('Remember Me'),
+                          Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ForgotPage()),
+                              );
+                            },
+                            child: Text('Forgot Password?'),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Perform login logic here
+                          fetchPost();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                30), // Adjust the value for the desired corner radius
+                          ),
+                          backgroundColor: Color(0xFFFF4D4D),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical:
+                                  20), // Change the color to your desired color
+                        ),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white, // Text color
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top:10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Don't have an account? ",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignupPage()),
+                                );
+                              },
+                              child: Text(
+                                "Signup",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors
+                                      .blue, // Change the text color when clicked
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 60),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image(
+                                image: AssetImage('images/ad.jpg'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

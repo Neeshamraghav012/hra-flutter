@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hra/login.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image:
-              AssetImage('images/appbar.jpg'), // Replace with your image path
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: AppBar(
-        title: Text('App Title'),
-        backgroundColor:
-            Colors.transparent, // Make the app bar background transparent
-        elevation: 0, // Remove the shadow
-      ),
-    );
-  }
-}
+
 
 class HomePage extends StatelessWidget {
   @override
@@ -41,28 +19,15 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'images/bg.jpg'), // Replace with your background image path
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        Colors.transparent, // Transparent color
-                        BlendMode.dstATop, // Blend mode to apply transparency
-                      ),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(10), // Match the border radius
                       child: Image(
                         image: AssetImage('images/home.jpg'),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ),
                 SizedBox(
                   height: 10,
                 ),
