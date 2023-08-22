@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hra/forgot-password.dart';
 import 'dart:convert';
 import 'package:hra/login.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -46,80 +46,64 @@ class SignupPage1 extends StatefulWidget {
 }
 
 class _SignupPage1State extends State<SignupPage1> {
-  XFile? image;
-  final ImagePicker picker = ImagePicker();
-
-  //we can upload image from camera or from gallery based on parameter
-  Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-
-    setState(() {
-      image = img;
-    });
-
-    const uploadUrl =
-        'https://api.cloudinary.com/v1_1/hire-easy/image/upload?upload_preset=cyberbolt';
-
-    var url = Uri.parse(uploadUrl);
-
-    var request = http.MultipartRequest("POST", url);
-    request.fields['upload_preset'] = 'cyberbolt';
-    request.files.add(await http.MultipartFile.fromPath('file', image!.path));
-
-    final response = await request.send();
-    final responseString = await response.stream.bytesToString();
-
-    print("response is: " + responseString);
-    
-  }
-
-  //show popup dialog
-  void myAlert() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: Text('Please choose media to select'),
-            content: Container(
-              height: MediaQuery.of(context).size.height / 6,
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    //if user click this button, user can upload image from gallery
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.image),
-                        Text('From Gallery'),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    //if user click this button. user can upload image from camera
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.camera),
-                        Text('From Camera'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   String selectedState = '';
+
+  XFile? uploadimage; //variable for choosed file
+  final ImagePicker picker = ImagePicker();
+  bool isUploading = false;
+  bool uploaded = false;
+
+  Future<void> chooseImage() async {
+    var choosedimage = await picker.pickImage(source: ImageSource.camera);
+    //set source: ImageSource.camera to get image from camera
+    setState(() {
+      uploadimage = choosedimage;
+    });
+  }
+
+  Future<void> uploadImage() async {
+    try {
+      setState(() {
+        isUploading = true; // Set the loading indicator
+      });
+
+      List<int> imageBytes = File(uploadimage!.path).readAsBytesSync();
+
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
+      );
+
+      request.fields['upload_preset'] = 'cyberbolt';
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          imageBytes,
+          filename: 'image.jpg',
+          contentType: MediaType('image', 'jpg'),
+        ),
+      );
+
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+
+      print(responseString);
+
+      if (response.statusCode == 200) {
+        print('File uploaded successfully');
+      } else {
+        print('File upload failed');
+      }
+    } catch (e) {
+      print('Error uploading file: $e');
+    } finally {
+      setState(() {
+        isUploading = false;
+        uploaded = true; // Reset the loading indicator
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,72 +148,92 @@ class _SignupPage1State extends State<SignupPage1> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                        padding: const EdgeInsets.only(
+                            left: 10, top: 20, bottom: 20),
                         child: Text(
                           "Upload ID Proof",
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                     ),
+                    Container(
+                      child: uploadimage == null
+                          ? Container()
+                          : Container(
+                              child: SizedBox(
+                                height: 150,
+                                child: Image.file(
+                                  File(uploadimage!.path),
+                                ),
+                              ),
+                            ),
+                    ),
                     Row(
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                myAlert();
-                              },
-                              child: Text('Upload Photo'),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Expanded(
+                            child: Container(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  chooseImage(); // call choose image function
+                                },
+                                icon: Icon(Icons.folder_open),
+                                label: Text("CHOOSE IMAGE"),
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 10), // Add some spacing
-                        Expanded(
-                            child: image != null
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.file(
-                                        //to show image, you type like this.
-                                        File(image!.path),
-                                        fit: BoxFit.cover,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 300,
-                                      ),
+
+                        // Add some spacing
+                        Spacer(),
+
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Expanded(
+                            child: uploaded ? Text("Image Uploaded!") : Container(
+                              child: uploadimage == null
+                                  ? Container()
+                                  : Container(
+                                      child: isUploading
+                                          ? CircularProgressIndicator()
+                                          : ElevatedButton.icon(
+                                              onPressed: () {
+                                                uploadImage();
+                                              },
+                                              icon: Icon(Icons.file_upload),
+                                              label: Text("UPLOAD IMAGE"),
+                                            ),
                                     ),
-                                  )
-                                : Text(
-                                    "No Image",
-                                    style: TextStyle(fontSize: 20),
-                                  )),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              30), // Adjust the value for the desired corner radius
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                30), // Adjust the value for the desired corner radius
+                          ),
+                          backgroundColor: Color(0xFFFF4D4D),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical:
+                                  20), // Change the color to your desired color
                         ),
-                        backgroundColor: Color(0xFFFF4D4D),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical:
-                                20), // Change the color to your desired color
-                      ),
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white, // Text color
+                        child: Text(
+                          'Next',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white, // Text color
+                          ),
                         ),
                       ),
                     ),
@@ -246,7 +250,13 @@ class _SignupPage1State extends State<SignupPage1> {
                             ),
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()),
+                              );
+                            },
                             child: Text(
                               "Login",
                               style: TextStyle(
