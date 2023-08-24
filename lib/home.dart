@@ -2,7 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:hra/login.dart';
 
 
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(100); // Set the desired height of the custom app bar
 
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: AppBarClipper(), // Custom clipper for curved edges
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFFF4D4D), // Set the background color
+        ),
+        child: AppBar(
+          title: Text('HRA'),
+          centerTitle: true,
+          backgroundColor:
+              Colors.transparent, // Make the app bar background transparent
+          elevation: 0, // Remove the shadow
+        ),
+      ),
+    );
+  }
+}
+
+class AppBarClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 40); // Curve
+    path.lineTo(size.width, 0); // Line to the top-right corner
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
 
 class HomePage extends StatelessWidget {
   @override

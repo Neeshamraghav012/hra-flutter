@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:hra/signup2.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -14,21 +15,37 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFFFF4D4D), // Set the background color
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20), // Rounded edges
+    return ClipPath(
+      clipper: AppBarClipper(), // Custom clipper for curved edges
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFFF4D4D), // Set the background color
         ),
-      ),
-      child: AppBar(
-        title: Text('Register'),
-        backgroundColor:
-            Colors.transparent, // Make the app bar background transparent
-        elevation: 0, // Remove the shadow
+        child: AppBar(
+          title: Text('Register'),
+          centerTitle: true,
+          backgroundColor:
+              Colors.transparent, // Make the app bar background transparent
+          elevation: 0, // Remove the shadow
+        ),
       ),
     );
   }
+}
+
+class AppBarClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 40); // Curve
+    path.lineTo(size.width, 0); // Line to the top-right corner
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class SignupApp1 extends StatelessWidget {
@@ -47,6 +64,7 @@ class SignupPage1 extends StatefulWidget {
 
 class _SignupPage1State extends State<SignupPage1> {
   String selectedState = '';
+  String doc = 'PAN';
 
   XFile? uploadimage; //variable for choosed file
   final ImagePicker picker = ImagePicker();
@@ -135,14 +153,148 @@ class _SignupPage1State extends State<SignupPage1> {
                         ),
                       ),
                     ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                doc = "PAN";
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(
+                                color: Color(
+                                    0xFFFF4D4D), // Specify the border color
+                                width: 2.0, // Specify the border width
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            child: Text(
+                              'PAN Card',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                doc = "Aadhar";
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(
+                                color: Color(
+                                    0xFFFF4D4D), // Specify the border color
+                                width: 2.0, // Specify the border width
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            child: Text(
+                              'Aadhar Card',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                doc = "RERA";
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(
+                                color: Color(
+                                    0xFFFF4D4D), // Specify the border color
+                                width: 2.0, // Specify the border width
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            child: Text(
+                              'RERA',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 5, bottom: 10, left: 5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                doc = "Profile Picture";
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(
+                                color: Color(
+                                    0xFFFF4D4D), // Specify the border color
+                                width: 2.0, // Specify the border width
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                            ),
+                            child: Text(
+                              'Profile Picture',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextField(
                         decoration: InputDecoration(
-                            labelText: 'PAN number',
+                            labelText: doc,
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Your PAN number'),
+                            hintText: 'Your ${doc}'),
                       ),
                     ),
                     Align(
@@ -165,6 +317,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           : Container(
                               child: SizedBox(
                                 height: 150,
+                                width: 200,
                                 child: Image.file(
                                   File(uploadimage!.path),
                                 ),
@@ -173,50 +326,54 @@ class _SignupPage1State extends State<SignupPage1> {
                     ),
                     Row(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Expanded(
-                            child: Container(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  chooseImage(); // call choose image function
-                                },
-                                icon: Icon(Icons.folder_open),
-                                label: Text("CHOOSE IMAGE"),
-                              ),
+                        Expanded(
+                          child: Container(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                chooseImage(); // call choose image function
+                              },
+                              icon: Icon(Icons.folder_open),
+                              label: Text("CHOOSE IMAGE"),
                             ),
                           ),
                         ),
 
                         // Add some spacing
-                        Spacer(),
+                        SizedBox(
+                          width: 20,
+                        ),
 
-                        Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Expanded(
-                            child: uploaded ? Text("Image Uploaded!") : Container(
-                              child: uploadimage == null
-                                  ? Container()
-                                  : Container(
-                                      child: isUploading
-                                          ? CircularProgressIndicator()
-                                          : ElevatedButton.icon(
-                                              onPressed: () {
-                                                uploadImage();
-                                              },
-                                              icon: Icon(Icons.file_upload),
-                                              label: Text("UPLOAD IMAGE"),
-                                            ),
-                                    ),
-                            ),
-                          ),
+                        Expanded(
+                          child: uploaded
+                              ? Text("Image Uploaded!")
+                              : Container(
+                                  child: uploadimage == null
+                                      ? Container()
+                                      : Container(
+                                          child: isUploading
+                                              ? CircularProgressIndicator()
+                                              : ElevatedButton.icon(
+                                                  onPressed: () {
+                                                    uploadImage();
+                                                  },
+                                                  icon: Icon(Icons.file_upload),
+                                                  label: Text("UPLOAD IMAGE"),
+                                                ),
+                                        ),
+                                ),
                         ),
                       ],
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignupPage2()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
@@ -226,7 +383,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 40,
                               vertical:
-                                  20), // Change the color to your desired color
+                                  15), // Change the color to your desired color
                         ),
                         child: Text(
                           'Next',

@@ -39,6 +39,7 @@ dependencies:
   http:
   file_picker: ^4.6.1
   dio: ^4.0.6
+  intl:
 
 dev_dependencies:
   flutter_test:
