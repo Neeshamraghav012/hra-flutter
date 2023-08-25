@@ -48,23 +48,24 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class SignupApp1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SignupPage1(),
-    );
-  }
-}
-
 class SignupPage1 extends StatefulWidget {
+  final Map<String, dynamic> userData; // Add this line
+
+  SignupPage1({required this.userData});
+
   @override
-  _SignupPage1State createState() => _SignupPage1State();
+  _SignupPage1State createState() => _SignupPage1State(userData: userData);
 }
 
 class _SignupPage1State extends State<SignupPage1> {
-  String selectedState = '';
+  final Map<String, dynamic> userData;
+  _SignupPage1State({required this.userData});
+
   String doc = 'PAN';
+  String doc_no = "";
+  String doc_url = "";
+
+  String selectedState = '';
 
   XFile? uploadimage; //variable for choosed file
   final ImagePicker picker = ImagePicker();
@@ -77,6 +78,25 @@ class _SignupPage1State extends State<SignupPage1> {
     setState(() {
       uploadimage = choosedimage;
     });
+  }
+
+  Future<void> p() async {
+    print("user datas i: " + this.userData['user_type']);
+  }
+
+  Future<void> next() async {
+    Map<String, dynamic> docData = {
+      "doc": doc,
+      "doc_no": doc_no,
+      "doc_url": doc_url,
+    };
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SignupPage2(userData: this.userData, docData: docData)),
+    );
   }
 
   Future<void> uploadImage() async {
@@ -105,10 +125,14 @@ class _SignupPage1State extends State<SignupPage1> {
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
 
-      print(responseString);
+      final jsonResponse = json.decode(responseString);
 
       if (response.statusCode == 200) {
         print('File uploaded successfully');
+        print("secure url is: " + jsonResponse['secure_url']);
+        setState(() {
+          doc_url = jsonResponse['secure_url'];
+        });
       } else {
         print('File upload failed');
       }
@@ -120,6 +144,12 @@ class _SignupPage1State extends State<SignupPage1> {
         uploaded = true; // Reset the loading indicator
       });
     }
+  }
+
+  @override
+  void initState() {
+    p();
+    super.initState();
   }
 
   @override
@@ -295,6 +325,11 @@ class _SignupPage1State extends State<SignupPage1> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: 'Your ${doc}'),
+                        onChanged: (value) {
+                          setState(() {
+                            doc_no = value;
+                          });
+                        },
                       ),
                     ),
                     Align(
@@ -368,11 +403,7 @@ class _SignupPage1State extends State<SignupPage1> {
                       padding: EdgeInsets.only(top: 20),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupPage2()),
-                          );
+                          next();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

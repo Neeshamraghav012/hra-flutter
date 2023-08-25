@@ -61,13 +61,24 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  // input values
+
+  String username = "";
+  String email = "";
+  String address = "";
+  String phone = "";
+  String city = "";
+  String experience = "";
+  String est = "";
   String state = "Haryana";
   String speciality = "Residential";
   String region = "North";
   String user_type = "Company";
   String team_size = "1-5";
   String core_buisness = "Primary";
+  String establishment_date = "";
 
+  // Dropdown lists
   List state_list = [];
   List speciality_list = [];
   List region_list = [];
@@ -78,32 +89,55 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController dateinput = TextEditingController();
   List<String> specialityNames = [];
 
-  Future<void> fetchPost() async {
-    final response = await http.get(
-        Uri.parse('http://10.0.2.2:8887/admin/api/get-all-dropdown-values'));
+    Future<void> fetchPost() async {
+      final response = await http.get(
+          Uri.parse('http://10.0.2.2:8887/admin/api/get-all-dropdown-values'));
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
 
-      speciality_list = jsonData['data']['speciality_list'];
-      List<String> names = speciality_list
-          .where((item) => item['name'] != null)
-          .map<String>((item) => item['name'])
-          .toList();
+        speciality_list = jsonData['data']['speciality_list'];
+        List<String> names = speciality_list
+            .where((item) => item['name'] != null)
+            .map<String>((item) => item['name'])
+            .toList();
 
-      setState(() {
-        specialityNames = names;
-      });
-    } else {
-      print('API request failed with status code:');
-    }
+        setState(() {
+          specialityNames = names;
+        });
+      } else {
+        print('API request failed with status code:');
+      }
+  }
+
+  Future<void> next() async {
+    Map<String, dynamic> userData = {
+      'username': username,
+      'email': email,
+      'address': address,
+      'phone': phone,
+      'city': city,
+      'experience': experience,
+      'est': est,
+      'state': state,
+      'speciality': speciality,
+      'region': region,
+      'user_type': user_type,
+      'team_size': team_size,
+      'core_buisness': core_buisness,
+      'establishment_date': establishment_date,
+    };
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignupPage1(userData: userData)),
+    );
   }
 
   @override
   void initState() {
     dateinput.text = "";
     fetchPost();
-    print(specialityNames);
     super.initState();
   }
 
@@ -146,6 +180,11 @@ class _SignupPageState extends State<SignupPage> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: 'Your Full Name'),
+                        onChanged: (value) {
+                          setState(() {
+                            username = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
@@ -157,6 +196,11 @@ class _SignupPageState extends State<SignupPage> {
                               borderRadius: BorderRadius.circular(20)),
                           hintText: 'Your Phone number',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            phone = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
@@ -168,6 +212,11 @@ class _SignupPageState extends State<SignupPage> {
                               borderRadius: BorderRadius.circular(20)),
                           hintText: 'Your Email address',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            email = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
@@ -179,6 +228,11 @@ class _SignupPageState extends State<SignupPage> {
                               borderRadius: BorderRadius.circular(20)),
                           hintText: 'Enter your address',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            address = value;
+                          });
+                        },
                       ),
                     ),
                     Row(
@@ -194,6 +248,11 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                                 hintText: 'Enter your city',
                               ),
+                              onChanged: (value) {
+                                setState(() {
+                                  city = value;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -285,6 +344,11 @@ class _SignupPageState extends State<SignupPage> {
                                       borderRadius: BorderRadius.circular(20)),
                                   hintText: 'Years of experience',
                                 ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    experience = value;
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -360,8 +424,8 @@ class _SignupPageState extends State<SignupPage> {
                             //you can implement different kind of Date Format here according to your requirement
 
                             setState(() {
-                              dateinput.text =
-                                  formattedDate; //set output date to TextField value.
+                              dateinput.text = formattedDate;
+                              establishment_date = formattedDate;
                             });
                           } else {
                             print("Date is not selected");
@@ -471,6 +535,11 @@ class _SignupPageState extends State<SignupPage> {
                               borderRadius: BorderRadius.circular(20)),
                           hintText: 'Name of Establishment',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            est = value;
+                          });
+                        },
                       ),
                     ),
                     Row(
@@ -567,11 +636,7 @@ class _SignupPageState extends State<SignupPage> {
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupPage()),
-                          );
+                          next();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

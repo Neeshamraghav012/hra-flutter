@@ -47,16 +47,12 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class SignupApp2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SignupPage2(),
-    );
-  }
-}
-
 class SignupPage2 extends StatefulWidget {
+  final Map<String, dynamic> userData;
+  final Map<String, dynamic> docData;
+
+  SignupPage2({required this.userData, required this.docData});
+
   @override
   _SignupPage2State createState() => _SignupPage2State();
 }
@@ -64,6 +60,88 @@ class SignupPage2 extends StatefulWidget {
 class _SignupPage2State extends State<SignupPage2> {
   bool terms = false;
   bool privacy = false;
+  String ref_name = "";
+  String ref_contact = "";
+  String ref_email = "";
+  bool loading = false;
+
+  // Get the current date and time
+  DateTime currentDateTime = DateTime.now();
+
+  // Response
+  List data = [];
+  String message = "";
+  bool status = false;
+
+  Future<void> p() async {
+    print("User data is: ");
+    print(widget.userData);
+    print("Doc data is: ");
+    print(widget.docData);
+  }
+
+  Future<void> register() async {
+    setState(() {
+      loading = true;
+    });
+
+    String formattedDateTime = currentDateTime.toUtc().toIso8601String();
+
+    final response = await http.post(
+        Uri.parse('http://10.0.2.2:8887/user/api/register-user'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_input': {
+            "username": widget.userData['username'],
+            "phone": widget.userData['phone'],
+            "email": widget.userData['email'],
+            "address": widget.userData['address'],
+            "city": widget.userData['city'],
+            "state": widget.userData['state'],
+            "speciality": widget.userData['speciality'],
+            "operating_region": widget.userData['region'],
+            "user_type": widget.userData['user_type'],
+            "rera_expiry_date": widget.userData['establishment_date'],
+            "total_experience": widget.userData['experience'],
+            "password": "password",
+            "tnc": terms,
+            "privacy_policy": privacy,
+            "created_at ": formattedDateTime,
+            "updated_at": formattedDateTime,
+            "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+            "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+            "references": [
+              {
+                "name": ref_name,
+                "email": ref_email,
+                "phone": ref_contact,
+              }
+            ]
+          }
+        }));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      setState(() {
+        // To Do
+        data = jsonData['data'];
+        status = jsonData['status'];
+        message = jsonData['message'];
+      });
+    } else {
+      print('API request failed with status code: ${response.statusCode}');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    p();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +182,11 @@ class _SignupPage2State extends State<SignupPage2> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: 'Reference full name'),
+                        onChanged: (value) {
+                          setState(() {
+                            ref_name = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
@@ -114,6 +197,11 @@ class _SignupPage2State extends State<SignupPage2> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: 'Reference phone number'),
+                        onChanged: (value) {
+                          setState(() {
+                            ref_contact = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
@@ -124,6 +212,11 @@ class _SignupPage2State extends State<SignupPage2> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: 'Reference E-mail Id'),
+                        onChanged: (value) {
+                          setState(() {
+                            ref_email = value;
+                          });
+                        },
                       ),
                     ),
                     Row(
@@ -169,7 +262,8 @@ class _SignupPage2State extends State<SignupPage2> {
                                   30), // Adjust the value for the desired corner radius
                             ),
                             side: BorderSide(
-                              color: Color(0xFFFF4D4D), // Specify the border color
+                              color:
+                                  Color(0xFFFF4D4D), // Specify the border color
                               width: 2.0, // Specify the border width
                             ),
                             backgroundColor: Colors.white,
@@ -188,31 +282,48 @@ class _SignupPage2State extends State<SignupPage2> {
                         ),
                       ),
                       Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  30), // Adjust the value for the desired corner radius
+                      loading
+                          ? CircularProgressIndicator()
+                          : Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  register();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        30), // Adjust the value for the desired corner radius
+                                  ),
+                                  backgroundColor: Color(0xFFFF4D4D),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 40,
+                                      vertical:
+                                          15), // Change the color to your desired color
+                                ),
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white, // Text color
+                                  ),
+                                ),
+                              ),
                             ),
-                            backgroundColor: Color(0xFFFF4D4D),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 40,
-                                vertical:
-                                    15), // Change the color to your desired color
-                          ),
-                          child: Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white, // Text color
-                            ),
-                          ),
-                        ),
-                      ),
                     ]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: message != null
+                          ? Text(
+                              message,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            )
+                          : Text(''),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: Row(

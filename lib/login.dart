@@ -3,6 +3,7 @@ import 'package:hra/forgot-password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/signup.dart';
+import 'package:hra/admin.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -62,18 +63,36 @@ class _LoginPageState extends State<LoginPage> {
   bool rememberMe = false;
   String email_or_phone = '';
   String password = '';
+  bool loading = false;
+  bool status = false;
+  String message = '';
+  String id = '';
 
   Future<void> fetchPost() async {
-    final response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/1'));
+    setState(() {
+      loading = true;
+    });
+    final response =
+        await http.post(Uri.parse('http://10.0.2.2:8887/user/api/login-user'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              "login_input": {"username": email_or_phone, "password": password}
+            }));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print('Title: ${jsonData['title']}');
-      print('Body: ${jsonData['body']}');
+
+      setState(() {
+        status = jsonData['status'];
+        message = jsonData['message'];
+        id = jsonData['data'];
+      });
     } else {
       print('API request failed with status code: ${response.statusCode}');
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -124,8 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                             hintText: 'Your Email / Phone number'),
                         onChanged: (value) {
                           setState(() {
-                            email_or_phone =
-                                value;
+                            email_or_phone = value;
                           });
                         },
                       ),
@@ -133,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextField(
+                        obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           border: OutlineInputBorder(
@@ -142,8 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            password =
-                                value; 
+                            password = value;
                           });
                         },
                       ),
@@ -165,36 +183,51 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ForgotPage()),
+                                  builder: (context) => Frame3875()),
                             );
                           },
                           child: Text('Forgot Password?'),
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Perform login logic here
-                        fetchPost();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              30), // Adjust the value for the desired corner radius
-                        ),
-                        backgroundColor: Color(0xFFFF4D4D),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical:
-                                15), // Change the color to your desired color
-                      ),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white, // Text color
-                        ),
-                      ),
+                    loading
+                        ? CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: () {
+                              // Perform login logic here
+                              fetchPost();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    30), // Adjust the value for the desired corner radius
+                              ),
+                              backgroundColor: Color(0xFFFF4D4D),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 40,
+                                  vertical:
+                                      15), // Change the color to your desired color
+                            ),
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white, // Text color
+                              ),
+                            ),
+                          ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: message != null
+                          ? Text(
+                              message,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color:Color(0xFFFF4D4D),
+                              ),
+                            )
+                          : Text(''),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
