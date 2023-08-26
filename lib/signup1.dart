@@ -73,6 +73,14 @@ class _SignupPage1State extends State<SignupPage1> {
   bool uploaded = false;
 
   Future<void> chooseImage() async {
+    var choosedimage = await picker.pickImage(source: ImageSource.gallery);
+    //set source: ImageSource.camera to get image from camera
+    setState(() {
+      uploadimage = choosedimage;
+    });
+  }
+
+  Future<void> scanImage() async {
     var choosedimage = await picker.pickImage(source: ImageSource.camera);
     //set source: ImageSource.camera to get image from camera
     setState(() {
@@ -359,45 +367,79 @@ class _SignupPage1State extends State<SignupPage1> {
                               ),
                             ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                chooseImage(); // call choose image function
-                              },
-                              icon: Icon(Icons.folder_open),
-                              label: Text("CHOOSE IMAGE"),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, top:20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  scanImage(); // call choose image function
+                                },
+                                icon: Icon(Icons.camera),
+                                label: Text("Scan now"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF1E77CC), // Set the background color here
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-
-                        // Add some spacing
-                        SizedBox(
-                          width: 20,
-                        ),
-
-                        Expanded(
-                          child: uploaded
-                              ? Text("Image Uploaded!")
-                              : Container(
-                                  child: uploadimage == null
-                                      ? Container()
-                                      : Container(
-                                          child: isUploading
-                                              ? CircularProgressIndicator()
-                                              : ElevatedButton.icon(
-                                                  onPressed: () {
-                                                    uploadImage();
-                                                  },
-                                                  icon: Icon(Icons.file_upload),
-                                                  label: Text("UPLOAD IMAGE"),
-                                                ),
-                                        ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  chooseImage(); // call choose image function
+                                },
+                                icon: Icon(Icons.folder_open),
+                                label: Text("Browse files"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF1E77CC), // Set the background color here
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
                                 ),
-                        ),
-                      ],
+                              ),
+                            ),
+                          ),
+
+                          // Add some spacing
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Container(
+                        child: uploaded
+                            ? Text("Image Uploaded!")
+                            : uploadimage == null
+                                ? SizedBox()
+                                : isUploading
+                                    ? Padding(
+                                        padding: EdgeInsets.all(4.0),
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : ElevatedButton.icon(
+                                        onPressed: () {
+                                          uploadImage();
+                                        },
+                                        icon: Icon(Icons.file_upload),
+                                        label: Text("UPLOAD IMAGE"),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Color(
+                                              0xFF3C3C3C), // Set the background color here
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
+                                        ),
+                                      ),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20),
