@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:hra/signup2.dart';
+import 'dart:math';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -107,6 +108,17 @@ class _SignupPage1State extends State<SignupPage1> {
     );
   }
 
+  String generateRandomName() {
+    final random = Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final length = 10; // Adjust the length of the random name as needed
+
+    return String.fromCharCodes(
+      List.generate(
+          length, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
+    );
+  }
+
   Future<void> uploadImage() async {
     try {
       setState(() {
@@ -117,15 +129,20 @@ class _SignupPage1State extends State<SignupPage1> {
 
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
+        Uri.parse(
+            'https://hra-api-dev.azurewebsites.net/admin/api/file-upload-base64'),
       );
 
-      request.fields['upload_preset'] = 'cyberbolt';
+      String randomName = generateRandomName();
+
+      // Add the random name to the filename
+      String filename = '$randomName.jpg';
+
       request.files.add(
         http.MultipartFile.fromBytes(
           'file',
           imageBytes,
-          filename: 'image.jpg',
+          filename: filename,
           contentType: MediaType('image', 'jpg'),
         ),
       );
@@ -368,7 +385,7 @@ class _SignupPage1State extends State<SignupPage1> {
                             ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 20, top:20),
+                      padding: EdgeInsets.only(left: 20, top: 20),
                       child: Row(
                         children: [
                           Expanded(
@@ -380,7 +397,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                 icon: Icon(Icons.camera),
                                 label: Text("Scan now"),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF1E77CC), // Set the background color here
+                                  primary: Color(
+                                      0xFF1E77CC), // Set the background color here
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
                                 ),
@@ -399,7 +417,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                 icon: Icon(Icons.folder_open),
                                 label: Text("Browse files"),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF1E77CC), // Set the background color here
+                                  primary: Color(
+                                      0xFF1E77CC), // Set the background color here
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
                                 ),

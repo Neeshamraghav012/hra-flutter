@@ -88,7 +88,7 @@ class _SignupPage2State extends State<SignupPage2> {
     String formattedDateTime = currentDateTime.toUtc().toIso8601String();
 
     final response = await http.post(
-        Uri.parse('http://10.0.2.2:8887/user/api/register-user'),
+        Uri.parse('https://hra-api-dev.azurewebsites.net/user/api/register-user'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_input': {

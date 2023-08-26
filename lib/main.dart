@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hra/login.dart';
 import 'package:hra/home.dart';
+import 'package:hra/admin.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,8 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(splashDuration, () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()), // Replace with your desired screen
+        // MaterialPageRoute(builder: (context) => HomePage()), 
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     });
     return Scaffold(

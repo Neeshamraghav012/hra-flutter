@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Frame3875()),
+                                  builder: (context) => ForgotPage()),
                             );
                           },
                           child: Text('Forgot Password?'),

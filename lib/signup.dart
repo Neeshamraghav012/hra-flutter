@@ -91,7 +91,7 @@ class _SignupPageState extends State<SignupPage> {
 
     Future<void> fetchPost() async {
       final response = await http.get(
-          Uri.parse('http://10.0.2.2:8887/admin/api/get-all-dropdown-values'));
+          Uri.parse('https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
