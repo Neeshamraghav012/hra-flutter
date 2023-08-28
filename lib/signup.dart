@@ -89,25 +89,26 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController dateinput = TextEditingController();
   List<String> specialityNames = [];
 
-    Future<void> fetchPost() async {
-      final response = await http.get(
-          Uri.parse('https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
+  Future<void> fetchPost() async {
+    final response = await http.get(Uri.parse(
+        'https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
 
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+    print(response);
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      speciality_list = jsonData['data']['speciality_list'];
+      List<String> names = speciality_list
+          .where((item) => item['name'] != null)
+          .map<String>((item) => item['name'])
+          .toList();
 
-        speciality_list = jsonData['data']['speciality_list'];
-        List<String> names = speciality_list
-            .where((item) => item['name'] != null)
-            .map<String>((item) => item['name'])
-            .toList();
-
-        setState(() {
-          specialityNames = names;
-        });
-      } else {
-        print('API request failed with status code:');
-      }
+      setState(() {
+        specialityNames = names;
+      });
+    } else {
+      print('API request failed with status code:');
+    }
   }
 
   Future<void> next() async {
@@ -636,7 +637,8 @@ class _SignupPageState extends State<SignupPage> {
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          next();
+                          //next();
+                          fetchPost();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

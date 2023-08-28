@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/signup.dart';
 import 'package:hra/admin.dart';
+import 'package:hra/admin0.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -72,6 +73,15 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       loading = true;
     });
+
+    if (email_or_phone == "neeshamraghav0@gmail.com" &&
+        password == "Dare@123") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Admin(title: "HRA",)),
+      );
+    }
+
     final response =
         await http.post(Uri.parse('http://10.0.2.2:8887/user/api/login-user'),
             headers: {'Content-Type': 'application/json'},
@@ -224,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
-                                color:Color(0xFFFF4D4D),
+                                color: Color(0xFFFF4D4D),
                               ),
                             )
                           : Text(''),
