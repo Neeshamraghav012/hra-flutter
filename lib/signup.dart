@@ -637,8 +637,8 @@ class _SignupPageState extends State<SignupPage> {
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          //next();
-                          fetchPost();
+                          next();
+                          //fetchPost();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
