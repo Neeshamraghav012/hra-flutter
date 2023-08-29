@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hra/admin.dart';
+import 'package:hra/home.dart';
+import 'package:hra/main.dart';
+import 'package:hra/social.dart';
 
 class Admin extends StatefulWidget {
   final String title;
@@ -46,7 +49,10 @@ class _AdminState extends State<Admin> {
                   "Raghavendra Maram",
                   style: TextStyle(fontSize: 18, color: Colors.black),
                 ),
-                accountEmail: Text("raghu@squareselect.in", style: TextStyle(color: Colors.black),),
+                accountEmail: Text(
+                  "raghu@squareselect.in",
+                  style: TextStyle(color: Colors.black),
+                ),
                 currentAccountPictureSize: Size.square(50),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.white,
@@ -103,7 +109,7 @@ class _AdminState extends State<Admin> {
                 Navigator.pop(context);
               },
             ),
-                                   ListTile(
+            ListTile(
               leading: const Icon(Icons.article),
               title: const Text(' Add Articles '),
               onTap: () {
@@ -111,7 +117,7 @@ class _AdminState extends State<Admin> {
               },
             ),
 
-                                   ListTile(
+            ListTile(
               leading: const Icon(Icons.branding_watermark),
               title: const Text(' Add Banners '),
               onTap: () {
@@ -129,7 +135,10 @@ class _AdminState extends State<Admin> {
               leading: const Icon(Icons.logout),
               title: const Text('LogOut'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SocialPage()),
+                );
               },
             ),
           ],
@@ -239,14 +248,10 @@ class Profiles extends StatelessWidget {
               padding: EdgeInsets.only(right: 5),
               child: ElevatedButton(
                 onPressed: () {
-
                   Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Frame3875 ()),
-                              );
-
-
+                    context,
+                    MaterialPageRoute(builder: (context) => Frame3875()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hra/cliprect.dart';
 import 'package:hra/custom-appbar.dart';
 
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize =>
@@ -61,7 +60,7 @@ class ForgotPage extends StatelessWidget {
                     Text(
                       'Forgot Password',
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Color(0xFF384A59),
                         fontSize: 32, // Increase font size
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
@@ -79,11 +78,24 @@ class ForgotPage extends StatelessWidget {
                     TextField(
                       decoration: InputDecoration(
                         labelText: 'Your E-mail',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+                        border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.email),
                         hintText: 'Your Email',
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text(
+                          'We’ll send an OTP to this email',
+                          style: TextStyle(
+                            color: Color(0xFF646464),
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -97,11 +109,11 @@ class ForgotPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                           ),
                           primary: Color(0xFFFF4D4D), // Change the button color
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 15),
                         ),
                         child: Text(
-                          'Send Email',
+                          'Send OTP',
                           style: TextStyle(
                             fontSize: 18, // Increase font size
                             color: Colors.white,

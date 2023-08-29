@@ -8,42 +8,58 @@ import 'package:intl/intl.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+  Size get preferredSize => Size.fromHeight(150);
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
-        ),
-        child: AppBar(
-          title: Text('Register'),
-          centerTitle: true,
-          backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
-          elevation: 0, // Remove the shadow
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFFF4D4D),
+
+      ),
+      child: AppBar(
+        title: Text('Register'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFFFF4D4D),
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    Container(
+                      width: 60,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    Container(
+                      width: 60,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ]),
+            )),
       ),
     );
   }
-}
-
-class AppBarClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class SignupApp extends StatelessWidget {
@@ -77,6 +93,8 @@ class _SignupPageState extends State<SignupPage> {
   String team_size = "1-5";
   String core_buisness = "Primary";
   String establishment_date = "";
+  String password = "";
+  String error = "";
 
   // Dropdown lists
   List state_list = [];
@@ -87,17 +105,17 @@ class _SignupPageState extends State<SignupPage> {
   List core_buiness_list = [];
 
   TextEditingController dateinput = TextEditingController();
-  List<String> specialityNames = [];
+  List<String> specialityNames = ['Residential'];
 
   Future<void> fetchPost() async {
     final response = await http.get(Uri.parse(
         'https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
 
-    print(response);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print(jsonData);
       speciality_list = jsonData['data']['speciality_list'];
+
+      print(speciality_list);
       List<String> names = speciality_list
           .where((item) => item['name'] != null)
           .map<String>((item) => item['name'])
@@ -127,7 +145,16 @@ class _SignupPageState extends State<SignupPage> {
       'team_size': team_size,
       'core_buisness': core_buisness,
       'establishment_date': establishment_date,
+      'password': password,
     };
+
+    if (userData.values.any((value) => value == '')) {
+      setState(() {
+        error = "Please provide all the details";
+      });
+
+      return;
+    }
 
     Navigator.push(
       context,
@@ -150,6 +177,11 @@ class _SignupPageState extends State<SignupPage> {
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40))),
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -166,7 +198,7 @@ class _SignupPageState extends State<SignupPage> {
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: Color(0xFF384A59),
-                            fontSize: 20,
+                            fontSize: 22,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                           ),
@@ -175,158 +207,276 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Full name',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Your Full Name'),
-                        onChanged: (value) {
-                          setState(() {
-                            username = value;
-                          });
-                        },
-                      ),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Full name',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your Full Name'),
+                          onChanged: (value) {
+                            setState(() {
+                              username = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Mobile number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Your Phone number',
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Mobile number',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            phone = value;
-                          });
-                        },
-                      ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your phone number'),
+                          onChanged: (value) {
+                            setState(() {
+                              phone = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'E-mail',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Your Email address',
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'E-mail',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            email = value;
-                          });
-                        },
-                      ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your Email address'),
+                          onChanged: (value) {
+                            setState(() {
+                              email = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Address',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Enter your address',
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Password',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            address = value;
-                          });
-                        },
-                      ),
+                        TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your password'),
+                          onChanged: (value) {
+                            setState(() {
+                              password = value;
+                            });
+                          },
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Address',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your address'),
+                          onChanged: (value) {
+                            setState(() {
+                              address = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                labelText: 'City',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                hintText: 'Enter your city',
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  city = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        // Add some spacing
-
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 8),
-                                  labelText: 'State',
-                                  border: InputBorder.none,
-                                ),
-                                value: state,
-                                isExpanded: true,
-                                items: <String>[
-                                  "Andhra Pradesh",
-                                  "Arunachal Pradesh",
-                                  "Assam",
-                                  "Bihar",
-                                  "Chhattisgarh",
-                                  "Goa",
-                                  "Gujarat",
-                                  "Haryana",
-                                  "Himachal Pradesh",
-                                  "Jharkhand",
-                                  "Karnataka",
-                                  "Kerala",
-                                  "Madhya Pradesh",
-                                  "Maharashtra",
-                                  "Manipur",
-                                  "Meghalaya",
-                                  "Mizoram",
-                                  "Nagaland",
-                                  "Odisha",
-                                  "Punjab",
-                                  "Rajasthan",
-                                  "Sikkim",
-                                  "Tamil Nadu",
-                                  "Telangana",
-                                  "Tripura",
-                                  "Uttar Pradesh",
-                                  "Uttarakhand",
-                                  "West Bengal",
-                                  "Andaman and Nicobar Islands",
-                                  "Chandigarh",
-                                  "Dadra and Nagar Haveli and Daman and Diu",
-                                  "Lakshadweep",
-                                  "Delhi",
-                                  "Puducherry"
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'City',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
+                                  ),
+                                ),
+                              ),
+                              TextField(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'Enter your city',
+                                ),
+                                onChanged: (value) {
                                   setState(() {
-                                    state = newValue!;
+                                    city = value;
                                   });
                                 },
                               ),
-                            ),
+                            ]),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'State',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: state,
+                                  isExpanded: true,
+                                  items: <String>[
+                                    "Andhra Pradesh",
+                                    "Arunachal Pradesh",
+                                    "Assam",
+                                    "Bihar",
+                                    "Chhattisgarh",
+                                    "Goa",
+                                    "Gujarat",
+                                    "Haryana",
+                                    "Himachal Pradesh",
+                                    "Jharkhand",
+                                    "Karnataka",
+                                    "Kerala",
+                                    "Madhya Pradesh",
+                                    "Maharashtra",
+                                    "Manipur",
+                                    "Meghalaya",
+                                    "Mizoram",
+                                    "Nagaland",
+                                    "Odisha",
+                                    "Punjab",
+                                    "Rajasthan",
+                                    "Sikkim",
+                                    "Tamil Nadu",
+                                    "Telangana",
+                                    "Tripura",
+                                    "Uttar Pradesh",
+                                    "Uttarakhand",
+                                    "West Bengal",
+                                    "Andaman and Nicobar Islands",
+                                    "Chandigarh",
+                                    "Dadra and Nagar Haveli and Daman and Diu",
+                                    "Lakshadweep",
+                                    "Delhi",
+                                    "Puducherry"
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      state = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                       ],
@@ -335,14 +485,27 @@ class _SignupPageState extends State<SignupPage> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'Total Experience',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TextField(
                                 decoration: InputDecoration(
-                                  labelText: 'Total Experience',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20)),
+                                  border: OutlineInputBorder(),
                                   hintText: 'Years of experience',
                                 ),
                                 onChanged: (value) {
@@ -351,44 +514,60 @@ class _SignupPageState extends State<SignupPage> {
                                   });
                                 },
                               ),
-                            ),
+                            ]),
                           ),
                         ),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 8),
-                                  labelText: 'Speciality',
-                                  border: InputBorder.none,
-                                ),
-                                value: speciality,
-                                isExpanded: true,
-                                items: specialityNames
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'Speciality',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    speciality = newValue!;
-                                  });
-                                },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: speciality,
+                                  isExpanded: true,
+                                  items: specialityNames
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      speciality = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                       ],
@@ -402,8 +581,7 @@ class _SignupPageState extends State<SignupPage> {
                           icon: Icon(Icons.calendar_today), //icon of text field
                           labelText: "RERA Expiry date", //label text of field
 
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
+                          border: OutlineInputBorder(),
                           hintText: 'Select Date',
                         ),
                         readOnly:
@@ -437,198 +615,270 @@ class _SignupPageState extends State<SignupPage> {
                     Row(
                       children: [
                         Expanded(
-                          flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 5),
-                                  labelText:
-                                      'Operating region', // Set your label text here
-                                  border: InputBorder
-                                      .none, // Remove the default underline
-                                ),
-                                value: region,
-                                isExpanded: true,
-                                items: <String>[
-                                  "East",
-                                  "West",
-                                  "North",
-                                  "South"
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'Operating region',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    region = newValue!;
-                                  });
-                                },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: region,
+                                  isExpanded: true,
+                                  items: <String>[
+                                    "North",
+                                    "East",
+                                    "West",
+                                    "South"
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      region = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                         SizedBox(
                           width: 5,
                         ),
                         Expanded(
-                          flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 5),
-                                  labelText:
-                                      'User type', // Set your label text here
-                                  border: InputBorder
-                                      .none, // Remove the default underline
-                                ),
-                                value: user_type,
-                                isExpanded: true,
-                                items: <String>[
-                                  "Individual",
-                                  "Company",
-                                  "Proprietorship",
-                                  "Partnership",
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'State',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    user_type = newValue!;
-                                  });
-                                },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: user_type,
+                                  isExpanded: true,
+                                  items: <String>[
+                                    "Individual",
+                                    "Company",
+                                    "Partnership",
+                                    "Proprietorship"
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      user_type = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Name of Establishment',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Name of Establishment',
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Name of Establishment',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            est = value;
-                          });
-                        },
-                      ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name of Establishment'),
+                          onChanged: (value) {
+                            setState(() {
+                              est = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Row(
                       children: [
                         Expanded(
-                          flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 5),
-                                  labelText:
-                                      'Team size', // Set your label text here
-                                  border: InputBorder
-                                      .none, // Remove the default underline
-                                ),
-                                value: team_size,
-                                isExpanded: true,
-                                items: <String>[
-                                  "1-5",
-                                  "6-10",
-                                  "11-20",
-                                  "20 Above",
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'Team size',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    team_size = newValue!;
-                                  });
-                                },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: team_size,
+                                  isExpanded: true,
+                                  items: <String>[
+                                    "1-5",
+                                    "6-10",
+                                    "11-20",
+                                    "20 Above"
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      team_size = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                         SizedBox(
                           width: 5,
                         ),
                         Expanded(
-                          flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 5),
-                                  labelText:
-                                      'Core Business', // Set your label text here
-                                  border: InputBorder
-                                      .none, // Remove the default underline
-                                ),
-                                value: core_buisness,
-                                isExpanded: true,
-                                items: <String>[
-                                  "Primary",
-                                  "Secondary",
-                                  "Lease",
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(fontSize: 12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 5, bottom: 5, top: 5),
+                                  child: Text(
+                                    'Core Business',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  core_buisness = newValue!;
-                                },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
+                                  value: core_buisness,
+                                  isExpanded: true,
+                                  items: <String>[
+                                    "Primary",
+                                    "Secondary",
+                                    "Lease",
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      core_buisness = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]),
                           ),
                         ),
                       ],
@@ -659,6 +909,19 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: error != null
+                          ? Text(
+                              error,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            )
+                          : Text(''),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),

@@ -65,6 +65,7 @@ class _SignupPage1State extends State<SignupPage1> {
   String doc = 'PAN';
   String doc_no = "";
   String doc_url = "";
+  String error = "";
 
   String selectedState = '';
 
@@ -90,7 +91,7 @@ class _SignupPage1State extends State<SignupPage1> {
   }
 
   Future<void> p() async {
-    print("user datas i: " + this.userData['user_type']);
+    print("user datas is: " + this.userData['user_type']);
   }
 
   Future<void> next() async {
@@ -129,10 +130,9 @@ class _SignupPage1State extends State<SignupPage1> {
 
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse(
-            'https://hra-api-dev.azurewebsites.net/admin/api/file-upload-base64'),
+        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
       );
-
+      request.fields['upload_preset'] = 'cyberbolt';
       String randomName = generateRandomName();
 
       // Add the random name to the filename
@@ -222,12 +222,9 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: Colors.white,
-                              side: BorderSide(
-                                color: Color(
-                                    0xFFFF4D4D), // Specify the border color
-                                width: 2.0, // Specify the border width
-                              ),
+                              backgroundColor: doc == "PAN"
+                                  ? Color(0xFFA1FF89)
+                                  : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                             ),
@@ -235,7 +232,7 @@ class _SignupPage1State extends State<SignupPage1> {
                               'PAN Card',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFFFF4D4D),
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -255,12 +252,9 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: Colors.white,
-                              side: BorderSide(
-                                color: Color(
-                                    0xFFFF4D4D), // Specify the border color
-                                width: 2.0, // Specify the border width
-                              ),
+                              backgroundColor: doc == "Aadhar"
+                                  ? Color(0xFFA1FF89)
+                                  : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                             ),
@@ -268,7 +262,7 @@ class _SignupPage1State extends State<SignupPage1> {
                               'Aadhar Card',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFFFF4D4D),
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -288,12 +282,9 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: Colors.white,
-                              side: BorderSide(
-                                color: Color(
-                                    0xFFFF4D4D), // Specify the border color
-                                width: 2.0, // Specify the border width
-                              ),
+                              backgroundColor: doc == "RERA"
+                                  ? Color(0xFFA1FF89)
+                                  : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                             ),
@@ -301,41 +292,7 @@ class _SignupPage1State extends State<SignupPage1> {
                               'RERA',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFFFF4D4D),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 5, bottom: 10, left: 5),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                doc = "Profile Picture";
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              backgroundColor: Colors.white,
-                              side: BorderSide(
-                                color: Color(
-                                    0xFFFF4D4D), // Specify the border color
-                                width: 2.0, // Specify the border width
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                            ),
-                            child: Text(
-                              'Profile Picture',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFFFF4D4D),
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -343,19 +300,34 @@ class _SignupPage1State extends State<SignupPage1> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: doc,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Your ${doc}'),
-                        onChanged: (value) {
-                          setState(() {
-                            doc_no = value;
-                          });
-                        },
-                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              '${doc} number',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your ${doc}'),
+                          onChanged: (value) {
+                            setState(() {
+                              doc_no = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Align(
                       alignment: Alignment.topLeft,
@@ -485,6 +457,19 @@ class _SignupPage1State extends State<SignupPage1> {
                           ),
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: error != null
+                          ? Text(
+                              error,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            )
+                          : Text(''),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),

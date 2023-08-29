@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:hra/social.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -64,6 +65,7 @@ class _SignupPage2State extends State<SignupPage2> {
   String ref_contact = "";
   String ref_email = "";
   bool loading = false;
+  String error = "";
 
   // Get the current date and time
   DateTime currentDateTime = DateTime.now();
@@ -81,6 +83,14 @@ class _SignupPage2State extends State<SignupPage2> {
   }
 
   Future<void> register() async {
+    if (!privacy && !terms) {
+      setState(() {
+        error = "Please provide all the details";
+      });
+
+      return;
+    }
+
     setState(() {
       loading = true;
     });
@@ -88,7 +98,8 @@ class _SignupPage2State extends State<SignupPage2> {
     String formattedDateTime = currentDateTime.toUtc().toIso8601String();
 
     final response = await http.post(
-        Uri.parse('https://hra-api-dev.azurewebsites.net/user/api/register-user'),
+        Uri.parse(
+            'https://hra-api-dev.azurewebsites.net/user/api/register-user'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_input': {
@@ -103,7 +114,7 @@ class _SignupPage2State extends State<SignupPage2> {
             "user_type": widget.userData['user_type'],
             "rera_expiry_date": widget.userData['establishment_date'],
             "total_experience": widget.userData['experience'],
-            "password": "password",
+            "password": widget.userData['password'],
             "tnc": terms,
             "privacy_policy": privacy,
             "created_at ": formattedDateTime,
@@ -115,6 +126,20 @@ class _SignupPage2State extends State<SignupPage2> {
                 "name": ref_name,
                 "email": ref_email,
                 "phone": ref_contact,
+                "created_at ": "2023-08-23 16:40:35.998687+05:30",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_at": "2023-08-23 16:40:35.998687+05:30",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+              }
+            ],
+            "documents": [
+              {
+                "name": 'PAN',
+                "document_number": "naohgeanoe",
+                "document_path": "https://api.com",
+                "document_type": "PAN",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
               }
             ]
           }
@@ -123,12 +148,23 @@ class _SignupPage2State extends State<SignupPage2> {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
 
+      print(jsonData);
+
       setState(() {
         // To Do
         data = jsonData['data'];
         status = jsonData['status'];
-        message = jsonData['message'];
+        error = jsonData['message'];
       });
+
+      if (status) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SocialPage(),
+            ));
+      }
+
     } else {
       print('API request failed with status code: ${response.statusCode}');
     }
@@ -175,49 +211,94 @@ class _SignupPage2State extends State<SignupPage2> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Reference Name',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Reference full name'),
-                        onChanged: (value) {
-                          setState(() {
-                            ref_name = value;
-                          });
-                        },
-                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Reference Name',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Reference Full Name'),
+                          onChanged: (value) {
+                            setState(() {
+                              ref_name = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Reference Contact',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Reference phone number'),
-                        onChanged: (value) {
-                          setState(() {
-                            ref_contact = value;
-                          });
-                        },
-                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Reference Contact',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Reference phone number'),
+                          onChanged: (value) {
+                            setState(() {
+                              ref_contact = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Reference E-mail',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: 'Reference E-mail Id'),
-                        onChanged: (value) {
-                          setState(() {
-                            ref_email = value;
-                          });
-                        },
-                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Reference E-mail',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Enter E-mail Id'),
+                          onChanged: (value) {
+                            setState(() {
+                              ref_email = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Row(
                       children: [
@@ -313,7 +394,7 @@ class _SignupPage2State extends State<SignupPage2> {
                     ]),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: message != null
+                      child: error != ''
                           ? Text(
                               message,
                               style: TextStyle(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hra/home.dart';
 import 'package:hra/login.dart';
-
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -43,7 +43,7 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class HomePage extends StatelessWidget {
+class SocialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,30 +70,20 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Text.rich(
-                  TextSpan(
-                    text: 'Welcome to ',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'HRA',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
+                Text(
+                  'Welcome to HRA',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20, // Increase font size
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 6),
+                SizedBox(height: 8),
                 Text(
                   'Together We Can Grow',
                   style: TextStyle(
-                    color: Colors.black, // Slightly lighter text color
+                    color: Colors.grey[700], // Slightly lighter text color
                     fontSize: 16, // Increase font size
                   ),
                 ),
@@ -111,43 +101,21 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Perform password reset logic here
-
+                  child: InkWell(
+                    onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                LoginPage()), // Replace with your signup screen
+                        MaterialPageRoute(builder: (context) => HomePage()),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    child: Text(
+                      "Go back",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            Colors.blue, // Change the text color when clicked
                       ),
-                      primary: Color(0xFFFF4D4D), // Change the button color
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 13),
-                      fixedSize: Size(250, 50),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Get started',
-                          style: TextStyle(
-                            fontSize: 20, // Increase font size
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                            width: 30), // Add space between text and arrow icon
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                      ],
                     ),
                   ),
                 ),

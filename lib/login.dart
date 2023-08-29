@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:hra/signup.dart';
 import 'package:hra/admin.dart';
 import 'package:hra/admin0.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hra/social.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -69,6 +71,14 @@ class _LoginPageState extends State<LoginPage> {
   String message = '';
   String id = '';
 
+  Future<bool> saveUser(String user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("userId", user);
+
+    return prefs.commit();
+  }
+
   Future<void> fetchPost() async {
     setState(() {
       loading = true;
@@ -78,16 +88,26 @@ class _LoginPageState extends State<LoginPage> {
         password == "Dare@123") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Admin(title: "HRA",)),
+        MaterialPageRoute(
+            builder: (context) => Admin(
+                  title: "HRA",
+                )),
       );
     }
 
-    final response =
-        await http.post(Uri.parse('http://10.0.2.2:8887/user/api/login-user'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              "login_input": {"username": email_or_phone, "password": password}
-            }));
+    if (email_or_phone == '' && password == '') {
+      setState(() {
+        message = "Please enter valid credentials";
+        loading = false;
+      });
+    }
+
+    final response = await http.post(
+        Uri.parse('https://hra-api-dev.azurewebsites.net/user/api/login-user'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "login_input": {"username": email_or_phone, "password": password}
+        }));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -97,6 +117,16 @@ class _LoginPageState extends State<LoginPage> {
         message = jsonData['message'];
         id = jsonData['data'];
       });
+
+      saveUser(id);
+
+      if (status) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SocialPage(),
+            ));
+      }
     } else {
       print('API request failed with status code: ${response.statusCode}');
     }
@@ -143,38 +173,64 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Email / Phone number',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            prefixIcon: Icon(Icons.email),
-                            hintText: 'Your Email / Phone number'),
-                        onChanged: (value) {
-                          setState(() {
-                            email_or_phone = value;
-                          });
-                        },
-                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'E-mail / Phone number',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your E-mail/ phone number'),
+                          onChanged: (value) {
+                            setState(() {
+                              email_or_phone = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          prefixIcon: Icon(Icons.password),
-                          hintText: 'Your Password',
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Password',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            password = value;
-                          });
-                        },
-                      ),
+                        TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Your Password'),
+                          onChanged: (value) {
+                            setState(() {
+                              password = value;
+                            });
+                          },
+                        ),
+                      ]),
                     ),
                     Row(
                       children: [
