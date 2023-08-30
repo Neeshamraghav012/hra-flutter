@@ -63,6 +63,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool isValidEmail(String email) {
+    // Regular expression for a valid email address
+    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool isValidPhoneNumber(String phoneNumber) {
+    // Regular expression for a valid phone number
+    final phoneRegex = RegExp(r'^\d{10}$');
+    return phoneRegex.hasMatch(phoneNumber);
+  }
+
   bool rememberMe = false;
   String email_or_phone = '';
   String password = '';
@@ -93,6 +105,11 @@ class _LoginPageState extends State<LoginPage> {
                   title: "HRA",
                 )),
       );
+
+      setState(() {
+        loading = false;
+      });
+      return;
     }
 
     if (email_or_phone == '' && password == '') {
@@ -100,6 +117,16 @@ class _LoginPageState extends State<LoginPage> {
         message = "Please enter valid credentials";
         loading = false;
       });
+      return;
+    }
+
+    if (!isValidEmail(email_or_phone)) {
+      setState(() {
+        message = "Please provide valid email and phone number";
+        loading = false;
+      });
+
+      return;
     }
 
     final response = await http.post(
@@ -221,6 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         TextField(
+                          obscureText: true,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Your Password'),

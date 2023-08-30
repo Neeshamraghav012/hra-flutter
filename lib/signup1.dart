@@ -11,42 +11,68 @@ import 'dart:math';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+  Size get preferredSize => Size.fromHeight(150);
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
-        ),
-        child: AppBar(
-          title: Text('Register'),
-          centerTitle: true,
-          backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
-          elevation: 0, // Remove the shadow
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFFF4D4D),
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))
+      ),
+      child: AppBar(
+        title: Text('Register'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFFFF4D4D),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFA1FF89),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFA1FF89),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ]),
+            )),
       ),
     );
   }
-}
-
-class AppBarClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class SignupPage1 extends StatefulWidget {
@@ -112,7 +138,7 @@ class _SignupPage1State extends State<SignupPage1> {
   String generateRandomName() {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final length = 10; // Adjust the length of the random name as needed
+    final length = 10; 
 
     return String.fromCharCodes(
       List.generate(
@@ -123,7 +149,7 @@ class _SignupPage1State extends State<SignupPage1> {
   Future<void> uploadImage() async {
     try {
       setState(() {
-        isUploading = true; // Set the loading indicator
+        isUploading = true; 
       });
 
       List<int> imageBytes = File(uploadimage!.path).readAsBytesSync();
@@ -135,7 +161,6 @@ class _SignupPage1State extends State<SignupPage1> {
       request.fields['upload_preset'] = 'cyberbolt';
       String randomName = generateRandomName();
 
-      // Add the random name to the filename
       String filename = '$randomName.jpg';
 
       request.files.add(

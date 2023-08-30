@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:hra/signup1.dart';
 import 'package:hra/login.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -14,9 +15,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFFF4D4D),
-
-      ),
+          color: Color(0xFFFF4D4D),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30))),
       child: AppBar(
         title: Text('Register'),
         centerTitle: true,
@@ -26,33 +28,50 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             preferredSize: Size.fromHeight(40),
             child: Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFF4D4D),
-              ),
+                  color: Color(0xFFFF4D4D),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      width: 60,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Container(
+                          width: 80,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFA1FF89),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      width: 60,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Container(
+                          width: 80,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      width: 60,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Container(
+                          width: 80,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                       ),
                     ),
                   ]),
@@ -77,6 +96,17 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  bool isValidEmail(String email) {
+    // Regular expression for a valid email address
+    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool isValidPhoneNumber(String phoneNumber) {
+    // Regular expression for a valid phone number
+    final phoneRegex = RegExp(r'^\d{10}$');
+    return phoneRegex.hasMatch(phoneNumber);
+  }
   // input values
 
   String username = "";
@@ -95,35 +125,66 @@ class _SignupPageState extends State<SignupPage> {
   String establishment_date = "";
   String password = "";
   String error = "";
+  String region_id = "138f3a4d-83ff-4ddc-93f2-ef15e5d4f3d4";
 
   // Dropdown lists
-  List state_list = [];
   List speciality_list = [];
   List region_list = [];
-  List user_type_list = [];
-  List team_size_list = [];
-  List core_buiness_list = [];
+
+  Map<dynamic, dynamic> speciality_map = {};
+  Map<dynamic, dynamic> region_map = {};
 
   TextEditingController dateinput = TextEditingController();
-  List<String> specialityNames = ['Residential'];
+  List<String> specialityNames = [''];
+  List<String> regionNames = ['North'];
 
   Future<void> fetchPost() async {
-    final response = await http.get(Uri.parse(
-        'https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
+    final response = await http.get(
+        Uri.parse('https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
+
       speciality_list = jsonData['data']['speciality_list'];
+      region_list = jsonData['data']['operating_list'];
 
       print(speciality_list);
+
       List<String> names = speciality_list
           .where((item) => item['name'] != null)
           .map<String>((item) => item['name'])
           .toList();
 
+      List<String> regions = region_list
+          .where((item) => item['name'] != null)
+          .map<String>((item) => item['name'])
+          .toList();
+
+      speciality_map = Map.fromIterable(
+        speciality_list.where(
+            (element) => element['id'] != null && element['name'] != null),
+        key: (element) => element['name']!,
+        value: (element) => element['id']!,
+      );
+
+      region_map = Map.fromIterable(
+        region_list.where(
+            (element) => element['id'] != null && element['name'] != null),
+        key: (element) => element['name']!,
+        value: (element) => element['id']!,
+      );
+
       setState(() {
-        specialityNames = names;
+        speciality_list = names;
+        regionNames = regions;
+        speciality_map = speciality_map;
+        region_map = region_map;
       });
+
+      print("region");
+      print(regionNames);
+      print('region_map is: ');
+      print(region_map);
     } else {
       print('API request failed with status code:');
     }
@@ -140,7 +201,7 @@ class _SignupPageState extends State<SignupPage> {
       'est': est,
       'state': state,
       'speciality': speciality,
-      'region': region,
+      'region': region_id,
       'user_type': user_type,
       'team_size': team_size,
       'core_buisness': core_buisness,
@@ -151,6 +212,14 @@ class _SignupPageState extends State<SignupPage> {
     if (userData.values.any((value) => value == '')) {
       setState(() {
         error = "Please provide all the details";
+      });
+
+      return;
+    }
+
+    if (!isValidEmail(email) || !isValidPhoneNumber((phone))) {
+      setState(() {
+        error = "Please provide valid email and phone number";
       });
 
       return;
@@ -541,30 +610,16 @@ class _SignupPageState extends State<SignupPage> {
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                 ),
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
-                                    border: InputBorder.none,
-                                  ),
-                                  value: speciality,
-                                  isExpanded: true,
-                                  items: specialityNames
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      speciality = newValue!;
-                                    });
+                                child: MultiSelectDialogField(
+                                  items: speciality_list
+                                      .map((e) => MultiSelectItem(e, e))
+                                      .toList(),
+                                  decoration: BoxDecoration(),
+                                  listType: MultiSelectListType.LIST,
+                                  onConfirm: (values) {
+                                    speciality = speciality_map[values.first];
                                   },
+                                  separateSelectedItems: true,
                                 ),
                               ),
                             ]),
@@ -646,13 +701,9 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                   value: region,
                                   isExpanded: true,
-                                  items: <String>[
-                                    "North",
-                                    "East",
-                                    "West",
-                                    "South"
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
+                                  items: regionNames
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(
@@ -664,6 +715,7 @@ class _SignupPageState extends State<SignupPage> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       region = newValue!;
+                                      region_id = region_map[newValue];
                                     });
                                   },
                                 ),
@@ -684,7 +736,7 @@ class _SignupPageState extends State<SignupPage> {
                                   padding: EdgeInsets.only(
                                       left: 5, bottom: 5, top: 5),
                                   child: Text(
-                                    'State',
+                                    'User type',
                                     style: TextStyle(
                                       color: Color(0xFF312E49),
                                       fontSize: 16,

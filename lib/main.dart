@@ -25,11 +25,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<String> getUser() async {
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String id = prefs.getString("userId") ?? "";
-
     return id;
+    
   }
 
   late Future<String> userId;

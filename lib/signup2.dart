@@ -7,45 +7,74 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:hra/social.dart';
+import 'package:hra/signup.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+  Size get preferredSize => Size.fromHeight(150);
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
-        ),
-        child: AppBar(
-          title: Text('Register'),
-          centerTitle: true,
-          backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
-          elevation: 0, // Remove the shadow
-        ),
+    return Container(
+      decoration: BoxDecoration(
+          color: Color(0xFFFF4D4D),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30))),
+      child: AppBar(
+        title: Text('Register'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Color(0xFFFF4D4D),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFA1FF89),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFA1FF89),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Container(
+                        width: 80,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFA1FF89),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ]),
+            )),
       ),
     );
   }
-}
-
-class AppBarClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class SignupPage2 extends StatefulWidget {
@@ -111,7 +140,7 @@ class _SignupPage2State extends State<SignupPage2> {
             "state": widget.userData['state'],
             "speciality": widget.userData['speciality'],
             "operating_region": widget.userData['region'],
-            "user_type": widget.userData['user_type'],
+            "user_type": 1,
             "rera_expiry_date": widget.userData['establishment_date'],
             "total_experience": widget.userData['experience'],
             "password": widget.userData['password'],
@@ -134,10 +163,10 @@ class _SignupPage2State extends State<SignupPage2> {
             ],
             "documents": [
               {
-                "name": 'PAN',
-                "document_number": "naohgeanoe",
-                "document_path": "https://api.com",
-                "document_type": "PAN",
+                "name": widget.docData['doc'],
+                "document_number": widget.docData['doc_no'],
+                "document_path": widget.docData['doc_url'],
+                "document_type": widget.docData['doc'],
                 "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
                 "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
               }
@@ -164,7 +193,6 @@ class _SignupPage2State extends State<SignupPage2> {
               builder: (context) => SocialPage(),
             ));
       }
-
     } else {
       print('API request failed with status code: ${response.statusCode}');
     }
@@ -336,7 +364,13 @@ class _SignupPage2State extends State<SignupPage2> {
                       Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignupPage()),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
