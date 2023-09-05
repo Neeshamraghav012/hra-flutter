@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:hra/signup2.dart';
 import 'dart:math';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -17,9 +19,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFFF4D4D),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))
-      ),
+          color: Color(0xFFFF4D4D),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30))),
       child: AppBar(
         title: Text('Register'),
         centerTitle: true,
@@ -29,46 +32,78 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             preferredSize: Size.fromHeight(40),
             child: Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFF4D4D),
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
-              ),
+                  color: Color(0xFFFF4D4D),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA1FF89),
-                          borderRadius: BorderRadius.circular(20),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Personal Info",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA1FF89),
-                          borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Documents",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Refrences",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             )),
       ),
     );
@@ -76,7 +111,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class SignupPage1 extends StatefulWidget {
-  final Map<String, dynamic> userData; // Add this line
+  final Map<String, dynamic> userData;
 
   SignupPage1({required this.userData});
 
@@ -89,43 +124,86 @@ class _SignupPage1State extends State<SignupPage1> {
   _SignupPage1State({required this.userData});
 
   String doc = 'PAN';
+  String uploaded = "";
+  String? doc_name;
   String doc_no = "";
   String doc_url = "";
   String error = "";
 
-  String selectedState = '';
+  String pan_number = "";
+  String pan_url = "";
 
-  XFile? uploadimage; //variable for choosed file
+  String aadhar_number = "";
+  String aadhar_url = "";
+
+  String rera_number = "";
+  String rera_url = "";
+
+  String profile_url = "";
+
+  XFile? uploadimage;
   final ImagePicker picker = ImagePicker();
   bool isUploading = false;
-  bool uploaded = false;
+  XFile? aadhar_image;
+  XFile? pan_image;
+  XFile? rera_image;
+  XFile? profile_image;
 
-  Future<void> chooseImage() async {
+  Future<void> chooseImage(String doc) async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
-    //set source: ImageSource.camera to get image from camera
+
     setState(() {
-      uploadimage = choosedimage;
+      if (doc == 'PAN') {
+        pan_image = choosedimage;
+      } else if (doc == 'Aadhar') {
+        aadhar_image = choosedimage;
+      } else if (doc == 'RERA') {
+        rera_image = choosedimage;
+      } else {
+        profile_image = choosedimage;
+      }
     });
   }
 
-  Future<void> scanImage() async {
+  Future<void> scanImage(String doc) async {
     var choosedimage = await picker.pickImage(source: ImageSource.camera);
-    //set source: ImageSource.camera to get image from camera
-    setState(() {
-      uploadimage = choosedimage;
-    });
-  }
 
-  Future<void> p() async {
-    print("user datas is: " + this.userData['user_type']);
+    setState(() {
+      if (doc == 'PAN') {
+        pan_image = choosedimage;
+      } else if (doc == 'Aadhar') {
+        aadhar_image = choosedimage;
+      } else if (doc == 'RERA') {
+        rera_image = choosedimage;
+      } else {
+        profile_image = choosedimage;
+      }
+    });
   }
 
   Future<void> next() async {
     Map<String, dynamic> docData = {
-      "doc": doc,
-      "doc_no": doc_no,
-      "doc_url": doc_url,
+      "aadhar_number": aadhar_number,
+      "aadhar_url": aadhar_url,
+      "profile_url": profile_url,
+      "pan_url": pan_url,
+      "pan_number": pan_number,
+      "rera_number": rera_number,
+      "rera_url": rera_url,
     };
+
+    if (profile_url == '' ||
+        pan_url == '' ||
+        aadhar_url == '' ||
+        rera_url == '' ||
+        pan_number == '' ||
+        aadhar_number == '' ||
+        rera_number == '') {
+      setState(() {
+        error = "Please provide all the details";
+      });
+      return;
+    }
 
     Navigator.push(
       context,
@@ -138,7 +216,7 @@ class _SignupPage1State extends State<SignupPage1> {
   String generateRandomName() {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final length = 10; 
+    final length = 10;
 
     return String.fromCharCodes(
       List.generate(
@@ -146,13 +224,43 @@ class _SignupPage1State extends State<SignupPage1> {
     );
   }
 
-  Future<void> uploadImage() async {
+  Future<void> uploadImage(String doc) async {
+    setState(() {
+      isUploading = true;
+    });
     try {
-      setState(() {
-        isUploading = true; 
-      });
+      XFile? selectedImage;
 
-      List<int> imageBytes = File(uploadimage!.path).readAsBytesSync();
+      if (doc == 'PAN') {
+        if (pan_image == null) {
+          error = "Please select an image";
+          return;
+        }
+        selectedImage = pan_image;
+      } else if (doc == 'Aadhar') {
+        if (aadhar_image == null) {
+          error = "Please select an image";
+          return;
+        }
+        selectedImage = aadhar_image;
+      } else if (doc == 'RERA') {
+        if (rera_image == null) {
+          error = "Please select an image";
+          return;
+        }
+        selectedImage = rera_image;
+      } else if (doc == 'Profile') {
+        if (profile_image == null) {
+          error = "Please select an image";
+          return;
+        }
+        selectedImage = profile_image;
+      } else {
+        error = "Unknown document type";
+        return;
+      }
+
+      List<int> imageBytes = File(selectedImage!.path).readAsBytesSync();
 
       final request = http.MultipartRequest(
         'POST',
@@ -178,10 +286,20 @@ class _SignupPage1State extends State<SignupPage1> {
       final jsonResponse = json.decode(responseString);
 
       if (response.statusCode == 200) {
-        print('File uploaded successfully');
-        print("secure url is: " + jsonResponse['secure_url']);
         setState(() {
-          doc_url = jsonResponse['secure_url'];
+          if (doc == 'PAN') {
+            pan_url = jsonResponse['secure_url'];
+            uploaded = 'PAN';
+          } else if (doc == 'Aadhar') {
+            aadhar_url = jsonResponse['secure_url'];
+            uploaded = 'Aadhar';
+          } else if (doc == 'RERA') {
+            rera_url = jsonResponse['secure_url'];
+            uploaded = 'RERA';
+          } else {
+            profile_url = jsonResponse['secure_url'];
+            uploaded = 'Profile';
+          }
         });
       } else {
         print('File upload failed');
@@ -191,14 +309,12 @@ class _SignupPage1State extends State<SignupPage1> {
     } finally {
       setState(() {
         isUploading = false;
-        uploaded = true; // Reset the loading indicator
       });
     }
   }
 
   @override
   void initState() {
-    p();
     super.initState();
   }
 
@@ -324,36 +440,87 @@ class _SignupPage1State extends State<SignupPage1> {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Column(children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              '${doc} number',
-                              style: TextStyle(
-                                color: Color(0xFF312E49),
-                                fontSize: 16,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
-                              ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              doc = "Profile";
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: doc == "Profile"
+                                ? Color(0xFFA1FF89)
+                                : Color(0xFFD3DFE7),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                          ),
+                          child: Text(
+                            'Profile Picture',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                        TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your ${doc}'),
-                          onChanged: (value) {
-                            setState(() {
-                              doc_no = value;
-                            });
-                          },
-                        ),
-                      ]),
+                      ),
                     ),
+                    doc != 'Profile'
+                        ? Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '${doc} number',
+                                    style: TextStyle(
+                                      color: Color(0xFF312E49),
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TextField(
+                                inputFormatters: doc == 'Aadhaar'
+                                    ? [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[0-9]'))
+                                      ]
+                                    : [], // Only allow numeric values if doc is 'Aadhaar'
+                                keyboardType: doc == 'Aadhaar'
+                                    ? TextInputType.number
+                                    : TextInputType.text,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Your ${doc}'),
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (doc == 'PAN') {
+                                      pan_number = value;
+                                    } else if (doc == 'Aadhar') {
+                                      aadhar_number = value;
+                                    } else if (doc == 'RERA') {
+                                      rera_number = value;
+                                    }
+                                  });
+                                },
+                              ),
+                            ]),
+                          )
+                        : Text(''),
                     Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
@@ -369,17 +536,56 @@ class _SignupPage1State extends State<SignupPage1> {
                       ),
                     ),
                     Container(
-                      child: uploadimage == null
-                          ? Container()
-                          : Container(
+                      child: doc == 'PAN' && pan_image != null
+                          ? Container(
                               child: SizedBox(
                                 height: 150,
                                 width: 200,
                                 child: Image.file(
-                                  File(uploadimage!.path),
+                                  File(pan_image!.path),
                                 ),
                               ),
-                            ),
+                            )
+                          : Container(),
+                    ),
+                    Container(
+                      child: doc == 'RERA' && rera_image != null
+                          ? Container(
+                              child: SizedBox(
+                                height: 150,
+                                width: 200,
+                                child: Image.file(
+                                  File(rera_image!.path),
+                                ),
+                              ),
+                            )
+                          : Container(),
+                    ),
+                    Container(
+                      child: doc == 'Aadhar' && aadhar_image != null
+                          ? Container(
+                              child: SizedBox(
+                                height: 150,
+                                width: 200,
+                                child: Image.file(
+                                  File(aadhar_image!.path),
+                                ),
+                              ),
+                            )
+                          : Container(),
+                    ),
+                    Container(
+                      child: doc == 'Profile' && profile_image != null
+                          ? Container(
+                              child: SizedBox(
+                                height: 150,
+                                width: 200,
+                                child: Image.file(
+                                  File(profile_image!.path),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 20, top: 20),
@@ -387,17 +593,44 @@ class _SignupPage1State extends State<SignupPage1> {
                         children: [
                           Expanded(
                             child: Container(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  scanImage(); // call choose image function
-                                },
-                                icon: Icon(Icons.camera),
-                                label: Text("Scan now"),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(
-                                      0xFF1E77CC), // Set the background color here
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
+                              child: SizedBox(
+                                height: 150,
+                                width: 200,
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  child: DottedBorder(
+                                    color: Colors.blueGrey,
+                                    strokeWidth: 3,
+                                    dashPattern: [10, 6],
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        scanImage(doc);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary:
+                                            Color.fromARGB(255, 249, 250, 250),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 8),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'images/camera.jpeg',
+                                            height: 30,
+                                            width: 80,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            "Scan now",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -407,23 +640,47 @@ class _SignupPage1State extends State<SignupPage1> {
                           ),
                           Expanded(
                             child: Container(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  chooseImage(); // call choose image function
-                                },
-                                icon: Icon(Icons.folder_open),
-                                label: Text("Browse files"),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(
-                                      0xFF1E77CC), // Set the background color here
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
+                              height: 150,
+                              width: 150,
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                child: DottedBorder(
+                                  color: Colors.blueGrey,
+                                  strokeWidth: 3,
+                                  dashPattern: [10, 6],
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      chooseImage(doc);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary:
+                                          Color.fromARGB(255, 249, 250, 250),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'images/browse.jpeg',
+                                          height: 30,
+                                          width: 80,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          "Browse files",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-
-                          // Add some spacing
                           SizedBox(
                             width: 20,
                           ),
@@ -433,28 +690,24 @@ class _SignupPage1State extends State<SignupPage1> {
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: Container(
-                        child: uploaded
+                        child: uploaded != null && uploaded == doc
                             ? Text("Image Uploaded!")
-                            : uploadimage == null
-                                ? SizedBox()
-                                : isUploading
-                                    ? Padding(
-                                        padding: EdgeInsets.all(4.0),
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : ElevatedButton.icon(
-                                        onPressed: () {
-                                          uploadImage();
-                                        },
-                                        icon: Icon(Icons.file_upload),
-                                        label: Text("UPLOAD IMAGE"),
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(
-                                              0xFF3C3C3C), // Set the background color here
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
-                                        ),
-                                      ),
+                            : isUploading
+                                ? CircularProgressIndicator()
+                                : ElevatedButton.icon(
+                                    onPressed: () {
+                                      if (doc != null) {
+                                        uploadImage(doc);
+                                      }
+                                    },
+                                    icon: Icon(Icons.file_upload),
+                                    label: Text("UPLOAD IMAGE"),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Color(0xFF3C3C3C),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                    ),
+                                  ),
                       ),
                     ),
                     Padding(
@@ -465,14 +718,11 @@ class _SignupPage1State extends State<SignupPage1> {
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                30), // Adjust the value for the desired corner radius
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           backgroundColor: Color(0xFFFF4D4D),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 40,
-                              vertical:
-                                  15), // Change the color to your desired color
+                              horizontal: 40, vertical: 15),
                         ),
                         child: Text(
                           'Next',

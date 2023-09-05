@@ -35,42 +35,73 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20))),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA1FF89),
-                          borderRadius: BorderRadius.circular(20),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Personal Info",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA1FF89),
-                          borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Documents",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: 80,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA1FF89),
-                          borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Refrences",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             )),
       ),
     );
@@ -163,10 +194,34 @@ class _SignupPage2State extends State<SignupPage2> {
             ],
             "documents": [
               {
-                "name": widget.docData['doc'],
-                "document_number": widget.docData['doc_no'],
-                "document_path": widget.docData['doc_url'],
-                "document_type": widget.docData['doc'],
+                "name": "Profile Picture",
+                "document_number": "profile_picture",
+                "document_path": widget.docData['profile_url'],
+                "document_type": "Profile Picture",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+              },
+                            {
+                "name": "Aadhar",
+                "document_number": widget.docData['aadhar_number'],
+                "document_path": widget.docData['aadhar_url'],
+                "document_type": "Aadhar",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+              },
+                            {
+                "name": "PAN",
+                "document_number": widget.docData['pan_number'],
+                "document_path": widget.docData['pan_url'],
+                "document_type": "PAN",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+              },
+                            {
+                "name": "RERA",
+                "document_number": widget.docData['rera_number'],
+                "document_path": widget.docData['rera_url'],
+                "document_type": "RERA",
                 "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
                 "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
               }

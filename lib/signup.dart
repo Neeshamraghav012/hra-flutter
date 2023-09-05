@@ -6,6 +6,7 @@ import 'package:hra/signup1.dart';
 import 'package:hra/login.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -33,48 +34,73 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20))),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Container(
-                          width: 80,
-                          height: 15,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFA1FF89),
-                            borderRadius: BorderRadius.circular(20),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Personal Info",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA1FF89),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Container(
-                          width: 80,
-                          height: 15,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Documents",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Container(
-                          width: 80,
-                          height: 15,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Refrences",
+                          style: TextStyle(color: Colors.white),
+                        ), // Add your label text here
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            width: 120,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             )),
       ),
     );
@@ -116,12 +142,13 @@ class _SignupPageState extends State<SignupPage> {
   String city = "";
   String experience = "";
   String est = "";
-  String state = "Haryana";
-  String speciality = "Residential";
-  String region = "North";
-  String user_type = "Company";
-  String team_size = "1-5";
-  String core_buisness = "Primary";
+  String? state;
+  String? speciality;
+  String? region;
+  String? user_type;
+  String user_type_id = "2";
+  String? team_size;
+  String? core_buisness;
   String establishment_date = "";
   String password = "";
   String error = "";
@@ -133,14 +160,20 @@ class _SignupPageState extends State<SignupPage> {
 
   Map<dynamic, dynamic> speciality_map = {};
   Map<dynamic, dynamic> region_map = {};
+  Map<dynamic, dynamic> user_map = {
+    "Individual": "1",
+    "Company": "2",
+    "Partnership": "3",
+    "Proprietorship": "4"
+  };
 
   TextEditingController dateinput = TextEditingController();
   List<String> specialityNames = [''];
   List<String> regionNames = ['North'];
 
   Future<void> fetchPost() async {
-    final response = await http.get(
-        Uri.parse('https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
+    final response = await http.get(Uri.parse(
+        'https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -209,12 +242,26 @@ class _SignupPageState extends State<SignupPage> {
       'password': password,
     };
 
-    if (userData.values.any((value) => value == '')) {
-      setState(() {
-        error = "Please provide all the details";
-      });
+    
+    if (user_type_id != '1') {
+      if (userData.values.any((value) => value == '')) {
+        setState(() {
+          error = "Please provide all the details";
+        });
 
-      return;
+        return;
+      }
+    }
+    else if (userData['username'] == '' || userData['email'] == '' || userData['address'] == '' || userData['phone'] == '' || userData['city'] == ''
+    || userData['experience'] == '' || userData['state'] == '' || userData['speciality'] == '' || userData['region'] == '' || userData['password'] == ''
+    || userData['establishment_date'] == '' || userData['user_type'] == ''){
+
+        setState(() {
+          error = "Please provide all details";
+        });
+
+        return;
+
     }
 
     if (!isValidEmail(email) || !isValidPhoneNumber((phone))) {
@@ -233,9 +280,9 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void initState() {
+    super.initState();
     dateinput.text = "";
     fetchPost();
-    super.initState();
   }
 
   @override
@@ -323,6 +370,10 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         ),
                         TextField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                          ],
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Your phone number'),
@@ -482,6 +533,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
+                                height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                 ),
@@ -490,6 +542,7 @@ class _SignupPageState extends State<SignupPage> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16.0, vertical: 8),
                                     border: InputBorder.none,
+                                    hintText: 'select',
                                   ),
                                   value: state,
                                   isExpanded: true,
@@ -573,6 +626,11 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               TextField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]'))
+                                ],
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: 'Years of experience',
@@ -611,17 +669,15 @@ class _SignupPageState extends State<SignupPage> {
                                   border: Border.all(color: Colors.grey),
                                 ),
                                 child: MultiSelectDialogField(
-                                  items: speciality_list
-                                      .map((e) => MultiSelectItem(e, e))
-                                      .toList(),
-                                  decoration: BoxDecoration(),
-                                  listType: MultiSelectListType.LIST,
-                                  onConfirm: (values) {
-                                    speciality = speciality_map[values.first];
-                                  },
-                                  separateSelectedItems: true,
-                                ),
-                              ),
+                                    items: speciality_list
+                                        .map((e) => MultiSelectItem(e, e))
+                                        .toList(),
+                                    decoration: BoxDecoration(),
+                                    listType: MultiSelectListType.LIST,
+                                    onConfirm: (values) {
+                                      speciality = speciality_map[values.first];
+                                    }),
+                              )
                             ]),
                           ),
                         ),
@@ -645,7 +701,7 @@ class _SignupPageState extends State<SignupPage> {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
+                              firstDate: DateTime.now(),
                               lastDate: DateTime(2101));
 
                           if (pickedDate != null) {
@@ -690,6 +746,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
+                                height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                 ),
@@ -698,6 +755,7 @@ class _SignupPageState extends State<SignupPage> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16.0, vertical: 8),
                                     border: InputBorder.none,
+                                    hintText: 'select region',
                                   ),
                                   value: region,
                                   isExpanded: true,
@@ -747,6 +805,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
+                                height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                 ),
@@ -755,6 +814,7 @@ class _SignupPageState extends State<SignupPage> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16.0, vertical: 8),
                                     border: InputBorder.none,
+                                    hintText: 'Company',
                                   ),
                                   value: user_type,
                                   isExpanded: true,
@@ -776,6 +836,7 @@ class _SignupPageState extends State<SignupPage> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       user_type = newValue!;
+                                      user_type_id = user_map[newValue];
                                     });
                                   },
                                 ),
@@ -785,49 +846,17 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Column(children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Name of Establishment',
-                              style: TextStyle(
-                                color: Color(0xFF312E49),
-                                fontSize: 16,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Name of Establishment'),
-                          onChanged: (value) {
-                            setState(() {
-                              est = value;
-                            });
-                          },
-                        ),
-                      ]),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
+                    user_type_id != '1'
+                        ? Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: Column(children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 5, bottom: 5, top: 5),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
                                   child: Text(
-                                    'Team size',
+                                    'Name of Establishment',
                                     style: TextStyle(
                                       color: Color(0xFF312E49),
                                       fontSize: 16,
@@ -837,104 +866,145 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                ),
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
-                                    border: InputBorder.none,
-                                  ),
-                                  value: team_size,
-                                  isExpanded: true,
-                                  items: <String>[
-                                    "1-5",
-                                    "6-10",
-                                    "11-20",
-                                    "20 Above"
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      team_size = newValue!;
-                                    });
-                                  },
-                                ),
+                              TextField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Name of Establishment'),
+                                onChanged: (value) {
+                                  setState(() {
+                                    est = value;
+                                  });
+                                },
                               ),
                             ]),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Column(children: [
-                              Align(
-                                alignment: Alignment.topLeft,
+                          )
+                        : Text(''),
+                    user_type_id != '1'
+                        ? Row(
+                            children: [
+                              Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 5, bottom: 5, top: 5),
-                                  child: Text(
-                                    'Core Business',
-                                    style: TextStyle(
-                                      color: Color(0xFF312E49),
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                ),
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
-                                    border: InputBorder.none,
-                                  ),
-                                  value: core_buisness,
-                                  isExpanded: true,
-                                  items: <String>[
-                                    "Primary",
-                                    "Secondary",
-                                    "Lease",
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(fontSize: 12),
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 5, bottom: 5, top: 5),
+                                        child: Text(
+                                          'Team size',
+                                          style: TextStyle(
+                                            color: Color(0xFF312E49),
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
                                       ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      core_buisness = newValue!;
-                                    });
-                                  },
+                                    ),
+                                    Container(
+                                      height: 57,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 16.0, vertical: 8),
+                                          border: InputBorder.none,
+                                          hintText: 'size',
+                                        ),
+                                        value: team_size,
+                                        isExpanded: true,
+                                        items: <String>[
+                                          "1-5",
+                                          "6-10",
+                                          "11-20",
+                                          "20 Above"
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(
+                                              value,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            team_size = newValue!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ]),
                                 ),
                               ),
-                            ]),
-                          ),
-                        ),
-                      ],
-                    ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 5, bottom: 5, top: 5),
+                                        child: Text(
+                                          'Core Business',
+                                          style: TextStyle(
+                                            color: Color(0xFF312E49),
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 57,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 16.0, vertical: 8),
+                                          border: InputBorder.none,
+                                          hintText: 'Business type',
+                                        ),
+                                        value: core_buisness,
+                                        isExpanded: true,
+                                        items: <String>[
+                                          "Primary",
+                                          "Secondary",
+                                          "Lease",
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(
+                                              value,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            core_buisness = newValue!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(''),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(

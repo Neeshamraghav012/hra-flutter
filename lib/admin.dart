@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:hra/verify-payment.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -47,7 +52,79 @@ class ImageClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
+class References {
+  final String? name;
+  final String? email;
+  final String? phone;
+
+  References({this.email, this.name, this.phone});
+}
+
+class UserData {
+  String? username;
+  String? email;
+  String? phone;
+  String? address;
+  String? city;
+  String? State;
+  String? Speciality;
+  int? experience;
+  String? rera_exp;
+  String? operating_region;
+  int? user_type;
+  String? org;
+  String? core_business;
+  String? team_size;
+  String? aadhar_number;
+  String? pan_number;
+  String? rera_number;
+  String? aadhar_url;
+  String? rera_url;
+  String? pan_url;
+  String? profile_url;
+  bool is_payment_verified;
+  bool is_profile_activated;
+  String? ref_name;
+  String? ref_phone;
+  String? ref_email;
+
+  UserData({
+    this.email = '',
+    this.username = '',
+    this.phone = '',
+    this.address = '',
+    this.city = '',
+    this.State = '',
+    this.Speciality = '',
+    this.experience = 2,
+    this.rera_exp = '',
+    this.operating_region = '',
+    this.user_type = 1,
+    this.org = '',
+    this.core_business = '',
+    this.team_size = '',
+    this.aadhar_number = '',
+    this.pan_number = '',
+    this.rera_number = '',
+    this.aadhar_url = '',
+    this.rera_url = '',
+    this.pan_url = '',
+    this.profile_url = '',
+    this.is_payment_verified = false,
+    this.is_profile_activated = false,
+    this.ref_name = '',
+    this.ref_phone = '',
+    this.ref_email = '',
+  });
+}
+
 class Frame3875 extends StatefulWidget {
+  final String user_id;
+
+  Frame3875({
+    required this.user_id,
+  });
+
   @override
   State<Frame3875> createState() => _Frame3875State();
 }
@@ -56,9 +133,127 @@ class _Frame3875State extends State<Frame3875>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  UserData userData = UserData();
+
+  Map<dynamic, dynamic> user_type_map = {
+    1: "Individual",
+    2: "Company",
+    3: "Partnership",
+    4: "Proprietorship"
+  };
+
+  Map<dynamic, dynamic> speciality_map = {};
+  Map<dynamic, dynamic> region_map = {};
+  bool loading = false;
+  bool verify_loading = false;
+  bool payment_loading = false;
+
+  Future<void> fetchUsers() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.get(Uri.parse(
+        'http://10.0.2.2:5000/user/api/detail-user?user_id=${widget.user_id}'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      List<dynamic> apiData = jsonData['data'];
+
+      Map<String, dynamic> data = {};
+      data = apiData[0];
+      print(apiData[0]);
+
+      await initializeDateFormatting('en', null);
+
+      final inputString = data['rera_exp'];
+
+      final inputFormat = DateFormat('E, d MMM yyyy HH:mm:ss zzz', 'en');
+      final outputFormat = DateFormat('E, d MMM yyyy');
+
+      final inputDate = inputFormat.parse(inputString);
+      final formattedDate = outputFormat.format(inputDate);
+      print(formattedDate);
+
+      setState(() {
+        userData = UserData(
+            username: data['username'],
+            email: data['email'],
+            phone: data['phone'],
+            experience: data['experience'],
+            Speciality: data['speciality'],
+            rera_exp: formattedDate,
+            operating_region: data['operating_region'],
+            user_type: data['user_type'],
+            core_business: data['core_business'],
+            team_size: data['team_size'],
+            org: data['org'],
+            is_payment_verified: data['is_payment_verified'],
+            is_profile_activated: data['is_profile_activated'],
+            aadhar_number: data['aadhar_number'],
+            aadhar_url: data['aadhar_url'],
+            pan_number: data['pan_number'],
+            pan_url: data['pan_url'],
+            rera_number: data['rera_number'],
+            rera_url: data['rera_url'],
+            profile_url: data['profile_url'],
+            ref_name: data['ref_name'],
+            ref_email: data['ref_email'],
+            ref_phone: data['ref_contact']);
+        loading = false;
+      });
+    } else {
+      print('API request failed with status code:');
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<void> activateUser() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.get(Uri.parse(
+        'http://10.0.2.2:5000/user/api/activate_user_profile?user_id=${widget.user_id}'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+
+      setState(() {
+        loading = false;
+        if (jsonData['status']) {
+          userData.is_profile_activated = true;
+        }
+      });
+    } else {
+      print('API request failed with status code:');
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<void> verifyPayment() async {
+    final response = await http.get(Uri.parse(
+        'http://10.0.2.2:5000/user/api/verify-payment?user_id=${widget.user_id}'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+
+      if (jsonData['status']) {
+        userData.is_payment_verified = true;
+      }
+    } else {
+      print('API request failed with status code:');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    fetchUsers();
     _tabController = TabController(length: 5, vsync: this);
   }
 
@@ -68,29 +263,111 @@ class _Frame3875State extends State<Frame3875>
     super.dispose();
   }
 
+  // Verify Dialog
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirmation'),
-          content: Text('Are you sure you want to verify?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                // Perform the verification action here
-                Navigator.of(context).pop();
-              },
-              child: Text('Confirm'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              
-              child: Text('Cancel'),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('Are you sure you want to verify?'),
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 110,
+                      height: 30,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                        ),
+                        child: Text('Cancel'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      width: 110,
+                      height: 30, // Add some spacing between the buttons
+                      child: verify_loading
+                          ? CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () {
+                                if (userData.is_profile_activated) {
+                                  verifyPayment();
+                                } else {
+                                  activateUser();
+                                }
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red, // Set the background color
+                              ),
+                              child: Text('Confirm'),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Verify Image Dialog
+  void _showImageDialog(BuildContext context, List<String> imageUrls) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Document Verification'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                width: 110,
+                height: 110,
+                child: Image.asset(
+                  'images/icon.png',
+                  width: 400,
+                  height: 400,
+                  key: UniqueKey(),
+                ),
+              ),
+              SizedBox(width: 10),
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 110,
+                      height: 30,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                        ),
+                        child: Text('Done'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -125,160 +402,322 @@ class _Frame3875State extends State<Frame3875>
                 ),
               ),
             ),
+            Container(
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Container(
+                  width: 150,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFA1FF89),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (userData.is_profile_activated) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentPage(
+                                  user_id: widget.user_id,
+                                ),
+                              ));
+                        }
+                        else{
+                          _showConfirmationDialog(context);
+
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFA1FF89),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        minimumSize: Size(120, 40),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 2, top: 2),
+                        child: userData.is_profile_activated &&
+                                userData.is_payment_verified
+                            ? Expanded(
+                                child: Text(
+                                  "Verified Member",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              )
+                            : userData.is_profile_activated
+                                ? Expanded(
+                                    child: Text(
+                                      "Verify Payment",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: Text(
+                                      'Verify',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             DefaultTabController(
               length: 4,
               child: Expanded(
                 child: Column(
                   children: <Widget>[
-                    Flexible(
-                      child: Container(
-                        child: TabBar(
-                            labelColor: Colors.black,
-                            labelPadding: EdgeInsets.symmetric(
-                                horizontal: 8.0), // Adjust tab padding
-                            labelStyle: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.black,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w700,
-                            ), // Adjust label font size
-                            indicatorSize: TabBarIndicatorSize.label,
-                            tabs: [
-                              Tab(text: "Personal Info"),
-                              Tab(text: "Organisation"),
-                              Tab(text: "Documents"),
-                              Tab(text: "References"),
-                            ]),
-                      ),
-                    ),
-                    Container(
-                      //Add this to give height
-                      height: MediaQuery.of(context).size.height - 300,
-                      child: TabBarView(children: [
-                        SingleChildScrollView(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Info(label: "Full name", val: "Neesham Raghav"),
-                                Info(
-                                    label: "Email",
-                                    val: "neeshamraghav0@gmail.com"),
-                                Info(
-                                  label: "Mobile number",
-                                  val: "+917206126235",
-                                ),
-                                Info(
-                                    label: "Address",
-                                    val: "BPTP Resorts, Sector 75"),
-                                Infocolumn(
-                                  label1: "City",
-                                  val1: "City name",
-                                  label2: "State",
-                                  val2: "Delhi",
-                                ),
-                                Infocolumn(
-                                    label1: "Speciality",
-                                    val1: "Investment deals",
-                                    label2: "Total experience",
-                                    val2: "10"),
-                                Infocolumn(
-                                    label1: "RERA Expiry Date",
-                                    val1: "10-06-2025",
-                                    label2: "Operating region",
-                                    val2: "North"),
-                              ],
+                    loading
+                        ? Expanded(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Flexible(
+                            child: Container(
+                              child: TabBar(
+                                  labelColor: Colors.black,
+                                  labelPadding:
+                                      EdgeInsets.symmetric(horizontal: 8.0),
+                                  labelStyle: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.black,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w700,
+                                  ), // Adjust label font size
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  tabs: [
+                                    Tab(text: "Personal Info"),
+                                    Tab(text: "Organisation"),
+                                    Tab(text: "Documents"),
+                                    Tab(text: "References"),
+                                  ]),
                             ),
                           ),
-                        ),
-
-                        // Organization Tab
-                        Container(
-                          child: Column(children: [
-                            Info(
-                              label: "User type",
-                              val: "Individual",
-                            ),
-                          ]),
-                        ),
-
-                        // Document tab
-                        Container(
-                          child: Column(children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 30, top: 10),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  'Aadhar Card',
-                                  style: TextStyle(
-                                    color: Color(0xFF212121),
-                                    fontSize: 12,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.50,
-                                    letterSpacing: 0.25,
+                    Container(
+                      height: MediaQuery.of(context).size.height - 300,
+                      child: loading
+                          ? Container()
+                          : TabBarView(children: [
+                              SingleChildScrollView(
+                                // Personal Info
+                                child: Container(
+                                  child: Column(
+                                    children: [
+                                      Info(
+                                          label: "Full name",
+                                          val: userData.username!),
+                                      Info(
+                                          label: "Email", val: userData.email!),
+                                      Info(
+                                        label: "Mobile number",
+                                        val: userData.phone!,
+                                      ),
+                                      userData.address != ''
+                                          ? Info(
+                                              label: "Address",
+                                              val: userData.address!)
+                                          : Container(),
+                                      userData.city != ''
+                                          ? Infocolumn(
+                                              label1: "City",
+                                              val1: userData.city!,
+                                              label2: "State",
+                                              val2: userData.State!,
+                                            )
+                                          : Container(),
+                                      userData.Speciality != ''
+                                          ? Infocolumn(
+                                              label1: "Speciality",
+                                              val1: userData.Speciality!,
+                                              label2: "Total experience",
+                                              val2: userData.experience!)
+                                          : Container(),
+                                      userData.rera_exp != ''
+                                          ? Infocolumn(
+                                              label1: "RERA Expiry Date",
+                                              val1: userData.rera_exp!,
+                                              label2: "Operating region",
+                                              val2: userData.operating_region!)
+                                          : Container(),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            Info(label: "PAN Number", val: "HGTF1638HDK"),
-                            ElevatedButton.icon(
-                              onPressed: () {},
-                              icon: Icon(Icons.file_download),
-                              label: Text("DOWNLOAD IMAGE"),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(
-                                    0xFF3C3C3C), // Set the background color here
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                              ),
-                            ),
-                          ]),
-                        ),
 
-                        // Reference tab
-                        Container(
-                          child: Column(children: [
-                            Info(
-                                label: "Reference name",
-                                val: "Leslie Alexander"),
-                            Info(
-                                label: "Reference contact number",
-                                val: "(316) 555-0116"),
-                            Info(
-                                label: "Reference Email",
-                                val: "abc@domain.com"),
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    _showConfirmationDialog(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          30), // Adjust the value for the desired corner radius
-                                    ),
-                                    backgroundColor: Color(0xFF2A2A2A),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 40,
-                                        vertical:
-                                            15), // Change the color to your desired color
-                                  ),
-                                  child: Text(
-                                    'Verify',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white, // Text color
-                                    ),
-                                  ),
-                                ),
+                              // Organization Tab
+                              Container(
+                                child: Column(children: [
+                                  userData.user_type != null
+                                      ? Info(
+                                          label: "User type",
+                                          val:
+                                              user_type_map[userData.user_type!]
+                                                  .toString(),
+                                        )
+                                      : Container(),
+                                  userData.user_type != 1 &&
+                                          userData.org != null
+                                      ? Info(
+                                          label: "Establishment Name",
+                                          val: userData.org!,
+                                        )
+                                      : Container(),
+                                  userData.user_type != 1 &&
+                                          userData.team_size != null
+                                      ? Info(
+                                          label: "Team Size",
+                                          val: userData.team_size!,
+                                        )
+                                      : Container(),
+                                  userData.user_type != 1 &&
+                                          userData.core_business != null
+                                      ? Info(
+                                          label: "Core Business",
+                                          val: userData.core_business!,
+                                        )
+                                      : Container(),
+                                ]),
                               ),
-                            )
-                          ]),
-                        ),
-                      ]),
+
+                              // Document tab
+                              Container(
+                                child: Column(children: [
+                                  userData.pan_number != ''
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 30, top: 10),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              'PAN Card',
+                                              style: TextStyle(
+                                                color: Color(0xFF212121),
+                                                fontSize: 12,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.50,
+                                                letterSpacing: 0.25,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                  userData.pan_number != ''
+                                      ? Info(
+                                          label: "PAN Number",
+                                          val: userData.pan_number!)
+                                      : Container(),
+                                  userData.aadhar_number != ''
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 30, top: 10),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              'Aadhar Card',
+                                              style: TextStyle(
+                                                color: Color(0xFF212121),
+                                                fontSize: 12,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.50,
+                                                letterSpacing: 0.25,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                  userData.aadhar_number != ''
+                                      ? Info(
+                                          label: "Aadhar Number",
+                                          val: userData.aadhar_number!)
+                                      : Container(),
+                                  userData.rera_number != ''
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 30, top: 10),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              'RERA',
+                                              style: TextStyle(
+                                                color: Color(0xFF212121),
+                                                fontSize: 12,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.50,
+                                                letterSpacing: 0.25,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                  userData.rera_number != ''
+                                      ? Info(
+                                          label: "RERA Number",
+                                          val: userData.rera_number!)
+                                      : Container(),
+                                  userData.aadhar_url != ''
+                                      ? ElevatedButton.icon(
+                                          onPressed: () {
+                                            _showImageDialog(context, [
+                                              userData.aadhar_url!,
+                                              userData.pan_url!,
+                                              userData.rera_url!
+                                            ]);
+                                          },
+                                          icon: Icon(Icons.file_download),
+                                          label: Text("Verify Documents"),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Color(0xFF3C3C3C),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 8),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 40),
+                                            child: Center(
+                                                child: Text(
+                                                    "Documents are not provided")),
+                                          ),
+                                        ),
+                                ]),
+                              ),
+
+                              // Reference tab
+                              Container(
+                                child: Column(children: [
+                                  userData.ref_name != ''
+                                      ? Info(
+                                          label: "Reference name",
+                                          val: "Leslie Alexander")
+                                      : Container(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 40),
+                                            child: Center(
+                                                child: Text(
+                                                    "References are not provided.")),
+                                          ),
+                                        ),
+                                  userData.ref_phone != ''
+                                      ? Info(
+                                          label: "Reference contact number",
+                                          val: "(316) 555-0116")
+                                      : Container(),
+                                  userData.ref_email != ''
+                                      ? Info(
+                                          label: "Reference Email",
+                                          val: "abc@domain.com")
+                                      : Container(),
+                                ]),
+                              ),
+                            ]),
                     ),
                   ],
                 ),
@@ -293,10 +732,10 @@ class _Frame3875State extends State<Frame3875>
 
 class Infocolumn extends StatelessWidget {
   final String label1;
-  final String val1;
+  final dynamic val1;
 
   final String label2;
-  final String val2;
+  final dynamic val2;
 
   const Infocolumn({
     Key? key,
@@ -416,7 +855,7 @@ class Infocolumn extends StatelessWidget {
 
 class Info extends StatelessWidget {
   final String label;
-  final String val;
+  final dynamic val;
 
   const Info({
     Key? key,

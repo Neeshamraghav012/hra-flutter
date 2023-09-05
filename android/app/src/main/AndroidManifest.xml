@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hra.www">
+    package="com.example.hra">
     <uses-permission android:name="android.permission.INTERNET"/>
 
    <application
-        android:label="hra"
+        android:label="HRA"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

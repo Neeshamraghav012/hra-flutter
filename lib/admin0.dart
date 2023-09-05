@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hra/admin.dart';
-import 'package:hra/home.dart';
-import 'package:hra/main.dart';
-import 'package:hra/social.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:hra/login.dart';
 
 class Admin extends StatefulWidget {
   final String title;
@@ -13,166 +13,248 @@ class Admin extends StatefulWidget {
   State<Admin> createState() => _AdminState();
 }
 
-class _AdminState extends State<Admin> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          Icon(
-            Icons.notifications_active,
-            size: 30,
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Icon(
-            Icons.account_circle_rounded,
-            size: 30,
-          ),
-        ],
-        title: Text(widget.title),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.all(0),
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ), //BoxDecoration
-              child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(color: Colors.white),
-                accountName: Text(
-                  "Raghavendra Maram",
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                ),
-                accountEmail: Text(
-                  "raghu@squareselect.in",
-                  style: TextStyle(color: Colors.black),
-                ),
-                currentAccountPictureSize: Size.square(50),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('images/icon.png'),
-                ), //circleAvatar
-              ), //UserAccountDrawerHeader
-            ), //DrawerHeader
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text(' Dashboard '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text(' My Profile '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.network_locked),
-              title: const Text(' Network Members '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bar_chart_sharp),
-              title: const Text(' Add Events '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.image),
-              title: const Text(' Add Images '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.dock),
-              title: const Text(' Add Brochures '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.panorama_horizontal_select),
-              title: const Text(' Add Training Material '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.article),
-              title: const Text(' Add Articles '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
+class UserData {
+  final String id;
+  final String username;
+  String? establishment;
 
-            ListTile(
-              leading: const Icon(Icons.branding_watermark),
-              title: const Text(' Add Banners '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.help),
-              title: const Text(' Help '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('LogOut'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SocialPage()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Column(children: [
-        Profiles(
-          name: "Pranai Kumar",
-          info: "Onfocus soft \nRef: Prasad Kotha",
-        ),
-        Profiles(
-          name: "Kathryn Murphy",
-          info: "Squareselect\nRef: Prasad Kotha",
-        ),
-        Profiles(
-          name: "Pranai Kumar",
-          info: "Onfocus soft \nRef: Prasad Kotha",
-        ),
-        Profiles(
-          name: "Floyd Miles",
-          info: "Squareselect\nRef: Eleanor Pena",
-        ),
-      ]),
+  UserData({
+    required this.id,
+    required this.username,
+    this.establishment,
+  });
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      id: json['id'],
+      username: json['username'],
+      establishment: json['establishment'],
     );
   }
 }
 
+class _AdminState extends State<Admin> {
+  List<UserData> usersData = [];
+  bool loading = false;
+
+  Future<void> fetchUsers() async {
+    setState(() {
+      loading = true;
+    });
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:5000/user/api/list-user'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      List<dynamic> apiData = jsonData['data'];
+
+      usersData = apiData.map((userDataMap) {
+        return UserData(
+            username: userDataMap["username"],
+            id: userDataMap['id'],
+            establishment: userDataMap['establishment']);
+      }).toList();
+
+      setState(() {
+        loading = false;
+      });
+    } else {
+      print('API request failed with status code:');
+      setState(() {
+        loading = false;
+      });
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          actions: [
+            Icon(
+              Icons.notifications_active,
+              size: 30,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Icon(
+              Icons.account_circle_rounded,
+              size: 30,
+            ),
+          ],
+          title: Text(widget.title),
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: const EdgeInsets.all(0),
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ), //BoxDecoration
+                child: UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(color: Colors.white),
+                  accountName: Text(
+                    "Raghavendra Maram",
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                  ),
+                  accountEmail: Text(
+                    "raghu@squareselect.in",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  currentAccountPictureSize: Size.square(50),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage('images/icon.png'),
+                  ), //circleAvatar
+                ), //UserAccountDrawerHeader
+              ),
+
+              //DrawerHeader
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.home),
+                title: const Text(' Dashboard '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.person),
+                title: const Text(' My Profile '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.network_locked),
+                title: const Text(' Network Members '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.bar_chart_sharp),
+                title: const Text(' Add Events '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.image),
+                title: const Text(' Add Images '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.dock),
+                title: const Text(' Add Brochures '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.panorama_horizontal_select),
+                title: const Text(' Add Training Material '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.article),
+                title: const Text(' Add Articles '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.branding_watermark),
+                title: const Text(' Add Banners '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.help),
+                title: const Text(' Help '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: const Icon(Icons.logout),
+                title: const Text('LogOut'),
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        body: loading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: usersData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final myObject = usersData[index];
+                  return Profiles(
+                    name: myObject.username,
+                    info: myObject.establishment ?? "Individual",
+                    user_id: myObject.id,
+                  );
+                },
+              ));
+  }
+}
+
 class Profiles extends StatelessWidget {
-  final String name;
-  final String info;
+  final dynamic name;
+  final dynamic info;
+  final dynamic user_id;
 
   const Profiles({
     Key? key,
     required this.name,
+    required this.user_id,
     required this.info,
   }) : super(key: key);
 
@@ -194,8 +276,7 @@ class Profiles extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: ClipRRect(
-              borderRadius:
-                  BorderRadius.circular(30), // Set the desired corner radius
+              borderRadius: BorderRadius.circular(30),
               child: Container(
                 width: 57,
                 height: 57,
@@ -230,7 +311,7 @@ class Profiles extends StatelessWidget {
                   width: 139,
                   height: 32,
                   child: Text(
-                    info,
+                    info ?? "Individual",
                     style: TextStyle(
                       color: Color(0xFF55595E),
                       fontSize: 12,
@@ -250,7 +331,11 @@ class Profiles extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Frame3875()),
+                    MaterialPageRoute(
+                      builder: (context) => Frame3875(
+                        user_id: user_id,
+                      ),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
