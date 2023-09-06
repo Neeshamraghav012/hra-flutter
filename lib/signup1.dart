@@ -10,6 +10,7 @@ import 'package:hra/signup2.dart';
 import 'dart:math';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
+import 'package:hra/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -19,10 +20,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30))),
+        color: Color(0xFFFF4D4D),
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+      ),
       child: AppBar(
         title: Text('Register'),
         centerTitle: true,
@@ -261,43 +262,44 @@ class _SignupPage1State extends State<SignupPage1> {
       }
 
       List<int> imageBytes = File(selectedImage!.path).readAsBytesSync();
+      String base64Image = base64Encode(imageBytes);
 
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
-      );
-      request.fields['upload_preset'] = 'cyberbolt';
+      print(base64Image);
+
       String randomName = generateRandomName();
 
       String filename = '$randomName.jpg';
 
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          imageBytes,
-          filename: filename,
-          contentType: MediaType('image', 'jpg'),
-        ),
+      final Map<String, dynamic> requestBody = {
+        "image_input": {
+          "base64_image_string": base64Image,
+          "image_name": filename,
+          "document_type": "documents"
+        }
+      };
+
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/admin/api/file-upload-base64'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestBody),
       );
+      final jsonResponse = json.decode(response.body);
 
-      final response = await request.send();
-      final responseString = await response.stream.bytesToString();
-
-      final jsonResponse = json.decode(responseString);
-
-      if (response.statusCode == 200) {
+      if (jsonResponse['status']) {
         setState(() {
           if (doc == 'PAN') {
-            pan_url = jsonResponse['secure_url'];
+            pan_url = jsonResponse['data'];
             uploaded = 'PAN';
           } else if (doc == 'Aadhar') {
-            aadhar_url = jsonResponse['secure_url'];
+            aadhar_url = jsonResponse['data'];
             uploaded = 'Aadhar';
           } else if (doc == 'RERA') {
-            rera_url = jsonResponse['secure_url'];
+            rera_url = jsonResponse['data'];
             uploaded = 'RERA';
           } else {
-            profile_url = jsonResponse['secure_url'];
+            profile_url = jsonResponse['data'];
             uploaded = 'Profile';
           }
         });

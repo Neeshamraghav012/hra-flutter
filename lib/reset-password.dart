@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hra/forgot-password.dart';
+import 'package:hra/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/signup.dart';
@@ -8,6 +9,7 @@ import 'package:hra/admin0.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/social.dart';
 import 'package:hra/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -53,89 +55,38 @@ class LoginApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      home: ResetPage(),
     );
   }
 }
 
-class LoginPage extends StatefulWidget {
+class ResetPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _ResetPageState createState() => _ResetPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool isValidEmail(String email) {
-    // Regular expression for a valid email address
-    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-    return emailRegex.hasMatch(email);
-  }
-
-  bool isValidPhoneNumber(String phoneNumber) {
-    // Regular expression for a valid phone number
-    final phoneRegex = RegExp(r'^\d{10}$');
-    return phoneRegex.hasMatch(phoneNumber);
-  }
-
-  bool rememberMe = false;
-  String email_or_phone = '';
+class _ResetPageState extends State<ResetPage> {
   String password = '';
+  String user_id = '';
   bool loading = false;
   bool status = false;
   String message = '';
   String id = '';
 
-  Future<bool> saveUser(String user) async {
+  Future<void> resetPassword() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("userId", user);
-
-    return prefs.commit();
-  }
-
-  Future<void> fetchPost() async {
     setState(() {
       loading = true;
+      user_id = prefs.getString("userId")!;
     });
 
-    if (email_or_phone == "admin@hra.com" &&
-        password == "hra_admin@123") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Admin(
-                  title: "HRA",
-                )),
-      );
-
-      setState(() {
-        loading = false;
-      });
-      return;
-    }
-
-    if (email_or_phone == '' && password == '') {
-      setState(() {
-        message = "Please enter valid credentials";
-        loading = false;
-      });
-      return;
-    }
-
-    if (!isValidEmail(email_or_phone)) {
-      setState(() {
-        message = "Please provide valid email and phone number";
-        loading = false;
-      });
-
-      return;
-    }
-
-    final response =
-        await http.post(Uri.parse('${AppConfig.apiUrl}/user/api/login-user'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              "login_input": {"username": email_or_phone, "password": password}
-            }));
+    final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/user/api/reset_password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "reset_password_input": {"user_id": user_id, "password": password}
+        }));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -143,20 +94,19 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         status = jsonData['status'];
         message = jsonData['message'];
-        id = jsonData['data'];
+        //id = jsonData['data'];
       });
 
-      saveUser(id);
-
       if (status) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SocialPage(user_id: id),
-            ));
+        setState(() {
+          loading = false;
+        });
       }
     } else {
       print('API request failed with status code: ${response.statusCode}');
+      setState(() {
+        loading = false;
+      });
     }
     setState(() {
       loading = false;
@@ -178,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome!',
+                      'Reset Password',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF384A59),
@@ -208,36 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'E-mail / Phone number',
-                              style: TextStyle(
-                                color: Color(0xFF312E49),
-                                fontSize: 16,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your E-mail/ phone number'),
-                          onChanged: (value) {
-                            setState(() {
-                              email_or_phone = value;
-                            });
-                          },
-                        ),
-                      ]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Column(children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
                               'Password',
                               style: TextStyle(
                                 color: Color(0xFF312E49),
@@ -252,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Your Password'),
+                              hintText: 'Enter your new password'),
                           onChanged: (value) {
                             setState(() {
                               password = value;
@@ -261,53 +181,25 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ]),
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              rememberMe = value!;
-                            });
-                          },
-                        ),
-                        Text('Remember Me'),
-                        Spacer(),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPage()),
-                            );
-                          },
-                          child: Text('Forgot Password?'),
-                        ),
-                      ],
-                    ),
                     loading
                         ? CircularProgressIndicator()
                         : ElevatedButton(
                             onPressed: () {
-                              // Perform login logic here
-                              fetchPost();
+                              resetPassword();
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    30), // Adjust the value for the desired corner radius
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               backgroundColor: Color(0xFFFF4D4D),
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical:
-                                      15), // Change the color to your desired color
+                                  horizontal: 40, vertical: 15),
                             ),
                             child: Text(
-                              'Login',
+                              'Confirm Password',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.white, // Text color
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -324,39 +216,23 @@ class _LoginPageState extends State<LoginPage> {
                             )
                           : Text(''),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account? ",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignupPage()),
-                              );
-                            },
-                            child: Text(
-                              "Signup",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors
-                                    .blue, // Change the text color when clicked
-                              ),
-                            ),
-                          ),
-                        ],
+                    status ? InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              Colors.blue, // Change the text color when clicked
+                        ),
                       ),
-                    ),
+                    ) : Container(),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(

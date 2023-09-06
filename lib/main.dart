@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (userId != "") {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SocialPage()),
+          MaterialPageRoute(builder: (context) => SocialPage(user_id: userId.toString(),)),
         );
       }
       Navigator.pushReplacement(

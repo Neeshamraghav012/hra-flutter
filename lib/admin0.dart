@@ -3,6 +3,7 @@ import 'package:hra/admin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/login.dart';
+import 'package:hra/app-config.dart';
 
 class Admin extends StatefulWidget {
   final String title;
@@ -42,7 +43,7 @@ class _AdminState extends State<Admin> {
       loading = true;
     });
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:5000/user/api/list-user'));
+        await http.get(Uri.parse('${AppConfig.apiUrl}/user/api/user-list'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -56,6 +57,7 @@ class _AdminState extends State<Admin> {
             establishment: userDataMap['establishment']);
       }).toList();
 
+      print(usersData);
       setState(() {
         loading = false;
       });
@@ -232,17 +234,24 @@ class _AdminState extends State<Admin> {
         ),
         body: loading
             ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: usersData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final myObject = usersData[index];
-                  return Profiles(
-                    name: myObject.username,
-                    info: myObject.establishment ?? "Individual",
-                    user_id: myObject.id,
-                  );
-                },
-              ));
+            : usersData.length == 0
+                ? Container(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 40),
+                      child: Center(child: Text("No unverified profiles")),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: usersData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final myObject = usersData[index];
+                      return Profiles(
+                        name: myObject.username,
+                        info: myObject.establishment ?? "Individual",
+                        user_id: myObject.id,
+                      );
+                    },
+                  ));
   }
 }
 
@@ -300,11 +309,14 @@ class Profiles extends StatelessWidget {
                     name,
                     style: TextStyle(
                       color: Color(0xFF1E1E1E),
-                      fontSize: 18,
+                      fontSize: 14,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
                       height: 1.33,
                     ),
+                    overflow: TextOverflow
+                        .ellipsis, // Add this line to indicate text overflow
+                    maxLines: 1,
                   ),
                 ),
                 SizedBox(
@@ -319,6 +331,9 @@ class Profiles extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       height: 1.33,
                     ),
+                    overflow: TextOverflow
+                        .ellipsis, // Add this line to indicate text overflow
+                    maxLines: 1,
                   ),
                 )
               ],

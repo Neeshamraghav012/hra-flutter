@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:hra/login.dart';
-
+import 'package:hra/make-payment.dart';
+import 'package:hra/upload-payment.dart';
+import 'package:hra/membership.dart';
+import 'package:hra/registered.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+      Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
+      clipper: AppBarClipper(),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
+          color: Color(0xFFFF4D4D),
         ),
         child: AppBar(
           title: Text('HRA'),
           centerTitle: true,
           backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
+              Colors.transparent,
           elevation: 0,
-          automaticallyImplyLeading: false, // Remove the shadow
+          automaticallyImplyLeading: false, 
         ),
       ),
     );
@@ -32,10 +36,10 @@ class AppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
+    path.lineTo(0, size.height - 40);
     path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
+        size.width / 2, size.height, size.width, size.height - 40); 
+    path.lineTo(size.width, 0);
     return path;
   }
 
@@ -60,7 +64,7 @@ class HomePage extends StatelessWidget {
                 Container(
                   child: ClipRRect(
                     borderRadius:
-                        BorderRadius.circular(10), // Match the border radius
+                        BorderRadius.circular(10), 
                     child: Image(
                       image: AssetImage('images/home.jpg'),
                       fit: BoxFit.cover,
@@ -93,8 +97,8 @@ class HomePage extends StatelessWidget {
                 Text(
                   'Together We Can Grow',
                   style: TextStyle(
-                    color: Colors.black, // Slightly lighter text color
-                    fontSize: 16, // Increase font size
+                    color: Colors.black, 
+                    fontSize: 16, 
                   ),
                 ),
                 SizedBox(height: 20),
@@ -106,27 +110,27 @@ class HomePage extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign
-                        .center, // Align the text content to the center
+                        .center, 
                   ),
                 ),
                 SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Perform password reset logic here
+                      
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                LoginPage()), // Replace with your signup screen
+                                LoginPage()), 
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      primary: Color(0xFFFF4D4D), // Change the button color
+                      primary: Color(0xFFFF4D4D), 
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 13),
                       fixedSize: Size(250, 50),

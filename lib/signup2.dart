@@ -8,6 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:hra/social.dart';
 import 'package:hra/signup.dart';
+import 'package:hra/registered.dart';
+import 'package:hra/app-config.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/gestures.dart';
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -157,77 +162,76 @@ class _SignupPage2State extends State<SignupPage2> {
 
     String formattedDateTime = currentDateTime.toUtc().toIso8601String();
 
-    final response = await http.post(
-        Uri.parse(
-            'https://hra-api-dev.azurewebsites.net/user/api/register-user'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_input': {
-            "username": widget.userData['username'],
-            "phone": widget.userData['phone'],
-            "email": widget.userData['email'],
-            "address": widget.userData['address'],
-            "city": widget.userData['city'],
-            "state": widget.userData['state'],
-            "speciality": widget.userData['speciality'],
-            "operating_region": widget.userData['region'],
-            "user_type": 1,
-            "rera_expiry_date": widget.userData['establishment_date'],
-            "total_experience": widget.userData['experience'],
-            "password": widget.userData['password'],
-            "tnc": terms,
-            "privacy_policy": privacy,
-            "created_at ": formattedDateTime,
-            "updated_at": formattedDateTime,
-            "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-            "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-            "references": [
-              {
-                "name": ref_name,
-                "email": ref_email,
-                "phone": ref_contact,
-                "created_at ": "2023-08-23 16:40:35.998687+05:30",
+    final response =
+        await http.post(Uri.parse('${AppConfig.apiUrl}/user/api/register-user'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'user_input': {
+                "username": widget.userData['username'],
+                "phone": widget.userData['phone'],
+                "email": widget.userData['email'],
+                "address": widget.userData['address'],
+                "city": widget.userData['city'],
+                "state": widget.userData['state'],
+                "speciality": widget.userData['speciality'],
+                "operating_region": widget.userData['region'],
+                "user_type": 1,
+                "rera_expiry_date": widget.userData['establishment_date'],
+                "total_experience": widget.userData['experience'],
+                "password": widget.userData['password'],
+                "tnc": terms,
+                "privacy_policy": privacy,
+                "created_at ": formattedDateTime,
+                "updated_at": formattedDateTime,
                 "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-                "updated_at": "2023-08-23 16:40:35.998687+05:30",
-                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "references": [
+                  {
+                    "name": ref_name,
+                    "email": ref_email,
+                    "phone": ref_contact,
+                    "created_at ": "2023-08-23 16:40:35.998687+05:30",
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_at": "2023-08-23 16:40:35.998687+05:30",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  }
+                ],
+                "documents": [
+                  {
+                    "name": "Profile Picture",
+                    "document_number": "profile_picture",
+                    "document_path": widget.docData['profile_url'],
+                    "document_type": "Profile Picture",
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  },
+                  {
+                    "name": "Aadhar",
+                    "document_number": widget.docData['aadhar_number'],
+                    "document_path": widget.docData['aadhar_url'],
+                    "document_type": "Aadhar",
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  },
+                  {
+                    "name": "PAN",
+                    "document_number": widget.docData['pan_number'],
+                    "document_path": widget.docData['pan_url'],
+                    "document_type": "PAN",
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  },
+                  {
+                    "name": "RERA",
+                    "document_number": widget.docData['rera_number'],
+                    "document_path": widget.docData['rera_url'],
+                    "document_type": "RERA",
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  }
+                ]
               }
-            ],
-            "documents": [
-              {
-                "name": "Profile Picture",
-                "document_number": "profile_picture",
-                "document_path": widget.docData['profile_url'],
-                "document_type": "Profile Picture",
-                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
-              },
-                            {
-                "name": "Aadhar",
-                "document_number": widget.docData['aadhar_number'],
-                "document_path": widget.docData['aadhar_url'],
-                "document_type": "Aadhar",
-                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
-              },
-                            {
-                "name": "PAN",
-                "document_number": widget.docData['pan_number'],
-                "document_path": widget.docData['pan_url'],
-                "document_type": "PAN",
-                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
-              },
-                            {
-                "name": "RERA",
-                "document_number": widget.docData['rera_number'],
-                "document_path": widget.docData['rera_url'],
-                "document_type": "RERA",
-                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
-                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
-              }
-            ]
-          }
-        }));
+            }));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -245,7 +249,7 @@ class _SignupPage2State extends State<SignupPage2> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SocialPage(),
+              builder: (context) => SubmitPage(),
             ));
       }
     } else {
@@ -394,8 +398,27 @@ class _SignupPage2State extends State<SignupPage2> {
                           },
                         ),
                         Expanded(
-                          child: Text(
-                              'I read carefully and agree to Terms and conditions.'),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'I read carefully and agree to ',
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Terms and Conditions',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                  ),
+                                  recognizer: TapGestureRecognizer()..onTap = () {
+                                      canLaunchUrl(Uri.parse('https://onfocussoft.com/hra-privacypolicy/'));
+                                    },
+                                ),
+                                TextSpan(
+                                  text: '.',
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -410,8 +433,28 @@ class _SignupPage2State extends State<SignupPage2> {
                           },
                         ),
                         Expanded(
-                          child:
-                              Text('I read and agreed to Privacy and Policy.'),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'I read and agreed to ',
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Privacy and Policy',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      canLaunchUrl(Uri.parse('https://onfocussoft.com/hra-privacypolicy/'));
+                                    },
+                                ),
+                                TextSpan(
+                                  text: '.',
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:hra/home.dart';
 import 'package:hra/login.dart';
+import 'package:hra/verify-payment.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'dart:convert';
+import 'package:hra/membership.dart';
+import 'package:hra/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+  Size get preferredSize => Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
+      clipper: AppBarClipper(),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
+          color: Color(0xFFFF4D4D),
         ),
         child: AppBar(
           title: Text('HRA'),
           centerTitle: true,
-          backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
+          backgroundColor: Colors.transparent,
           elevation: 0,
-          automaticallyImplyLeading: false, // Remove the shadow
+          // automaticallyImplyLeading: false,
         ),
       ),
     );
@@ -32,10 +36,10 @@ class AppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
+    path.lineTo(0, size.height - 40);
     path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
+        size.width / 2, size.height, size.width, size.height - 40);
+    path.lineTo(size.width, 0);
     return path;
   }
 
@@ -43,85 +47,150 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class SocialPage extends StatelessWidget {
+class SocialPage extends StatefulWidget {
+  final String user_id;
+
+  SocialPage({required this.user_id});
+
+  @override
+  State<SocialPage> createState() => _SocialPageState();
+}
+
+class _SocialPageState extends State<SocialPage> {
+  bool loading = false;
+  bool is_profile_activated = false;
+  bool is_payment_verified = false;
+  bool is_email_activated = false;
+
+  Future<void> fetchUserDetails() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.get(Uri.parse(
+        '${AppConfig.apiUrl}/user/api/user-detail?user_id=${widget.user_id}'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      List<dynamic> apiData = jsonData['data'];
+
+      Map<String, dynamic> data = {};
+      data = apiData[0];
+      print(apiData[0]);
+
+      setState(() {
+        loading = false;
+        is_profile_activated = data['is_profile_activated'];
+        is_payment_verified = data['is_payment_verified'];
+        is_email_activated = data['is_email_activated'];
+      });
+
+      print(is_payment_verified);
+      print(is_profile_activated);
+    } else {
+      print('API request failed with status code:');
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
       backgroundColor: Colors.white,
-      body: Container(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(10), // Match the border radius
-                    child: Image(
-                      image: AssetImage('images/home.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Welcome to HRA',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20, // Increase font size
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Together We Can Grow',
-                  style: TextStyle(
-                    color: Colors.grey[700], // Slightly lighter text color
-                    fontSize: 16, // Increase font size
-                  ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    "“ Our GOAL is to set the best ethical standards and practices in the field of real estate consulting and nothing less. “",
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'images/registered.jpg',
+              height: 200, // Adjust the height as needed
+            ),
+            SizedBox(height: 20),
+            !is_email_activated
+                ? Text(
+                    'We have sent you an email\n'
+                    'please verify it.',
                     style: TextStyle(
+                      fontFamily: "Roboto",
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff000000),
+                      //height: 64 / 14,
                     ),
-                    textAlign: TextAlign
-                        .center, // Align the text content to the center
-                  ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
-                    },
-                    child: Text(
-                      "Go back",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            Colors.blue, // Change the text color when clicked
+                    textAlign: TextAlign.center,
+                  )
+                : is_payment_verified && is_profile_activated
+                    ? Text(
+                        'Congratulations, You are a verified member now!',
+                        style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff000000),
+                          //height: 64 / 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                    : is_profile_activated
+                        ? Text(
+                            'Your profile has been\n'
+                            'verified by the admin.\n'
+                            'You can pay the membership fees now.',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff000000),
+                              //height: 64 / 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        : Text(
+                            'You have successfully applied\n'
+                            'for the member verification.\n '
+                            'Please wait for the admin\'s \n'
+                            'approval.',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff000000),
+                              //height: 64 / 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+            is_profile_activated
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MembershipPage()),
+                        );
+                      },
+                      child: Text(
+                        "Make Payment",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              Colors.blue, // Change the text color when clicked
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                  )
+                : Container(),
+          ],
         ),
       ),
     );

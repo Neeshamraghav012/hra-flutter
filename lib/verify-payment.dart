@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hra/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -70,7 +71,7 @@ class _PaymentPageState extends State<PaymentPage> {
       loading = true;
     });
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:5000/user/api/detail-user?user_id=${widget.user_id}'));
+        '${AppConfig.apiUrl}/user/api/detail-user?user_id=${widget.user_id}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -100,7 +101,7 @@ class _PaymentPageState extends State<PaymentPage> {
       loading = true;
     });
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:5000/user/api/verify-payment?user_id=${widget.user_id}'));
+        '${AppConfig.apiUrl}/user/api/verify-payment?user_id=${widget.user_id}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -110,6 +111,7 @@ class _PaymentPageState extends State<PaymentPage> {
         setState(() {
           verified = true;
           loading = false;
+          payment_link = jsonData['payment_link'];
         });
       }
     } else {
@@ -167,12 +169,12 @@ class _PaymentPageState extends State<PaymentPage> {
                       child: Center(
                         child: payment_link != null
                             ? Image.network(
-                                '',
+                                payment_link!,
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(
-                                'images/pay.jpg',
-                                fit: BoxFit.cover,
+                                'images/payment.jpg',
+                                fit: BoxFit.fitHeight,
                               ),
                       ))),
             ),

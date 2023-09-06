@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:hra/verify-payment.dart';
+import 'package:hra/app-config.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -153,7 +156,7 @@ class _Frame3875State extends State<Frame3875>
       loading = true;
     });
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:5000/user/api/detail-user?user_id=${widget.user_id}'));
+        '${AppConfig.apiUrl}/user/api/user-detail?user_id=${widget.user_id}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -178,7 +181,7 @@ class _Frame3875State extends State<Frame3875>
         userData = UserData(
             username: data['username'],
             email: data['email'],
-            phone: data['phone'],
+            phone: data['phone'].toString(),
             experience: data['experience'],
             Speciality: data['speciality'],
             rera_exp: formattedDate,
@@ -214,7 +217,7 @@ class _Frame3875State extends State<Frame3875>
       loading = true;
     });
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:5000/user/api/activate_user_profile?user_id=${widget.user_id}'));
+        '${AppConfig.apiUrl}/user/api/activate_user_profile?user_id=${widget.user_id}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -234,9 +237,15 @@ class _Frame3875State extends State<Frame3875>
     }
   }
 
+  // Function to get the app's documents directory
+  Future<String> getAppDocumentsDirectory() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
   Future<void> verifyPayment() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:5000/user/api/verify-payment?user_id=${widget.user_id}'));
+        '${AppConfig.apiUrl}/user/api/verify_payment?user_id=${widget.user_id}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -324,55 +333,6 @@ class _Frame3875State extends State<Frame3875>
     );
   }
 
-  // Verify Image Dialog
-  void _showImageDialog(BuildContext context, List<String> imageUrls) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Document Verification'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                width: 110,
-                height: 110,
-                child: Image.asset(
-                  'images/icon.png',
-                  width: 400,
-                  height: 400,
-                  key: UniqueKey(),
-                ),
-              ),
-              SizedBox(width: 10),
-              Align(
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 110,
-                      height: 30,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                        ),
-                        child: Text('Done'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -423,10 +383,8 @@ class _Frame3875State extends State<Frame3875>
                                   user_id: widget.user_id,
                                 ),
                               ));
-                        }
-                        else{
+                        } else {
                           _showConfirmationDialog(context);
-
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -535,14 +493,17 @@ class _Frame3875State extends State<Frame3875>
                                               label1: "Speciality",
                                               val1: userData.Speciality!,
                                               label2: "Total experience",
-                                              val2: userData.experience!)
+                                              val2: userData.experience!.toString())
                                           : Container(),
                                       userData.rera_exp != ''
                                           ? Infocolumn(
                                               label1: "RERA Expiry Date",
                                               val1: userData.rera_exp!,
                                               label2: "Operating region",
-                                              val2: userData.operating_region!)
+                                              val2: userData.operating_region ==
+                                                      ''
+                                                  ? "North"
+                                                  : userData.operating_region)
                                           : Container(),
                                     ],
                                   ),
@@ -664,12 +625,13 @@ class _Frame3875State extends State<Frame3875>
                                       : Container(),
                                   userData.aadhar_url != ''
                                       ? ElevatedButton.icon(
-                                          onPressed: () {
-                                            _showImageDialog(context, [
-                                              userData.aadhar_url!,
-                                              userData.pan_url!,
-                                              userData.rera_url!
-                                            ]);
+                                          onPressed: () async {
+                                            String? url = userData.pan_url;
+                                            if (await canLaunchUrl(Uri.parse(url!))) {
+                                              await launchUrl(Uri.parse(url!));
+                                            } else {
+                                              print('Could not launch $url');
+                                            }
                                           },
                                           icon: Icon(Icons.file_download),
                                           label: Text("Verify Documents"),

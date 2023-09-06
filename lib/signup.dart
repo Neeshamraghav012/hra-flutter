@@ -7,6 +7,7 @@ import 'package:hra/login.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:flutter/services.dart';
+import 'package:hra/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -172,8 +173,8 @@ class _SignupPageState extends State<SignupPage> {
   List<String> regionNames = ['North'];
 
   Future<void> fetchPost() async {
-    final response = await http.get(Uri.parse(
-        'https://hra-api-dev.azurewebsites.net/admin/api/get-all-dropdown-values'));
+    final response = await http.get(
+        Uri.parse('${AppConfig.apiUrl}/admin/api/get-all-dropdown-values'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -242,7 +243,6 @@ class _SignupPageState extends State<SignupPage> {
       'password': password,
     };
 
-    
     if (user_type_id != '1') {
       if (userData.values.any((value) => value == '')) {
         setState(() {
@@ -251,17 +251,23 @@ class _SignupPageState extends State<SignupPage> {
 
         return;
       }
-    }
-    else if (userData['username'] == '' || userData['email'] == '' || userData['address'] == '' || userData['phone'] == '' || userData['city'] == ''
-    || userData['experience'] == '' || userData['state'] == '' || userData['speciality'] == '' || userData['region'] == '' || userData['password'] == ''
-    || userData['establishment_date'] == '' || userData['user_type'] == ''){
+    } else if (userData['username'] == '' ||
+        userData['email'] == '' ||
+        userData['address'] == '' ||
+        userData['phone'] == '' ||
+        userData['city'] == '' ||
+        userData['experience'] == '' ||
+        userData['state'] == '' ||
+        userData['speciality'] == '' ||
+        userData['region'] == '' ||
+        userData['password'] == '' ||
+        userData['establishment_date'] == '' ||
+        userData['user_type'] == '') {
+      setState(() {
+        error = "Please provide all details";
+      });
 
-        setState(() {
-          error = "Please provide all details";
-        });
-
-        return;
-
+      return;
     }
 
     if (!isValidEmail(email) || !isValidPhoneNumber((phone))) {

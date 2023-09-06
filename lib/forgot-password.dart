@@ -1,26 +1,30 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hra/cliprect.dart';
 import 'package:hra/custom-appbar.dart';
+import 'package:hra/app-config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:hra/social.dart';
+import 'package:hra/reset-password.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100); // Set the desired height of the custom app bar
+  Size get preferredSize => Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: AppBarClipper(), // Custom clipper for curved edges
+      clipper: AppBarClipper(),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D), // Set the background color
+          color: Color(0xFFFF4D4D),
         ),
         child: AppBar(
           title: Text('HRA'),
           centerTitle: true,
-          backgroundColor:
-              Colors.transparent, // Make the app bar background transparent
-          elevation: 0, // Remove the shadow
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
       ),
     );
@@ -31,10 +35,10 @@ class AppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height - 40); // Start at the bottom-left corner
+    path.lineTo(0, size.height - 40);
     path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Curve
-    path.lineTo(size.width, 0); // Line to the top-right corner
+        size.width / 2, size.height, size.width, size.height - 40);
+    path.lineTo(size.width, 0);
     return path;
   }
 
@@ -42,7 +46,123 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class ForgotPage extends StatelessWidget {
+class ForgotPage extends StatefulWidget {
+  @override
+  State<ForgotPage> createState() => _ForgotPageState();
+}
+
+class _ForgotPageState extends State<ForgotPage> {
+  bool loading = false;
+  String message = '';
+  String email = '';
+  bool status = false;
+  String otp = '';
+  String user_id = '';
+  String otp_message = '';
+
+  TextEditingController textController = TextEditingController();
+
+  Future<void> sendOTP() async {
+    setState(() {
+      loading = true;
+    });
+
+    bool isValidEmail(String email) {
+      final emailRegex =
+          RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+      return emailRegex.hasMatch(email);
+    }
+
+    if (email == '') {
+      setState(() {
+        message = "Please enter email";
+        loading = false;
+      });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setState(() {
+        message = "Please provide valid email";
+        loading = false;
+      });
+
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/user/api/forgot_password?user_email=${email}'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      setState(() {
+        status = jsonData['status'];
+        message = jsonData['message'];
+        textController.text = '';
+      });
+
+      if (status) {
+        setState(() {
+          message = "Enter the OTP sent to your email.";
+          otp_message = "Enter the OTP sent to your email.";
+        });
+      }
+    } else {
+      setState(() {
+        message = "Enter valid email.";
+      });
+      print('API request failed with status code: ${response.statusCode}');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> verifyOTP() async {
+    setState(() {
+      loading = true;
+    });
+
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/user/api/forgot_password_otp_validation?user_email=${email}&otp=${otp}'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      setState(() {
+        status = jsonData['status'];
+        message = jsonData['message'];
+      });
+
+      print(jsonData);
+      if (status) {
+        setState(() {
+          user_id = jsonData['data'];
+          loading = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ResetPage()),
+        );
+      }
+    } else {
+      setState(() {
+        message = "OTP is not valid.";
+      });
+      print('API request failed with status code: ${response.statusCode}');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,56 +190,94 @@ class ForgotPage extends StatelessWidget {
                     Text(
                       'Enter your registered email ID to reset your password.',
                       style: TextStyle(
-                        color: Colors.grey[700], // Slightly lighter text color
-                        fontSize: 16, // Increase font size
+                        color: Colors.grey[700],
+                        fontSize: 16,
                       ),
                     ),
                     SizedBox(height: 20),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Your E-mail',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.email),
-                        hintText: 'Your Email',
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 5),
+                    !status
+                        ? TextField(
+                            controller: textController,
+                            onChanged: (value) => setState(() {
+                              email = value;
+                            }),
+                            decoration: InputDecoration(
+                              labelText: 'Your E-mail',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.email),
+                              hintText: 'Your Email',
+                            ),
+                          )
+                        : TextField(
+                            controller: textController,
+                            onChanged: (value) => setState(() {
+                              otp = value;
+                            }),
+                            decoration: InputDecoration(
+                              labelText: 'OTP',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.lock),
+                              hintText: 'Enter OTP',
+                            ),
+                          ),
+   
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Center(
                         child: Text(
-                          'We’ll send an OTP to this email',
+                          message  ?? '',
                           style: TextStyle(
-                            color: Color(0xFF646464),
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Color(0xFFFF4D4D),
                           ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20),
                     Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Perform password reset logic here
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          primary: Color(0xFFFF4D4D), // Change the button color
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
-                        ),
-                        child: Text(
-                          'Send OTP',
-                          style: TextStyle(
-                            fontSize: 18, // Increase font size
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      child: loading
+                          ? CircularProgressIndicator()
+                          : !status
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    sendOTP();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    primary: Color(0xFFFF4D4D),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 40, vertical: 15),
+                                  ),
+                                  child: Text(
+                                    'Send OTP',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    verifyOTP();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    primary: Color(0xFFFF4D4D),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 40, vertical: 15),
+                                  ),
+                                  child: Text(
+                                    'Verify OTP',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                     ),
                     SizedBox(height: 300),
                     Align(
