@@ -23,7 +23,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Color(0xFFFF4D4D), // Set the background color
         ),
         child: AppBar(
-          title: Text('Login'),
+          title: Text(''),
           centerTitle: true,
           backgroundColor:
               Colors.transparent, // Make the app bar background transparent
@@ -76,6 +76,14 @@ class _LoginPageState extends State<LoginPage> {
     return phoneRegex.hasMatch(phoneNumber);
   }
 
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  FocusNode _emailFocus = FocusNode();
+  FocusNode _passwordFocus = FocusNode();
+
+  String emailHint = 'Your E-mail/phone number';
+  String passwordHint = 'Your Password';
+
   bool rememberMe = false;
   String email_or_phone = '';
   String password = '';
@@ -83,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
   bool status = false;
   String message = '';
   String id = '';
+  bool show_password = false;
 
   Future<bool> saveUser(String user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -97,8 +106,7 @@ class _LoginPageState extends State<LoginPage> {
       loading = true;
     });
 
-    if (email_or_phone == "admin@hra.com" &&
-        password == "hra_admin@123") {
+    if (email_or_phone == "admin@hra.com" && password == "hra_admin@123") {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -213,21 +221,36 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xFF312E49),
                                 fontSize: 16,
                                 fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                        TextField(
-                          decoration: InputDecoration(
+                        Container(
+                          color: Color.fromRGBO(245, 251, 252,
+                              1), // Set the background color here
+                          child: TextField(
+                            controller: _emailController,
+                            focusNode: _emailFocus,
+                            decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Your E-mail/ phone number'),
-                          onChanged: (value) {
-                            setState(() {
-                              email_or_phone = value;
-                            });
-                          },
-                        ),
+                              hintText: emailHint,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                emailHint = ''; // Clear the hint text
+                              });
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                email_or_phone = value;
+                              });
+                            },
+                            onSubmitted: (_) {
+                              _emailFocus.unfocus();
+                            },
+                          ),
+                        )
                       ]),
                     ),
                     Padding(
@@ -243,35 +266,49 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xFF312E49),
                                 fontSize: 16,
                                 fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                        TextField(
-                          obscureText: true,
-                          decoration: InputDecoration(
+                        Container(
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          child: TextField(
+                            controller: _passwordController,
+                            focusNode: _passwordFocus,
+                            obscureText: !show_password,
+                            decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Your Password'),
-                          onChanged: (value) {
-                            setState(() {
-                              password = value;
-                            });
-                          },
+                              hintText: passwordHint,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                passwordHint = ''; // Clear the hint text
+                              });
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                            onSubmitted: (_) {
+                              _passwordFocus.unfocus();
+                            },
+                          ),
                         ),
                       ]),
                     ),
                     Row(
                       children: [
                         Checkbox(
-                          value: rememberMe,
+                          value: show_password,
                           onChanged: (value) {
                             setState(() {
-                              rememberMe = value!;
+                              show_password = value!;
                             });
                           },
                         ),
-                        Text('Remember Me'),
+                        Text('Show Password'),
                         Spacer(),
                         TextButton(
                           onPressed: () {
