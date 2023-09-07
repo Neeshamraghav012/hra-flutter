@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hra/Articles.dart';
+import 'package:hra/certificate.dart';
 import 'package:hra/login.dart';
 import 'package:hra/home.dart';
 import 'package:hra/admin.dart';
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SplashScreen(),
+      home: ArtPage(),
     );
   }
 }
@@ -25,11 +27,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<String> getUser() async {
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
     return id;
-    
   }
 
   late Future<String> userId;
@@ -50,7 +50,10 @@ class _SplashScreenState extends State<SplashScreen> {
       if (userId != "") {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SocialPage(user_id: userId.toString(),)),
+          MaterialPageRoute(
+              builder: (context) => SocialPage(
+                    user_id: userId.toString(),
+                  )),
         );
       }
       Navigator.pushReplacement(

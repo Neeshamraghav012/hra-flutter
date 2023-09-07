@@ -665,7 +665,7 @@ class _SignupPage1State extends State<SignupPage1> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
-                                          'images/browse.jpeg',
+                                          'images/browse.png',
                                           height: 30,
                                           width: 80,
                                         ),
