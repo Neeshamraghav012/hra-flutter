@@ -149,6 +149,7 @@ class _SignupPage1State extends State<SignupPage1> {
   XFile? pan_image;
   XFile? rera_image;
   XFile? profile_image;
+  TextEditingController textFieldController = TextEditingController();
 
   Future<void> chooseImage(String doc) async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
@@ -206,12 +207,9 @@ class _SignupPage1State extends State<SignupPage1> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              SignupPage2(userData: this.userData, docData: docData)),
-    );
+    print(pan_number);
+    print(aadhar_number);
+    print(rera_number);
   }
 
   String generateRandomName() {
@@ -318,6 +316,16 @@ class _SignupPage1State extends State<SignupPage1> {
   @override
   void initState() {
     super.initState();
+
+    // Set the initial controller text based on doc
+    if (doc == 'PAN') {
+      textFieldController.text = pan_number;
+    } else if (doc == 'Aadhaar') {
+      textFieldController.text = aadhar_number;
+    } else if (doc == 'RERA') {
+      textFieldController.text = rera_number;
+    }
+    
   }
 
   @override
@@ -357,6 +365,8 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
+                              textFieldController.text = pan_number;
+
                               setState(() {
                                 doc = "PAN";
                               });
@@ -387,6 +397,8 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
+                              textFieldController.text = aadhar_number;
+
                               setState(() {
                                 doc = "Aadhar";
                               });
@@ -417,6 +429,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
+                              textFieldController.text = rera_number;
                               setState(() {
                                 doc = "RERA";
                               });
@@ -496,13 +509,14 @@ class _SignupPage1State extends State<SignupPage1> {
                                 ),
                               ),
                               TextField(
-                                inputFormatters: doc == 'Aadhaar'
+                                controller: textFieldController,
+                                inputFormatters: doc == "Aadhar"
                                     ? [
                                         FilteringTextInputFormatter.allow(
                                             RegExp(r'[0-9]'))
                                       ]
-                                    : [], // Only allow numeric values if doc is 'Aadhaar'
-                                keyboardType: doc == 'Aadhaar'
+                                    : [],
+                                keyboardType: doc == "Aadhar"
                                     ? TextInputType.number
                                     : TextInputType.text,
                                 decoration: InputDecoration(
@@ -510,11 +524,11 @@ class _SignupPage1State extends State<SignupPage1> {
                                     hintText: 'Your ${doc}'),
                                 onChanged: (value) {
                                   setState(() {
-                                    if (doc == 'PAN') {
+                                    if (doc == "PAN") {
                                       pan_number = value;
-                                    } else if (doc == 'Aadhar') {
+                                    } else if (doc == "Aadhar") {
                                       aadhar_number = value;
-                                    } else if (doc == 'RERA') {
+                                    } else if (doc == "RERA") {
                                       rera_number = value;
                                     }
                                   });

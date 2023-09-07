@@ -693,16 +693,16 @@ class _SignupPageState extends State<SignupPage> {
                       padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 15),
                       child: TextField(
                         controller:
-                            dateinput, //editing controller of this TextField
+                            dateinput,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.calendar_today), //icon of text field
-                          labelText: "RERA Expiry date", //label text of field
+                          icon: Icon(Icons.calendar_today), 
+                          labelText: "RERA Expiry date",
 
                           border: OutlineInputBorder(),
                           hintText: 'Select Date',
                         ),
                         readOnly:
-                            true, //set it true, so that user will not able to edit text
+                            true,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
@@ -711,20 +711,16 @@ class _SignupPageState extends State<SignupPage> {
                               lastDate: DateTime(2101));
 
                           if (pickedDate != null) {
-                            print(
-                                pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                            
                             String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            print(
-                                formattedDate); //formatted date output using intl package =>  2021-03-16
-                            //you can implement different kind of Date Format here according to your requirement
-
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                             
                             setState(() {
                               dateinput.text = formattedDate;
                               establishment_date = formattedDate;
                             });
                           } else {
-                            print("Date is not selected");
+                            
                           }
                         },
                       ),

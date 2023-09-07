@@ -61,6 +61,7 @@ class _SocialPageState extends State<SocialPage> {
   bool is_profile_activated = false;
   bool is_payment_verified = false;
   bool is_email_activated = false;
+  String message = "";
 
   Future<void> fetchUserDetails() async {
     setState(() {
@@ -84,8 +85,18 @@ class _SocialPageState extends State<SocialPage> {
         is_email_activated = data['is_email_activated'];
       });
 
+      if (!is_email_activated) {
+        message = "We have sent you an email\n please verify it.";
+      } else if (is_email_activated && is_profile_activated) {
+        message =
+            "Your profile has been\n verified by the admin.\n You can pay the membership fees now.";
+      } else {
+        message = "Congratulations, You are a verified member now!";
+      }
+
       print(is_payment_verified);
       print(is_profile_activated);
+      print(is_email_activated);
     } else {
       print('API request failed with status code:');
       setState(() {
@@ -114,10 +125,12 @@ class _SocialPageState extends State<SocialPage> {
               height: 200, // Adjust the height as needed
             ),
             SizedBox(height: 20),
-            !is_email_activated
-                ? Text(
-                    'We have sent you an email\n'
-                    'please verify it.',
+            loading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Text(
+                    message,
                     style: TextStyle(
                       fontFamily: "Roboto",
                       fontSize: 14,
@@ -126,48 +139,8 @@ class _SocialPageState extends State<SocialPage> {
                       //height: 64 / 14,
                     ),
                     textAlign: TextAlign.center,
-                  )
-                : is_payment_verified && is_profile_activated
-                    ? Text(
-                        'Congratulations, You are a verified member now!',
-                        style: TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xff000000),
-                          //height: 64 / 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                    : is_profile_activated
-                        ? Text(
-                            'Your profile has been\n'
-                            'verified by the admin.\n'
-                            'You can pay the membership fees now.',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xff000000),
-                              //height: 64 / 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        : Text(
-                            'You have successfully applied\n'
-                            'for the member verification.\n '
-                            'Please wait for the admin\'s \n'
-                            'approval.',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xff000000),
-                              //height: 64 / 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-            is_profile_activated
+                  ),
+            is_profile_activated && is_email_activated
                 ? Padding(
                     padding: EdgeInsets.only(top: 10),
                     child: InkWell(

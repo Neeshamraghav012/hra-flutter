@@ -12,6 +12,7 @@ import 'package:hra/registered.dart';
 import 'package:hra/app-config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -346,6 +347,10 @@ class _SignupPage2State extends State<SignupPage2> {
                           ),
                         ),
                         TextField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                          ],
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Reference phone number'),
@@ -409,8 +414,10 @@ class _SignupPage2State extends State<SignupPage2> {
                                     decoration: TextDecoration.underline,
                                     color: Colors.blue,
                                   ),
-                                  recognizer: TapGestureRecognizer()..onTap = () {
-                                      canLaunchUrl(Uri.parse('https://onfocussoft.com/hra-privacypolicy/'));
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      canLaunchUrl(Uri.parse(
+                                          'https://onfocussoft.com/hra-privacypolicy/'));
                                     },
                                 ),
                                 TextSpan(
@@ -446,7 +453,8 @@ class _SignupPage2State extends State<SignupPage2> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      canLaunchUrl(Uri.parse('https://onfocussoft.com/hra-privacypolicy/'));
+                                      canLaunchUrl(Uri.parse(
+                                          'https://onfocussoft.com/hra-privacypolicy/'));
                                     },
                                 ),
                                 TextSpan(
