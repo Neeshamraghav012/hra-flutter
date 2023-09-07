@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hra/Aricles1.dart';
 import 'package:hra/Articles.dart';
+import 'package:hra/Events.dart';
 import 'package:hra/certificate.dart';
 import 'package:hra/login.dart';
 import 'package:hra/home.dart';
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ArtPage(),
+      home: SplashScreen(),
     );
   }
 }
