@@ -47,12 +47,6 @@ class _SplashScreenState extends State<SplashScreen> {
     const splashDuration = Duration(seconds: 2);
 
     Future.delayed(splashDuration, () {
-      if (userId != "") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SocialPage(user_id: userId.toString(),)),
-        );
-      }
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
