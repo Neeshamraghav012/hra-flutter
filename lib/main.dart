@@ -9,6 +9,7 @@ import 'package:hra/certificate.dart';
 import 'package:hra/login.dart';
 import 'package:hra/home.dart';
 import 'package:hra/admin.dart';
+import 'package:hra/signup.dart';
 import 'package:hra/social.dart';
 import 'package:hra/training-material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: EventPage1(),
+      home: SplashScreen(),
     );
   }
 }

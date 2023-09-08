@@ -8,8 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100);
+  Size get preferredSize => Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +21,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: AppBar(
           title: Text('HRA'),
           centerTitle: true,
-          backgroundColor:
-              Colors.transparent,
+          backgroundColor: Colors.transparent,
           elevation: 0,
-          automaticallyImplyLeading: false, 
+          automaticallyImplyLeading: false,
         ),
       ),
     );
@@ -38,7 +36,7 @@ class AppBarClipper extends CustomClipper<Path> {
     final path = Path();
     path.lineTo(0, size.height - 40);
     path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); 
+        size.width / 2, size.height, size.width, size.height - 40);
     path.lineTo(size.width, 0);
     return path;
   }
@@ -63,8 +61,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Container(
                   child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(10), 
+                    borderRadius: BorderRadius.circular(10),
                     child: Image(
                       image: AssetImage('images/home.jpg'),
                       fit: BoxFit.cover,
@@ -79,7 +76,7 @@ class HomePage extends StatelessWidget {
                     text: 'Welcome to ',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 22,
+                      fontSize: 25,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold,
                     ),
@@ -97,8 +94,8 @@ class HomePage extends StatelessWidget {
                 Text(
                   'Together We Can Grow',
                   style: TextStyle(
-                    color: Colors.black, 
-                    fontSize: 16, 
+                    color: Colors.black,
+                    fontSize: 16,
                   ),
                 ),
                 SizedBox(height: 20),
@@ -109,28 +106,23 @@ class HomePage extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
-                    textAlign: TextAlign
-                        .center, 
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      
-
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                LoginPage()), 
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      primary: Color(0xFFFF4D4D), 
+                      primary: Color(0xFFFF4D4D),
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 13),
                       fixedSize: Size(250, 50),
@@ -155,6 +147,17 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
+                Text(
+                  "Powered by OnFocus Software Pvt. Ltd",
+                  style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 11.600000381469727,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff14303c),
+                  ),
+                  textAlign: TextAlign.left,
+                )
               ],
             ),
           ),

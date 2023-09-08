@@ -308,7 +308,12 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                         ),
-                        Text('Show Password'),
+                        Text(
+                          'Show Password',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
                         Spacer(),
                         TextButton(
                           onPressed: () {
@@ -318,7 +323,12 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => ForgotPage()),
                             );
                           },
-                          child: Text('Forgot Password?'),
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -343,7 +353,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: Text(
                               'Login',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 20,
                                 color: Colors.white, // Text color
                               ),
                             ),
@@ -369,7 +379,7 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             "Don't have an account? ",
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
