@@ -12,7 +12,7 @@ class _Event1State extends State<EventPage1> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Articles",
+          "Events",
           style: TextStyle(
             fontFamily: "Poppins",
             fontSize: 16,
@@ -61,7 +61,7 @@ class _Event1State extends State<EventPage1> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.only(top: 4, left: 8, right: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -87,7 +87,7 @@ class _Event1State extends State<EventPage1> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.only(top: 4, left: 8, right: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

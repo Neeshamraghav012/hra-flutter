@@ -3,6 +3,7 @@ import 'package:hra/Aricles1.dart';
 import 'package:hra/Articles.dart';
 import 'package:hra/Events.dart';
 import 'package:hra/Events1.dart';
+import 'package:hra/Gallery.dart';
 import 'package:hra/brochures.dart';
 import 'package:hra/certificate.dart';
 import 'package:hra/login.dart';
