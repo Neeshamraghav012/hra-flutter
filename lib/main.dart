@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hra/Aricles1.dart';
 import 'package:hra/Articles.dart';
 import 'package:hra/Events.dart';
+import 'package:hra/Events1.dart';
+import 'package:hra/brochures.dart';
 import 'package:hra/certificate.dart';
 import 'package:hra/login.dart';
 import 'package:hra/home.dart';
 import 'package:hra/admin.dart';
 import 'package:hra/social.dart';
+import 'package:hra/training-material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SplashScreen(),
+      home: EventPage1(),
     );
   }
 }
