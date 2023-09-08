@@ -325,7 +325,6 @@ class _SignupPage1State extends State<SignupPage1> {
     } else if (doc == 'RERA') {
       textFieldController.text = rera_number;
     }
-    
   }
 
   @override
@@ -634,8 +633,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                         children: [
                                           Image.asset(
                                             'images/camera.jpeg',
-                                            height: 30,
-                                            width: 80,
+                                            height: 50,
+                                            width: 150,
                                           ),
                                           SizedBox(height: 8),
                                           Text(
@@ -679,9 +678,9 @@ class _SignupPage1State extends State<SignupPage1> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
-                                          'images/browse.png',
-                                          height: 30,
-                                          width: 80,
+                                          'images/browse.jpeg',
+                                          height: 50,
+                                          width: 150,
                                         ),
                                         SizedBox(height: 8),
                                         Text(

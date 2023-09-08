@@ -134,8 +134,9 @@ class _SignupPageState extends State<SignupPage> {
     final phoneRegex = RegExp(r'^\d{10}$');
     return phoneRegex.hasMatch(phoneNumber);
   }
-  // input values
 
+  // input values
+  double speciality_width = 57;
   String username = "";
   String email = "";
   String address = "";
@@ -288,6 +289,7 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     dateinput.text = "";
+    speciality_width = 57;
     fetchPost();
   }
 
@@ -542,13 +544,15 @@ class _SignupPageState extends State<SignupPage> {
                                 height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16.0, vertical: 8),
                                     border: InputBorder.none,
-                                    hintText: 'select',
+                                    hintText: 'Select',
                                   ),
                                   value: state,
                                   isExpanded: true,
@@ -593,7 +597,7 @@ class _SignupPageState extends State<SignupPage> {
                                       value: value,
                                       child: Text(
                                         value,
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     );
                                   }).toList(),
@@ -671,17 +675,42 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
+                                height: 57,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                ),
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4))),
                                 child: MultiSelectDialogField(
+                                    chipDisplay: MultiSelectChipDisplay.none(),
+                                    title: Text(
+                                      "Select Speciality",
+                                      
+                                    ),
+                                    buttonText: Text(
+                                      "Select",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color.fromARGB(255, 120, 118, 118)),
+                                    ),
                                     items: speciality_list
                                         .map((e) => MultiSelectItem(e, e))
                                         .toList(),
-                                    decoration: BoxDecoration(),
-                                    listType: MultiSelectListType.LIST,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey, width: 0.1),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                    ),
+                                    listType: MultiSelectListType.CHIP,
+                                    buttonIcon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Color.fromARGB(255, 88, 87, 87),
+                                    ),
                                     onConfirm: (values) {
-                                      speciality = speciality_map[values.first];
+                                      setState(() {
+                                        speciality =
+                                            speciality_map[values.first];
+                                      });
                                     }),
                               )
                             ]),
@@ -692,17 +721,14 @@ class _SignupPageState extends State<SignupPage> {
                     Padding(
                       padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 15),
                       child: TextField(
-                        controller:
-                            dateinput,
+                        controller: dateinput,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.calendar_today), 
+                          icon: Icon(Icons.calendar_today),
                           labelText: "RERA Expiry date",
-
                           border: OutlineInputBorder(),
                           hintText: 'Select Date',
                         ),
-                        readOnly:
-                            true,
+                        readOnly: true,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
@@ -711,17 +737,14 @@ class _SignupPageState extends State<SignupPage> {
                               lastDate: DateTime(2101));
 
                           if (pickedDate != null) {
-                            
                             String formattedDate =
-                              DateFormat('yyyy-MM-dd').format(pickedDate);
-                             
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+
                             setState(() {
                               dateinput.text = formattedDate;
                               establishment_date = formattedDate;
                             });
-                          } else {
-                            
-                          }
+                          } else {}
                         },
                       ),
                     ),
@@ -751,13 +774,15 @@ class _SignupPageState extends State<SignupPage> {
                                 height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 16.0, vertical: 8),
                                     border: InputBorder.none,
-                                    hintText: 'select region',
+                                    hintText: 'Select Region',
                                   ),
                                   value: region,
                                   isExpanded: true,
@@ -768,7 +793,9 @@ class _SignupPageState extends State<SignupPage> {
                                       value: value,
                                       child: Text(
                                         value,
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     );
                                   }).toList(),
@@ -810,6 +837,8 @@ class _SignupPageState extends State<SignupPage> {
                                 height: 57,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
@@ -831,7 +860,7 @@ class _SignupPageState extends State<SignupPage> {
                                       value: value,
                                       child: Text(
                                         value,
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     );
                                   }).toList(),
@@ -908,13 +937,15 @@ class _SignupPageState extends State<SignupPage> {
                                       height: 57,
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(4)),
                                       ),
                                       child: DropdownButtonFormField<String>(
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
                                               horizontal: 16.0, vertical: 8),
                                           border: InputBorder.none,
-                                          hintText: 'size',
+                                          hintText: 'Size',
                                         ),
                                         value: team_size,
                                         isExpanded: true,
@@ -929,7 +960,7 @@ class _SignupPageState extends State<SignupPage> {
                                             value: value,
                                             child: Text(
                                               value,
-                                              style: TextStyle(fontSize: 12),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           );
                                         }).toList(),
@@ -970,6 +1001,8 @@ class _SignupPageState extends State<SignupPage> {
                                       height: 57,
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(4)),
                                       ),
                                       child: DropdownButtonFormField<String>(
                                         decoration: InputDecoration(
@@ -990,7 +1023,7 @@ class _SignupPageState extends State<SignupPage> {
                                             value: value,
                                             child: Text(
                                               value,
-                                              style: TextStyle(fontSize: 12),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           );
                                         }).toList(),
