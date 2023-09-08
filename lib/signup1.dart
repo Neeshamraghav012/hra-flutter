@@ -634,8 +634,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                         children: [
                                           Image.asset(
                                             'images/camera.jpeg',
-                                            height: 30,
-                                            width: 80,
+                                            height: 50,
+                                            width: 150,
                                           ),
                                           SizedBox(height: 8),
                                           Text(
@@ -680,8 +680,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                       children: [
                                         Image.asset(
                                           'images/browse.jpeg',
-                                          height: 30,
-                                          width: 80,
+                                          height: 50,
+                                          width: 150,
                                         ),
                                         SizedBox(height: 8),
                                         Text(
