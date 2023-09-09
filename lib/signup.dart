@@ -347,15 +347,24 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your Full Name'),
-                          onChanged: (value) {
-                            setState(() {
-                              username = value;
-                            });
-                          },
+                        Container(
+                          height: 50,
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              hintText: 'Your Full Name',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 10),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                username = value;
+                              });
+                            },
+                          ),
                         ),
                       ]),
                     ),
@@ -684,13 +693,13 @@ class _SignupPageState extends State<SignupPage> {
                                     chipDisplay: MultiSelectChipDisplay.none(),
                                     title: Text(
                                       "Select Speciality",
-                                      
                                     ),
                                     buttonText: Text(
                                       "Select",
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Color.fromARGB(255, 120, 118, 118)),
+                                          color: Color.fromARGB(
+                                              255, 120, 118, 118)),
                                     ),
                                     items: speciality_list
                                         .map((e) => MultiSelectItem(e, e))
@@ -719,34 +728,64 @@ class _SignupPageState extends State<SignupPage> {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 15),
-                      child: TextField(
-                        controller: dateinput,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.calendar_today),
-                          labelText: "RERA Expiry date",
-                          border: OutlineInputBorder(),
-                          hintText: 'Select Date',
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 5, bottom: 5, top: 5),
+                            child: Text(
+                              "RERA Expiry date",
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        readOnly: true,
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2101));
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Color.fromRGBO(245, 251, 252, 1),
+                          ),
+                          child: TextField(
+                            controller: dateinput,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Select Date',
+                              suffixIcon: Icon(Icons.calendar_today),
+                            ),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2101),
+                              );
 
-                          if (pickedDate != null) {
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                              if (pickedDate != null) {
+                                print(pickedDate);
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                print(formattedDate);
 
-                            setState(() {
-                              dateinput.text = formattedDate;
-                              establishment_date = formattedDate;
-                            });
-                          } else {}
-                        },
-                      ),
+                                setState(() {
+                                  dateinput.text = formattedDate;
+                                  establishment_date = formattedDate;
+                                });
+                              } else {
+                                print("Date is not selected");
+                              }
+                            },
+                          ),
+                        ),
+                      ]),
                     ),
                     Row(
                       children: [
