@@ -164,7 +164,7 @@ class _Frame3875State extends State<Frame3875>
 
       Map<String, dynamic> data = {};
       data = apiData[0];
-      print(apiData[0]);
+      // print(apiData[0]);
 
       await initializeDateFormatting('en', null);
 
@@ -175,7 +175,7 @@ class _Frame3875State extends State<Frame3875>
 
       final inputDate = inputFormat.parse(inputString);
       final formattedDate = outputFormat.format(inputDate);
-      print(formattedDate);
+      // print(formattedDate);
 
       setState(() {
         userData = UserData(
@@ -204,6 +204,8 @@ class _Frame3875State extends State<Frame3875>
             ref_phone: data['ref_contact']);
         loading = false;
       });
+      print("rera number is: ");
+      print(userData.rera_number);
     } else {
       print('API request failed with status code:');
       setState(() {
@@ -364,7 +366,7 @@ class _Frame3875State extends State<Frame3875>
             ),
             Container(
               child: Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.only(bottom: 15, top: 15),
                 child: Container(
                   width: 150,
                   height: 20,
@@ -372,53 +374,47 @@ class _Frame3875State extends State<Frame3875>
                     color: Color(0xFFA1FF89),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (userData.is_profile_activated) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentPage(
-                                  user_id: widget.user_id,
-                                ),
-                              ));
-                        } else {
-                          _showConfirmationDialog(context);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFA1FF89),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        minimumSize: Size(120, 40),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (userData.is_profile_activated) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentPage(
+                              user_id: widget.user_id,
+                            ),
+                          ),
+                        );
+                      } else {
+                        _showConfirmationDialog(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary:
+                          Color(0xFFA1FF89), // Use primary for background color
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 2, top: 2),
-                        child: userData.is_profile_activated &&
-                                userData.is_payment_verified
-                            ? Expanded(
-                                child: Text(
-                                  "Verified Member",
+                      minimumSize: Size(120, 40),
+                      padding: EdgeInsets.all(0), // Set padding here
+                    ),
+                    child: Center(
+                      child: userData.is_profile_activated &&
+                              userData.is_payment_verified
+                          ? Text(
+                              "Verified Member",
+                              style: TextStyle(color: Colors.black),
+                            )
+                          : userData.is_profile_activated
+                              ? Text(
+                                  "Verify Payment",
+                                  style: TextStyle(color: Colors.black),
+                                )
+                              : Text(
+                                  'Verify',
                                   style: TextStyle(color: Colors.black),
                                 ),
-                              )
-                            : userData.is_profile_activated
-                                ? Expanded(
-                                    child: Text(
-                                      "Verify Payment",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  )
-                                : Expanded(
-                                    child: Text(
-                                      'Verify',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                      ),
                     ),
                   ),
                 ),
@@ -493,7 +489,8 @@ class _Frame3875State extends State<Frame3875>
                                               label1: "Speciality",
                                               val1: userData.Speciality!,
                                               label2: "Total experience",
-                                              val2: userData.experience!.toString())
+                                              val2: userData.experience!
+                                                  .toString())
                                           : Container(),
                                       userData.rera_exp != ''
                                           ? Infocolumn(
@@ -627,7 +624,8 @@ class _Frame3875State extends State<Frame3875>
                                       ? ElevatedButton.icon(
                                           onPressed: () async {
                                             String? url = userData.pan_url;
-                                            if (await canLaunchUrl(Uri.parse(url!))) {
+                                            if (await canLaunchUrl(
+                                                Uri.parse(url!))) {
                                               await launchUrl(Uri.parse(url!));
                                             } else {
                                               print('Could not launch $url');
@@ -828,7 +826,7 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 20, bottom: 5),
+      padding: EdgeInsets.only(top: 10, bottom: 5),
       child: Container(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(

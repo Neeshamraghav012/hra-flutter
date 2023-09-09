@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(150);
@@ -125,6 +124,12 @@ class SignupPage2 extends StatefulWidget {
 }
 
 class _SignupPage2State extends State<SignupPage2> {
+  bool isValidEmail(String email) {
+    // Regular expression for a valid email address
+    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
+
   bool terms = false;
   bool privacy = false;
   String ref_name = "";
@@ -254,6 +259,9 @@ class _SignupPage2State extends State<SignupPage2> {
             ));
       }
     } else {
+      setState(() {
+        error = error;
+      });
       print('API request failed with status code: ${response.statusCode}');
     }
     setState(() {
@@ -316,7 +324,7 @@ class _SignupPage2State extends State<SignupPage2> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Reference Full Name'),
@@ -346,10 +354,19 @@ class _SignupPage2State extends State<SignupPage2> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                           ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your phone number';
+                            } else if (value.length != 10) {
+                              return 'Phone number must be 10 digits';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -380,7 +397,18 @@ class _SignupPage2State extends State<SignupPage2> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
+                          keyboardType: TextInputType
+                              .emailAddress, // Set keyboard type to email
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your email address';
+                            } else if (!isValidEmail(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Enter E-mail Id'),
@@ -466,6 +494,19 @@ class _SignupPage2State extends State<SignupPage2> {
                         ),
                       ],
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: error != ''
+                          ? Text(
+                              error,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFFF4D4D),
+                              ),
+                            )
+                          : Text(''),
+                    ),
                     Row(children: [
                       Padding(
                         padding: EdgeInsets.only(top: 20),
@@ -504,7 +545,9 @@ class _SignupPage2State extends State<SignupPage2> {
                       ),
                       Spacer(),
                       loading
-                          ? CircularProgressIndicator()
+                          ? Padding(
+                              padding: EdgeInsets.only(right: 5),
+                              child: CircularProgressIndicator())
                           : Padding(
                               padding: EdgeInsets.only(top: 20),
                               child: ElevatedButton(

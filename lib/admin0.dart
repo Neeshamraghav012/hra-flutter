@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hra/admin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -80,178 +81,185 @@ class _AdminState extends State<Admin> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          actions: [
-            Icon(
-              Icons.notifications_active,
-              size: 30,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Icon(
-              Icons.account_circle_rounded,
-              size: 30,
-            ),
-          ],
-          title: Text(widget.title),
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: const EdgeInsets.all(0),
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ), //BoxDecoration
-                child: UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: Colors.white),
-                  accountName: Text(
-                    "Raghavendra Maram",
-                    style: TextStyle(fontSize: 18, color: Colors.black),
-                  ),
-                  accountEmail: Text(
-                    "raghu@squareselect.in",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  currentAccountPictureSize: Size.square(50),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage('images/icon.png'),
-                  ), //circleAvatar
-                ), //UserAccountDrawerHeader
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+
+        return false;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              Icon(
+                Icons.notifications_active,
+                size: 30,
               ),
-
-              //DrawerHeader
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.home),
-                title: const Text(' Dashboard '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
+              SizedBox(
+                width: 5,
               ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.person),
-                title: const Text(' My Profile '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.network_locked),
-                title: const Text(' Network Members '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.bar_chart_sharp),
-                title: const Text(' Add Events '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.image),
-                title: const Text(' Add Images '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.dock),
-                title: const Text(' Add Brochures '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.panorama_horizontal_select),
-                title: const Text(' Add Training Material '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.article),
-                title: const Text(' Add Articles '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.branding_watermark),
-                title: const Text(' Add Banners '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.help),
-                title: const Text(' Help '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: const Icon(Icons.logout),
-                title: const Text('LogOut'),
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false,
-                  );
-                },
+              Icon(
+                Icons.account_circle_rounded,
+                size: 30,
               ),
             ],
+            title: Text(widget.title),
+            backgroundColor: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
           ),
-        ),
-        body: loading
-            ? Center(child: CircularProgressIndicator())
-            : usersData.length == 0
-                ? Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 40),
-                      child: Center(child: Text("No unverified profiles")),
+          drawer: Drawer(
+            child: ListView(
+              padding: const EdgeInsets.all(0),
+              children: [
+                const DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ), //BoxDecoration
+                  child: UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(color: Colors.white),
+                    accountName: Text(
+                      "Raghavendra Maram",
+                      style: TextStyle(fontSize: 18, color: Colors.black),
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: usersData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final myObject = usersData[index];
-                      return Profiles(
-                        name: myObject.username,
-                        info: myObject.establishment ?? "Individual",
-                        user_id: myObject.id,
-                      );
-                    },
-                  ));
+                    accountEmail: Text(
+                      "raghu@squareselect.in",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    currentAccountPictureSize: Size.square(50),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('images/icon.png'),
+                    ), //circleAvatar
+                  ), //UserAccountDrawerHeader
+                ),
+
+                //DrawerHeader
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.home),
+                  title: const Text(' Dashboard '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.person),
+                  title: const Text(' My Profile '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.network_locked),
+                  title: const Text(' Network Members '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.bar_chart_sharp),
+                  title: const Text(' Add Events '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.image),
+                  title: const Text(' Add Images '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.dock),
+                  title: const Text(' Add Brochures '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.panorama_horizontal_select),
+                  title: const Text(' Add Training Material '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.article),
+                  title: const Text(' Add Articles '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.branding_watermark),
+                  title: const Text(' Add Banners '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.help),
+                  title: const Text(' Help '),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  leading: const Icon(Icons.logout),
+                  title: const Text('LogOut'),
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      (route) => false,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          body: loading
+              ? Center(child: CircularProgressIndicator())
+              : usersData.length == 0
+                  ? Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: Center(child: Text("No unverified profiles")),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: usersData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final myObject = usersData[index];
+                        return Profiles(
+                          name: myObject.username,
+                          info: myObject.establishment ?? "Individual",
+                          user_id: myObject.id,
+                        );
+                      },
+                    )),
+    );
   }
 }
 

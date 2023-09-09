@@ -125,21 +125,17 @@ class _SocialPageState extends State<SocialPage> {
               height: 200, // Adjust the height as needed
             ),
             SizedBox(height: 20),
-            loading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Text(
-                    message,
-                    style: TextStyle(
-                      fontFamily: "Roboto",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff000000),
-                      //height: 64 / 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+            loading ? Center(child: CircularProgressIndicator(),) : Text(
+              message,
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff000000),
+                //height: 64 / 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
             is_profile_activated && is_email_activated
                 ? Padding(
                     padding: EdgeInsets.only(top: 10),
