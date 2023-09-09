@@ -93,12 +93,11 @@ class _LoginPageState extends State<LoginPage> {
   String id = '';
   bool show_password = false;
 
-  Future<bool> saveUser(String user) async {
+  Future<void> saveUser(String user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("userId", user);
+    await prefs.setString("userId", user);
 
-    return prefs.commit();
   }
 
   Future<void> fetchPost() async {
@@ -280,6 +279,21 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: passwordHint,
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    show_password =
+                                        !show_password; 
+                                  });
+                                },
+                                child: Icon(
+                                  show_password
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors
+                                      .grey, 
+                                ),
+                              ),
                             ),
                             onTap: () {
                               setState(() {
@@ -301,14 +315,14 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: [
                         Checkbox(
-                          value: show_password,
+                          value: rememberMe,
                           onChanged: (value) {
                             setState(() {
-                              show_password = value!;
+                              rememberMe = value!;
                             });
                           },
                         ),
-                        Text('Show Password'),
+                        Text('Remember me'),
                         Spacer(),
                         TextButton(
                           onPressed: () {

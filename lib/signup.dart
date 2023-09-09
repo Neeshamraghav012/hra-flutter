@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:hra/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -136,7 +137,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   // input values
-  double speciality_width = 57;
   String username = "";
   String email = "";
   String address = "";
@@ -155,10 +155,51 @@ class _SignupPageState extends State<SignupPage> {
   String password = "";
   String error = "";
   String region_id = "138f3a4d-83ff-4ddc-93f2-ef15e5d4f3d4";
+  bool show_password = false;
 
   // Dropdown lists
   List speciality_list = [];
   List region_list = [];
+  List selected_speciality = [];
+
+  Future<void> saveData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString("username", username);
+    await prefs.setString("email", email);
+    await prefs.setString("password", password);
+    await prefs.setString("phone", phone);
+    await prefs.setString("city", city);
+    await prefs.setString("experience", experience);
+    await prefs.setString("est", est);
+    await prefs.setString("state", state!);
+    await prefs.setString("address", address);
+    await prefs.setString("speciality", speciality!);
+    await prefs.setString("region", region!);
+    await prefs.setString("user_type", user_type!);
+    await prefs.setString("team_size", team_size!);
+    await prefs.setString("core_buisness", core_buisness!);
+    await prefs.setString("establishment_date", establishment_date);
+  }
+
+  Future<void> getData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    username = prefs.getString("username")!;
+    email = prefs.getString("email")!;
+    password = prefs.getString("password")!;
+    phone = prefs.getString("phone")!;
+    city = prefs.getString("city")!;
+    experience = prefs.getString("experience")!;
+    est = prefs.getString("est")!;
+    state = prefs.getString("state");
+    address = prefs.getString("address")!;
+    speciality = prefs.getString("speciality");
+    region = prefs.getString("region");
+    user_type = prefs.getString("user_type");
+    team_size = prefs.getString("team_size");
+    core_buisness = prefs.getString("core_buisness");
+    establishment_date = prefs.getString("establishment_date")!;
+  }
 
   Map<dynamic, dynamic> speciality_map = {};
   Map<dynamic, dynamic> region_map = {};
@@ -289,7 +330,6 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     dateinput.text = "";
-    speciality_width = 57;
     fetchPost();
   }
 
@@ -347,7 +387,14 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your full name';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Your Full Name'),
@@ -377,10 +424,19 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                           ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your phone number';
+                            } else if (value.length != 10) {
+                              return 'Phone number must be 10 digits';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -411,7 +467,18 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
+                          keyboardType: TextInputType
+                              .emailAddress, // Set keyboard type to email
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your email address';
+                            } else if (!isValidEmail(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Your Email address'),
@@ -441,9 +508,31 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
-                          obscureText: true,
+                        TextFormField(
+                          obscureText: !show_password,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your password';
+                            } else if (value.length < 6) {
+                              return 'Password must be atleast 6 digits long';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    show_password = !show_password;
+                                  });
+                                },
+                                child: Icon(
+                                  show_password
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.grey,
+                                ),
+                              ),
                               border: OutlineInputBorder(),
                               hintText: 'Your password'),
                           onChanged: (value) {
@@ -472,7 +561,14 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextField(
+                        TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Your address'),
@@ -506,7 +602,15 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextField(
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your city';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: 'Enter your city',
@@ -635,7 +739,18 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextField(
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your phone number';
+                                  } else if (value.length < 0 &&
+                                      value.length > 60) {
+                                    return 'Please enter a valid experience';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp(r'[0-9]'))
@@ -680,50 +795,91 @@ class _SignupPageState extends State<SignupPage> {
                                     border: Border.all(color: Colors.grey),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(4))),
-                                child: MultiSelectDialogField(
-                                    chipDisplay: MultiSelectChipDisplay.none(),
-                                    title: Text(
-                                      "Select Speciality",
-                                      
-                                    ),
-                                    buttonText: Text(
-                                      "Select",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color.fromARGB(255, 120, 118, 118)),
-                                    ),
-                                    items: speciality_list
-                                        .map((e) => MultiSelectItem(e, e))
-                                        .toList(),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey, width: 0.1),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4)),
-                                    ),
-                                    listType: MultiSelectListType.CHIP,
-                                    buttonIcon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Color.fromARGB(255, 88, 87, 87),
-                                    ),
-                                    onConfirm: (values) {
-                                      setState(() {
-                                        speciality =
-                                            speciality_map[values.first];
-                                      });
-                                    }),
+                                child: Padding(
+                                  padding: EdgeInsets.all(4),
+                                  child: MultiSelectDialogField(
+                                      chipDisplay:
+                                          MultiSelectChipDisplay.none(),
+                                      title: Text(
+                                        "Select Speciality",
+                                      ),
+                                      buttonText: Text(
+                                        "Select",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color.fromARGB(
+                                                255, 120, 118, 118)),
+                                      ),
+                                      items: speciality_list
+                                          .map((e) => MultiSelectItem(e, e))
+                                          .toList(),
+                                      decoration: BoxDecoration(),
+                                      listType: MultiSelectListType.CHIP,
+                                      buttonIcon: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Color.fromARGB(255, 88, 87, 87),
+                                      ),
+                                      onSelectionChanged: (p0) => {
+                                            setState(() {
+                                              selected_speciality = p0;
+                                            })
+                                          },
+                                      onConfirm: (values) {
+                                        print(values);
+                                        setState(() {
+                                          selected_speciality = values;
+                                          speciality =
+                                              speciality_map[values.first];
+                                        });
+                                      }),
+                                ),
                               )
                             ]),
                           ),
                         ),
                       ],
                     ),
+                    Visibility(
+                      visible: selected_speciality
+                          .isNotEmpty, // Hide if selected_speciality is empty
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 4, bottom: 4),
+                            child: Text(
+                              'Selected Specialties are:',
+                              style: TextStyle(
+                                fontSize: 14, // adjust the font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: Wrap(
+                              spacing: 6.0, // Adjust spacing between chips
+                              runSpacing:
+                                  6.0, // Adjust spacing between rows of chips
+                              children: selected_speciality.map((category) {
+                                return Chip(
+                                  label: Text(category),
+                                  backgroundColor: Color(0xFF376F92),
+                                  labelStyle: TextStyle(color: Colors.white),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 15),
+                      padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 6),
                       child: TextField(
                         controller: dateinput,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.calendar_today),
+                          //icon: Icon(Icons.calendar_today),
+                          suffixIcon: Icon(Icons.calendar_today),
                           labelText: "RERA Expiry date",
                           border: OutlineInputBorder(),
                           hintText: 'Select Date',
@@ -897,7 +1053,15 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextField(
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter the name of establishment';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: 'Name of Establishment'),
