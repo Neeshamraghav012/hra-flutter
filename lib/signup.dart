@@ -390,7 +390,15 @@ class _SignupPageState extends State<SignupPage> {
                         Container(
                           height: 50,
                           color: Color.fromRGBO(245, 251, 252, 1),
-                          child: TextField(
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your full name';
+                              }
+                              return null; // Return null if the input is valid
+                            },
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -426,28 +434,36 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextFormField(
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                          ],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your phone number';
-                            } else if (value.length != 10) {
-                              return 'Phone number must be 10 digits';
-                            }
-                            return null; // Return null if the input is valid
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your phone number'),
-                          onChanged: (value) {
-                            setState(() {
-                              phone = value;
-                            });
-                          },
+                        Container(
+                          height: 50,
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          child: TextFormField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]'))
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your phone number';
+                              } else if (value.length != 10) {
+                                return 'Phone number must be 10 digits';
+                              }
+                              return null; // Return null if the input is valid
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                hintText: 'Your phone number'),
+                            onChanged: (value) {
+                              setState(() {
+                                phone = value;
+                              });
+                            },
+                          ),
                         ),
                       ]),
                     ),
@@ -469,26 +485,33 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextFormField(
-                          keyboardType: TextInputType
-                              .emailAddress, // Set keyboard type to email
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your email address';
-                            } else if (!isValidEmail(value)) {
-                              return 'Please enter a valid email address';
-                            }
-                            return null; // Return null if the input is valid
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your Email address'),
-                          onChanged: (value) {
-                            setState(() {
-                              email = value;
-                            });
-                          },
+                        Container(
+                          height: 50,
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          child: TextFormField(
+                            keyboardType: TextInputType
+                                .emailAddress, // Set keyboard type to email
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your email address';
+                              } else if (!isValidEmail(value)) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null; // Return null if the input is valid
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                hintText: 'Your Email address'),
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                              });
+                            },
+                          ),
                         ),
                       ]),
                     ),
@@ -510,38 +533,45 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextFormField(
-                          obscureText: !show_password,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your password';
-                            } else if (value.length < 6) {
-                              return 'Password must be atleast 6 digits long';
-                            }
-                            return null; // Return null if the input is valid
-                          },
-                          decoration: InputDecoration(
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    show_password = !show_password;
-                                  });
-                                },
-                                child: Icon(
-                                  show_password
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.grey,
+                        Container(
+                          height: 50,
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          child: TextFormField(
+                            obscureText: !show_password,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              } else if (value.length < 6) {
+                                return 'Password must be atleast 6 digits long';
+                              }
+                              return null; // Return null if the input is valid
+                            },
+                            decoration: InputDecoration(
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      show_password = !show_password;
+                                    });
+                                  },
+                                  child: Icon(
+                                    show_password
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              border: OutlineInputBorder(),
-                              hintText: 'Your password'),
-                          onChanged: (value) {
-                            setState(() {
-                              password = value;
-                            });
-                          },
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                hintText: 'Your password'),
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
                         ),
                       ]),
                     ),
@@ -563,22 +593,29 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your address';
-                            }
-                            return null; // Return null if the input is valid
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Your address'),
-                          onChanged: (value) {
-                            setState(() {
-                              address = value;
-                            });
-                          },
+                        Container(
+                          color: Color.fromRGBO(245, 251, 252, 1),
+                          height: 50,
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your address';
+                              }
+                              return null; // Return null if the input is valid
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                hintText: 'Your address'),
+                            onChanged: (value) {
+                              setState(() {
+                                address = value;
+                              });
+                            },
+                          ),
                         ),
                       ]),
                     ),
@@ -604,24 +641,30 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter your city';
-                                  }
-                                  return null; // Return null if the input is valid
-                                },
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Enter your city',
+                              Container(
+                                height: 50,
+                                color: Color.fromRGBO(245, 251, 252, 1),
+                                child: TextFormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your city';
+                                    }
+                                    return null; // Return null if the input is valid
+                                  },
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    hintText: 'Enter your city',
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      city = value;
+                                    });
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    city = value;
-                                  });
-                                },
                               ),
                             ]),
                           ),
@@ -647,20 +690,21 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
-                                height: 57,
+                                height: 50,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4)),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Color.fromRGBO(245, 251, 252, 1),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
+                                        horizontal: 8.0, vertical: 8),
                                     border: InputBorder.none,
                                     hintText: 'Select',
                                   ),
                                   value: state,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
                                   items: <String>[
                                     "Andhra Pradesh",
@@ -741,32 +785,38 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter your phone number';
-                                  } else if (value.length < 0 &&
-                                      value.length > 60) {
-                                    return 'Please enter a valid experience';
-                                  }
-                                  return null; // Return null if the input is valid
-                                },
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[0-9]'))
-                                ],
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Years of experience',
+                              Container(
+                                color: Color.fromRGBO(245, 251, 252, 1),
+                                height: 50,
+                                child: TextFormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your phone number';
+                                    } else if (value.length < 0 &&
+                                        value.length > 60) {
+                                      return 'Please enter a valid experience';
+                                    }
+                                    return null; // Return null if the input is valid
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]'))
+                                  ],
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    hintText: 'Years of experience',
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      experience = value;
+                                    });
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    experience = value;
-                                  });
-                                },
                               ),
                             ]),
                           ),
@@ -792,19 +842,20 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
-                                height: 57,
+                                height: 50,
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4))),
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Color.fromRGBO(245, 251, 252, 1),
+                                ),
                                 child: Padding(
-                                  padding: EdgeInsets.all(4),
+                                  padding: EdgeInsets.all(2),
                                   child: MultiSelectDialogField(
                                       chipDisplay:
                                           MultiSelectChipDisplay.none(),
-                                      title: Text(
-                                        "Select Speciality",
-                                      ),
+                                      // title: Text(
+                                      //   "Select Speciality",
+                                      // ),
                                       buttonText: Text(
                                         "Select",
                                         style: TextStyle(
@@ -818,7 +869,7 @@ class _SignupPageState extends State<SignupPage> {
                                       decoration: BoxDecoration(),
                                       listType: MultiSelectListType.CHIP,
                                       buttonIcon: Icon(
-                                        Icons.arrow_drop_down,
+                                        Icons.keyboard_arrow_down,
                                         color: Color.fromARGB(255, 88, 87, 87),
                                       ),
                                       onSelectionChanged: (p0) => {
@@ -841,23 +892,86 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ],
                     ),
+                    Visibility(
+                      visible: selected_speciality
+                          .isNotEmpty, // Hide if selected_speciality is empty
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 4, bottom: 4),
+                            child: Text(
+                              'Selected Specialties are:',
+                              style: TextStyle(
+                                fontSize: 14, // adjust the font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: Wrap(
+                              spacing: 6.0, // Adjust spacing between chips
+                              runSpacing:
+                                  6.0, // Adjust spacing between rows of chips
+                              children: selected_speciality.map((category) {
+                                return Chip(
+                                  label: Text(category),
+                                  backgroundColor: Color(0xFF376F92),
+                                  labelStyle: TextStyle(color: Colors.white),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10, left: 15),
-                      child: TextField(
-                        controller: dateinput,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.calendar_today),
-                          labelText: "RERA Expiry date",
-                          border: OutlineInputBorder(),
-                          hintText: 'Select Date',
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 5, bottom: 5, top: 5),
+                            child: Text(
+                              "RERA Expiry date",
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        readOnly: true,
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2101));
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Color.fromRGBO(245, 251, 252, 1),
+                          ),
+                          child: TextField(
+                            controller: dateinput,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 16,
+                              ),
+                              border: InputBorder.none,
+                              hintText: 'Select Date',
+                              suffixIcon: Icon(Icons
+                                  .calendar_today), // Icon on the right side
+                            ),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2101),
+                              );
 
                               if (pickedDate != null) {
                                 print(pickedDate);
@@ -900,20 +1014,21 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
-                                height: 57,
+                                height: 50,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4)),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Color.fromRGBO(245, 251, 252, 1),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
+                                        horizontal: 8.0, vertical: 8),
                                     border: InputBorder.none,
                                     hintText: 'Select Region',
                                   ),
                                   value: region,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
                                   items: regionNames
                                       .map<DropdownMenuItem<String>>(
@@ -963,20 +1078,21 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               Container(
-                                height: 57,
+                                height: 50,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4)),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Color.fromRGBO(245, 251, 252, 1),
                                 ),
                                 child: DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8),
+                                        horizontal: 8.0, vertical: 8),
                                     border: InputBorder.none,
                                     hintText: 'Company',
                                   ),
                                   value: user_type,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
                                   isExpanded: true,
                                   items: <String>[
                                     "Individual",
@@ -1026,23 +1142,30 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter the name of establishment';
-                                  }
-                                  return null; // Return null if the input is valid
-                                },
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Name of Establishment'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    est = value;
-                                  });
-                                },
+                              Container(
+                                height: 50,
+                                color: Color.fromRGBO(245, 251, 252, 1),
+                                child: TextFormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter the name of establishment';
+                                    }
+                                    return null; // Return null if the input is valid
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      hintText: 'Name of Establishment'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      est = value;
+                                    });
+                                  },
+                                ),
                               ),
                             ]),
                           )
@@ -1071,20 +1194,23 @@ class _SignupPageState extends State<SignupPage> {
                                       ),
                                     ),
                                     Container(
-                                      height: 57,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        color: Color.fromRGBO(245, 251, 252, 1),
                                       ),
                                       child: DropdownButtonFormField<String>(
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 16.0, vertical: 8),
+                                              horizontal: 8.0, vertical: 8),
                                           border: InputBorder.none,
                                           hintText: 'Size',
                                         ),
                                         value: team_size,
+                                        icon: const Icon(
+                                            Icons.keyboard_arrow_down),
                                         isExpanded: true,
                                         items: <String>[
                                           "1-5",
@@ -1135,20 +1261,23 @@ class _SignupPageState extends State<SignupPage> {
                                       ),
                                     ),
                                     Container(
-                                      height: 57,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        color: Color.fromRGBO(245, 251, 252, 1),
                                       ),
                                       child: DropdownButtonFormField<String>(
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 16.0, vertical: 8),
+                                              horizontal: 8.0, vertical: 8),
                                           border: InputBorder.none,
                                           hintText: 'Business type',
                                         ),
                                         value: core_buisness,
+                                        icon: const Icon(
+                                            Icons.keyboard_arrow_down),
                                         isExpanded: true,
                                         items: <String>[
                                           "Primary",
