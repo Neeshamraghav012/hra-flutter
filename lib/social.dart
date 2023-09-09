@@ -90,8 +90,8 @@ class _SocialPageState extends State<SocialPage> {
       } else if (is_email_activated && is_profile_activated) {
         message =
             "Your profile has been\n verified by the admin.\n You can pay the membership fees now.";
-      } else {
-        message = "Congratulations, You are a verified member now!";
+      } else if (is_email_activated){
+        message = "You have successfully applied\n for the member verification.\n Please wait for the admin's approval.";
       }
 
       print(is_payment_verified);

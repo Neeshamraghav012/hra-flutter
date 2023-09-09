@@ -426,11 +426,10 @@ class _Frame3875State extends State<Frame3875>
                 child: Column(
                   children: <Widget>[
                     loading
-                        ? Expanded(
-                            child: Center(
+                        ? Center(
                               child: CircularProgressIndicator(),
-                            ),
-                          )
+                            )
+  
                         : Flexible(
                             child: Container(
                               child: TabBar(

@@ -216,18 +216,7 @@ class _SignupPage1State extends State<SignupPage1> {
       "rera_url": rera_url,
     };
 
-    if (profile_url == '' ||
-        pan_url == '' ||
-        aadhar_url == '' ||
-        rera_url == '' ||
-        pan_number == '' ||
-        aadhar_number == '' ||
-        rera_number == '') {
-      setState(() {
-        error = "Please provide all the details";
-      });
-      return;
-    }
+
 
     print(pan_number);
     print(aadhar_number);

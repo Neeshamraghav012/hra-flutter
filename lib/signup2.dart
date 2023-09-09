@@ -443,9 +443,17 @@ class _SignupPage2State extends State<SignupPage2> {
                                     color: Colors.blue,
                                   ),
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      canLaunchUrl(Uri.parse(
-                                          'https://onfocussoft.com/hra-privacypolicy/'));
+                                    ..onTap = () async {
+                                      if (await canLaunchUrl(Uri.parse(
+                                          'https://onfocussoft.com/hra-privacypolicy/'))) {
+                                        await launchUrl(
+                                          Uri.parse(
+                                              'https://onfocussoft.com/hra-privacypolicy/'),
+                                        );
+                                      } else {
+                                        print(await canLaunchUrl(Uri.parse(
+                                            'https://onfocussoft.com/hra-privacypolicy/')));
+                                      }
                                     },
                                 ),
                                 TextSpan(
@@ -480,9 +488,17 @@ class _SignupPage2State extends State<SignupPage2> {
                                     color: Colors.blue,
                                   ),
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      canLaunchUrl(Uri.parse(
-                                          'https://onfocussoft.com/hra-privacypolicy/'));
+                                    ..onTap = () async {
+                                      if (await canLaunchUrl(Uri.parse(
+                                          'https://onfocussoft.com/hra-privacypolicy/'))) {
+                                        await launchUrl(
+                                          Uri.parse(
+                                              'https://onfocussoft.com/hra-privacypolicy/'),
+                                        );
+                                      } else {
+                                        print(await canLaunchUrl(Uri.parse(
+                                            'https://onfocussoft.com/hra-privacypolicy/')));
+                                      }
                                     },
                                 ),
                                 TextSpan(
