@@ -910,97 +910,102 @@ class _SignupPage1State extends State<SignupPage1> {
       }
     }
     return Padding(
-      padding: EdgeInsets.only(left: 20, top: 20),
+      padding: EdgeInsets.only(left: 5, top: 5, right: 5),
       child: Row(
         children: [
           Expanded(
+            // child: Container(
+            //child: SizedBox(
+            //height: 500,
+            //width: 500,
             child: Container(
-              child: SizedBox(
-                height: 150,
-                width: 200,
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: DottedBorder(
-                    color: Colors.blueGrey,
-                    strokeWidth: 3,
-                    dashPattern: [10, 6],
-                    child: ElevatedButton(
-                      onPressed: () {
-                        scanImage(doc);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 249, 250, 250),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              width: 189,
+              height: 140,
+              // padding: EdgeInsets.all(8),
+              child: DottedBorder(
+                color: Color.fromARGB(255, 173, 173, 173),
+                strokeWidth: 1,
+                dashPattern: [6, 7],
+                child: ElevatedButton(
+                  onPressed: () {
+                    scanImage(doc);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 249, 250, 250),
+                    //padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          'images/Union.jpg',
+                          height: 51,
+                          width: 37,
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'images/camera.jpeg',
-                            height: 50,
-                            width: 150,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "Scan now",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
+                      SizedBox(height: 8),
+                      Text(
+                        "Scan now",
+                        style: TextStyle(color: Colors.black),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Container(
-              height: 150,
-              width: 150,
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: DottedBorder(
-                  color: Colors.blueGrey,
-                  strokeWidth: 3,
-                  dashPattern: [10, 6],
-                  child: ElevatedButton(
-                    onPressed: () {
-                      chooseImage(doc);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 249, 250, 250),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'images/browse.jpeg',
-                          height: 50,
-                          width: 150,
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Browse files",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            //),
+            //),
           ),
           SizedBox(
             width: 20,
           ),
+          Expanded(
+            child: Container(
+              height: 140,
+              width: 189,
+              child: DottedBorder(
+                color: Color.fromARGB(255, 173, 173, 173),
+                strokeWidth: 1,
+                dashPattern: [6, 7],
+                child: ElevatedButton(
+                  onPressed: () {
+                    chooseImage(doc);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 249, 250, 250),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          'images/browse.png',
+                          height: 51,
+                          width: 37,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Browse files",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // SizedBox(
+          //   width: 20,
+          // ),
         ],
       ),
     );
