@@ -97,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString("userId", user);
-
   }
 
   Future<void> fetchPost() async {
@@ -282,16 +281,14 @@ class _LoginPageState extends State<LoginPage> {
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    show_password =
-                                        !show_password; 
+                                    show_password = !show_password;
                                   });
                                 },
                                 child: Icon(
                                   show_password
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: Colors
-                                      .grey, 
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -322,7 +319,12 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                         ),
-                        Text('Remember me'),
+                        Text(
+                          'Show Password',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
                         Spacer(),
                         TextButton(
                           onPressed: () {
@@ -332,7 +334,12 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => ForgotPage()),
                             );
                           },
-                          child: Text('Forgot Password?'),
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -357,7 +364,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: Text(
                               'Login',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 20,
                                 color: Colors.white, // Text color
                               ),
                             ),
@@ -383,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             "Don't have an account? ",
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
