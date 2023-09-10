@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SignupPage(),
+      home: SplashScreen(),
     );
   }
 }
@@ -58,9 +58,10 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => SocialPage(
-                    user_id: userId.toString(),
-                  )),
+            builder: (context) => SocialPage(
+              user_id: userId.toString(),
+            ),
+          ),
         );
       }
       Navigator.pushReplacement(
