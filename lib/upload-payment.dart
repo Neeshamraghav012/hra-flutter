@@ -24,7 +24,7 @@ class _UploadPaymentPageState extends State<UploadPaymentPage> {
   String user_id = "";
 
   Future<void> chooseImage() async {
-    var choosedimage = await picker.pickImage(source: ImageSource.camera);
+    var choosedimage = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       uploadimage = choosedimage;

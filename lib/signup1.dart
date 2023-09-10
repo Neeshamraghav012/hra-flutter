@@ -216,7 +216,18 @@ class _SignupPage1State extends State<SignupPage1> {
       "rera_url": rera_url,
     };
 
-
+    if (profile_url == '' ||
+        pan_url == '' ||
+        aadhar_url == '' ||
+        rera_url == '' ||
+        pan_number == '' ||
+        aadhar_number == '' ||
+        rera_number == '') {
+      setState(() {
+        error = "Please provide all the details";
+      });
+      return;
+    }
 
     print(pan_number);
     print(aadhar_number);
@@ -610,8 +621,8 @@ class _SignupPage1State extends State<SignupPage1> {
                                   if (value!.isEmpty) {
                                     return 'Please enter valid ${doc} number';
                                   } else if (doc == 'Aadhar') {
-                                    if (value.length != 16) {
-                                      return 'Please enter 16 digits aadhar number';
+                                    if (value.length != 12) {
+                                      return 'Please enter 12 digits aadhar number';
                                     }
                                   } else if (doc == 'PAN') {
                                     if (value.length != 10) {

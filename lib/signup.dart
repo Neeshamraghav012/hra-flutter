@@ -632,7 +632,7 @@ class _SignupPageState extends State<SignupPage> {
                                 alignment: Alignment.topLeft,
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      left: 5, bottom: 5, top: 5),
+                                       left: 5, bottom: 5, top: 5),
                                   child: Text(
                                     'State',
                                     style: TextStyle(
