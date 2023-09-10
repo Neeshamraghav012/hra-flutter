@@ -13,6 +13,7 @@ import 'package:hra/signup.dart';
 import 'package:hra/social.dart';
 import 'package:hra/training-material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hra/signup2.dart';
 
 void main() {
   runApp(MyApp());

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hra/forgot-password.dart';
 import 'dart:convert';
 import 'package:hra/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:hra/social.dart';
 import 'package:hra/signup.dart';
 import 'package:hra/registered.dart';
 import 'package:hra/app-config.dart';
@@ -569,6 +567,7 @@ class _SignupPage2State extends State<SignupPage2> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   register();
+
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
