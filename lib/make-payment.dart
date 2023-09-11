@@ -7,11 +7,18 @@ class PayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFF4D4D),
+        elevation: 0,
+        toolbarHeight: 100,
+      ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(40),
+          padding: EdgeInsets.only(top: 107, left: 29, right: 30),
           child: Container(
+            width: 334,
+            height: 504,
+            //padding: EdgeInsets.only(top: 41, left: 23, right: 23),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -27,69 +34,82 @@ class PayPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      "Scan QR Code to pay.",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 41, left: 75, right: 23),
+                    child: Container(
+                      width: 285,
+                      height: 27,
+                      // child: Padding(
+                      //   padding: EdgeInsets.only(left: 52, right: 23),
+                      child: Text(
+                        "Scan QR Code to pay.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
+                  //),
                 ),
                 Container(
-                  padding: EdgeInsets.all(10),
-                  child: DottedBorder(
-                      color: Color.fromARGB(255, 209, 204, 204),
-                      strokeWidth: 3,
-                      dashPattern: [10, 6],
-                      child: Container(
-                          height: 300,
-                          width: 230,
-                          child: Center(
-                            child: Image.asset(
-                              'images/qr.jpeg',
-                              fit: BoxFit.cover,
-                            ),
-                          ))),
+                  padding: EdgeInsets.all(0),
+                  child: Container(
+                      height: 220,
+                      width: 224,
+                      child: Center(
+                        child: Image.asset(
+                          'images/qr.jpeg',
+                          fit: BoxFit.cover,
+                        ),
+                      )),
                 ),
                 Expanded(
                   child: Center(
-                    child:
-                        Text("After successfull payment, upload your receipt.",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            )),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 41,
+                          right: 40), // You can adjust the padding as needed
+                      child: Text(
+                        "After successful payment, upload\n"
+                        "                  your receipt.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UploadPaymentPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      width: 180, // Set your desired width
+                      height: 40, // Set your desired height
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UploadPaymentPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          backgroundColor: Colors.black,
+                        ),
+                        child: Text(
+                          'Upload Now',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                      backgroundColor: Color(0xFFFF4D4D),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    ),
-                    child: Text(
-                      'Upload Now',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
+                    )),
               ],
             ),
           ),
