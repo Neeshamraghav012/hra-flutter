@@ -15,7 +15,11 @@ class _MembershipState extends State<MembershipPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFF4D4D),
+        elevation: 0,
+        toolbarHeight: 100,
+      ),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(top: 105, bottom: 27.8),
