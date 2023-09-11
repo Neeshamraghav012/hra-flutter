@@ -19,15 +19,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.only(top: 10, right: 20),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Text(
-                'View Profile',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              // child: Text(
+
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontSize: 16,
+              //     fontFamily: 'Poppins',
+              //     fontWeight: FontWeight.w500,
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -137,35 +137,35 @@ class _PaymentPageState extends State<PaymentPage> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 100),
               child: Align(
                 alignment: Alignment.center,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('images/profile.png'),
-                      fit: BoxFit.fill,
-                    ),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Color(0xFFF7F7F7),
-                      width: 1,
-                    ),
-                  ),
-                ),
+                // child: Container(
+                //   width: 100,
+                //   height: 100,
+                //   // decoration: BoxDecoration(
+                //   //   // image: DecorationImage(
+                //   //   //   image: AssetImage('images/profile.png'),
+                //   //   //   fit: BoxFit.fill,
+                //   //   // ),
+                //   //   shape: BoxShape.circle,
+                //   //   border: Border.all(
+                //   //     color: Color(0xFFF7F7F7),
+                //   //     width: 1,
+                //   //   ),
+                //   // ),
+                // ),
               ),
             ),
             Container(
               padding: EdgeInsets.all(20),
               child: DottedBorder(
-                  color: Color.fromARGB(255, 209, 204, 204),
-                  strokeWidth: 3,
-                  dashPattern: [10, 6],
+                  color: Colors.black,
+                  strokeWidth: 1,
+                  dashPattern: [6, 6],
                   child: Container(
-                      height: 300,
-                      width: 230,
+                      height: 349,
+                      width: 264,
                       child: Center(
                         child: payment_link != null
                             ? Image.network(
@@ -178,6 +178,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               ),
                       ))),
             ),
+            SizedBox(height: 49),
             loading
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -186,23 +187,29 @@ class _PaymentPageState extends State<PaymentPage> {
                     ? Center(
                         child: Text("Payment Verified"),
                       )
-                    : ElevatedButton(
-                        onPressed: () {
-                          verifyPayment();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                    : Container(
+                        width: 160, // Set your desired width
+                        height: 41, // Set your desired height
+                        child: ElevatedButton(
+                          onPressed: () {
+                            verifyPayment();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            backgroundColor: Colors.black,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 11,
+                            ),
                           ),
-                          backgroundColor: Color(0xFFFF4D4D),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
-                        ),
-                        child: Text(
-                          'Confirm',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white, // Text color
+                          child: Text(
+                            'Confirm',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, // Text color
+                            ),
                           ),
                         ),
                       ),
