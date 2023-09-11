@@ -110,19 +110,33 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 140),
-                      Checkbox(
-                        value:
-                            isNetworkMemberSelected, // Change the initial value as needed
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isNetworkMemberSelected = value ?? false;
-                            isNetworkMemberSelected1 = false;
-                            isNetworkMemberSelected2 = false;
-                          });
-                          // Handle checkbox state change here
-                        },
-                      ),
+                      SizedBox(width: 153.75),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: isNetworkMemberSelected
+                              ? Colors.red
+                              : Colors
+                                  .transparent, // Change the color to red when checked
+                          border: Border.all(
+                              color: Colors
+                                  .black), // Add a border for the checkbox
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isNetworkMemberSelected =
+                                  !isNetworkMemberSelected; // Toggle the checkbox value
+                              isNetworkMemberSelected1 = false;
+                              isNetworkMemberSelected2 = false;
+                            });
+                            // Handle checkbox state change here
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -176,18 +190,34 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 119),
-                      Checkbox(
-                        value:
-                            isNetworkMemberSelected1, // Change the initial value as needed
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isNetworkMemberSelected1 = value ?? false;
-                            isNetworkMemberSelected = false;
-                            isNetworkMemberSelected2 = false;
-                          });
-                        },
-                      ),
+                      SizedBox(width: 133),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: isNetworkMemberSelected1
+                              ? Colors.red
+                              : Colors
+                                  .transparent, // Change the color to red when checked
+                          border: Border.all(
+                              color: Colors
+                                  .black), // Add a border for the checkbox
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isNetworkMemberSelected = false;
+                              // Toggle the checkbox value
+                              isNetworkMemberSelected1 =
+                                  !isNetworkMemberSelected1;
+                              isNetworkMemberSelected2 = false;
+                            });
+                            // Handle checkbox state change here
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -240,19 +270,35 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 129),
-                      Checkbox(
-                        value:
-                            isNetworkMemberSelected2, // Change the initial value as needed
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isNetworkMemberSelected2 = value ?? false;
-                            isNetworkMemberSelected = false;
-                            isNetworkMemberSelected1 = false;
-                          });
-                          // Handle checkbox state change here
-                        },
-                      ),
+                      SizedBox(width: 142),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: isNetworkMemberSelected2
+                              ? Colors.red
+                              : Colors
+                                  .transparent, // Change the color to red when checked
+                          border: Border.all(
+                              color: Colors
+                                  .black), // Add a border for the checkbox
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isNetworkMemberSelected = false;
+                              // Toggle the checkbox value
+                              isNetworkMemberSelected1 = false;
+
+                              isNetworkMemberSelected2 =
+                                  !isNetworkMemberSelected2;
+                            });
+                            // Handle checkbox state change here
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
