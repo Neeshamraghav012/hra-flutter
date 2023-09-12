@@ -36,7 +36,9 @@ class UserData {
 }
 
 class _AdminState extends State<Admin> {
-  List<UserData> usersData = [];
+  List<UserData> usersData = [
+    UserData(username: "JohnDoe", id: "1noajr", establishment: "ABC Company")
+  ];
   bool loading = false;
 
   Future<void> fetchUsers() async {
@@ -95,11 +97,15 @@ class _AdminState extends State<Admin> {
                 size: 30,
               ),
               SizedBox(
-                width: 5,
+                width: 18,
               ),
-              Icon(
-                Icons.account_circle_rounded,
-                size: 30,
+              Padding(
+                padding: EdgeInsets.only(
+                    right: 16.0), // Adjust the left padding as needed
+                child: Icon(
+                  Icons.account_circle_rounded,
+                  size: 30,
+                ),
               ),
             ],
             title: Text(widget.title),
@@ -277,111 +283,118 @@ class Profiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 20, left: 25),
-      child: Container(
-        width: 341,
-        height: 84,
-        decoration: ShapeDecoration(
-          color: Color(0xFFF5FBFC),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 0.50, color: Color(0xFFE6EBF0)),
-            borderRadius: BorderRadius.circular(10),
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+        child: Container(
+          width: 341,
+          height: 84,
+          decoration: ShapeDecoration(
+            color: Color(0xFFF5FBFC),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 0.50, color: Color(0xFFE6EBF0)),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-        ),
-        child: Row(children: [
-          Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                width: 57,
-                height: 57,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/icon.png"),
-                    fit: BoxFit.fill,
+          child: Row(children: [
+            Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  width: 57,
+                  height: 57,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("images/icon.png"),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 20),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: 139,
-                  height: 24,
-                  child: Text(
-                    name,
-                    style: TextStyle(
-                      color: Color(0xFF1E1E1E),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                      height: 1.33,
+            Padding(
+              padding: EdgeInsets.only(top: 10, left: 13),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 139,
+                    height: 24,
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        color: Color(0xFF1E1E1E),
+                        fontSize: 14,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                        height: 1.33,
+                      ),
+                      overflow: TextOverflow
+                          .ellipsis, // Add this line to indicate text overflow
+                      maxLines: 1,
                     ),
-                    overflow: TextOverflow
-                        .ellipsis, // Add this line to indicate text overflow
-                    maxLines: 1,
                   ),
-                ),
-                SizedBox(
-                  width: 139,
-                  height: 32,
-                  child: Text(
-                    info ?? "Individual",
-                    style: TextStyle(
-                      color: Color(0xFF55595E),
-                      fontSize: 12,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                      height: 1.33,
+                  SizedBox(
+                    width: 139,
+                    height: 32,
+                    child: Text(
+                      info ?? "Individual",
+                      style: TextStyle(
+                        color: Color(0xFF55595E),
+                        fontSize: 12,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        height: 1.33,
+                      ),
+                      overflow: TextOverflow
+                          .ellipsis, // Add this line to indicate text overflow
+                      maxLines: 1,
                     ),
-                    overflow: TextOverflow
-                        .ellipsis, // Add this line to indicate text overflow
-                    maxLines: 1,
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Frame3875(
-                        user_id: user_id,
+            Expanded(
+              child: Container(
+                width: 103,
+                height: 32,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 5),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Frame3875(
+                            user_id: user_id,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            30), // Adjust the value for the desired corner radius
+                      ),
+                      backgroundColor: Color(0xFF2A2A2A),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical:
+                              10), // Change the color to your desired color
+                    ),
+                    child: Text(
+                      'View Profile',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white, // Text color
                       ),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        30), // Adjust the value for the desired corner radius
-                  ),
-                  backgroundColor: Color(0xFF2A2A2A),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10), // Change the color to your desired color
-                ),
-                child: Text(
-                  'View Profile',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white, // Text color
                   ),
                 ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
