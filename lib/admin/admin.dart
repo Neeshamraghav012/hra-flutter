@@ -182,6 +182,9 @@ class _Frame3875State extends State<Frame3875>
             username: data['username'],
             email: data['email'],
             phone: data['phone'].toString(),
+            address: data['address'],
+            State: data['state'],
+            city: data['city'],
             experience: data['experience'],
             Speciality: data['speciality'],
             rera_exp: formattedDate,
@@ -427,9 +430,8 @@ class _Frame3875State extends State<Frame3875>
                   children: <Widget>[
                     loading
                         ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-  
+                            child: CircularProgressIndicator(),
+                          )
                         : Flexible(
                             child: Container(
                               child: TabBar(
@@ -452,7 +454,7 @@ class _Frame3875State extends State<Frame3875>
                             ),
                           ),
                     Container(
-                      height: MediaQuery.of(context).size.height - 300,
+                      height: MediaQuery.of(context).size.height - 350,
                       child: loading
                           ? Container()
                           : TabBarView(children: [
@@ -545,99 +547,160 @@ class _Frame3875State extends State<Frame3875>
                               Container(
                                 child: Column(children: [
                                   userData.pan_number != ''
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 30, top: 10),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              'PAN Card',
-                                              style: TextStyle(
-                                                color: Color(0xFF212121),
-                                                fontSize: 12,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.50,
-                                                letterSpacing: 0.25,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Container(),
-                                  userData.pan_number != ''
                                       ? Info(
                                           label: "PAN Number",
                                           val: userData.pan_number!)
                                       : Container(),
-                                  userData.aadhar_number != ''
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 30, top: 10),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              'Aadhar Card',
-                                              style: TextStyle(
-                                                color: Color(0xFF212121),
-                                                fontSize: 12,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.50,
-                                                letterSpacing: 0.25,
+                                  userData.pan_number != ''
+                                      ? Row(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 30, top: 10),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                'PAN Card',
+                                                style: TextStyle(
+                                                  color: Color(0xFF212121),
+                                                  fontSize: 12,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.50,
+                                                  letterSpacing: 0.25,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        )
+                                          Spacer(),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: IconButton(
+                                                onPressed: () async {
+                                                  if (await canLaunchUrl(
+                                                      Uri.parse(userData
+                                                          .pan_url!))) {
+                                                    await launchUrl(
+                                                      Uri.parse(
+                                                          userData.pan_url!),
+                                                    );
+                                                  } else {
+                                                    print(await canLaunchUrl(
+                                                        Uri.parse(userData
+                                                            .pan_url!)));
+                                                  }
+                                                },
+                                                icon: Icon(Icons.download),
+                                              ),
+                                            ),
+                                          ),
+                                        ])
                                       : Container(),
                                   userData.aadhar_number != ''
                                       ? Info(
                                           label: "Aadhar Number",
                                           val: userData.aadhar_number!)
                                       : Container(),
-                                  userData.rera_number != ''
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 30, top: 10),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              'RERA',
-                                              style: TextStyle(
-                                                color: Color(0xFF212121),
-                                                fontSize: 12,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.50,
-                                                letterSpacing: 0.25,
+                                  userData.aadhar_number != ''
+                                      ? Row(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 30, top: 10),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                'Aadhar Card',
+                                                style: TextStyle(
+                                                  color: Color(0xFF212121),
+                                                  fontSize: 12,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.50,
+                                                  letterSpacing: 0.25,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        )
+                                          Spacer(),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: IconButton(
+                                                onPressed: () async {
+                                                  if (await canLaunchUrl(
+                                                      Uri.parse(userData
+                                                          .aadhar_url!))) {
+                                                    await launchUrl(
+                                                      Uri.parse(
+                                                          userData.aadhar_url!),
+                                                    );
+                                                  } else {
+                                                    print(await canLaunchUrl(
+                                                        Uri.parse(userData
+                                                            .aadhar_url!)));
+                                                  }
+                                                },
+                                                icon: Icon(Icons.download),
+                                              ),
+                                            ),
+                                          ),
+                                        ])
                                       : Container(),
                                   userData.rera_number != ''
                                       ? Info(
                                           label: "RERA Number",
                                           val: userData.rera_number!)
                                       : Container(),
-                                  userData.aadhar_url != ''
-                                      ? ElevatedButton.icon(
-                                          onPressed: () async {
-                                            String? url = userData.pan_url;
-                                            if (await canLaunchUrl(
-                                                Uri.parse(url!))) {
-                                              await launchUrl(Uri.parse(url!));
-                                            } else {
-                                              print('Could not launch $url');
-                                            }
-                                          },
-                                          icon: Icon(Icons.file_download),
-                                          label: Text("Verify Documents"),
-                                          style: ElevatedButton.styleFrom(
-                                            primary: Color(0xFF3C3C3C),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 8),
+                                  userData.rera_number != ''
+                                      ? Row(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 30, top: 10),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                'RERA',
+                                                style: TextStyle(
+                                                  color: Color(0xFF212121),
+                                                  fontSize: 12,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.50,
+                                                  letterSpacing: 0.25,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        )
+                                          Spacer(),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: IconButton(
+                                                onPressed: () async {
+                                                  if (await canLaunchUrl(
+                                                      Uri.parse(userData
+                                                          .rera_url!))) {
+                                                    await launchUrl(
+                                                      Uri.parse(
+                                                          userData.rera_url!),
+                                                    );
+                                                  } else {
+                                                    print(await canLaunchUrl(
+                                                        Uri.parse(userData
+                                                            .rera_url!)));
+                                                  }
+                                                },
+                                                icon: Icon(Icons.download),
+                                              ),
+                                            ),
+                                          ),
+                                        ])
+                                      : Container(),
+                                  userData.aadhar_url != ''
+                                      ? Container()
                                       : Container(
                                           child: Padding(
                                             padding: EdgeInsets.only(top: 40),
