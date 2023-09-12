@@ -92,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
   String message = '';
   String id = '';
   bool show_password = false;
+  bool is_admin = false;
 
   Future<void> saveUser(String user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,21 +104,6 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       loading = true;
     });
-
-    if (email_or_phone == "admin@hra.com" && password == "hra_admin@123") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Admin(
-                  title: "HRA",
-                )),
-      );
-
-      setState(() {
-        loading = false;
-      });
-      return;
-    }
 
     if (email_or_phone == '' && password == '') {
       setState(() {
@@ -150,7 +136,24 @@ class _LoginPageState extends State<LoginPage> {
         status = jsonData['status'];
         message = jsonData['message'];
         id = jsonData['data'];
+        is_admin = jsonData['is_admin'];
       });
+
+      if (is_admin) {
+        saveUser(id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Admin(
+                    title: "HRA",
+                  )),
+        );
+
+        setState(() {
+          loading = false;
+        });
+        return;
+      }
 
       saveUser(id);
 

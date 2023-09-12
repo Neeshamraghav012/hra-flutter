@@ -278,7 +278,7 @@ class _SignupPageState extends State<SignupPage> {
       'state': state,
       'speciality': speciality,
       'region': region_id,
-      'user_type': user_type,
+      'user_type': user_type_id,
       'team_size': team_size,
       'core_buisness': core_buisness,
       'establishment_date': establishment_date,

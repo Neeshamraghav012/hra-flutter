@@ -27,20 +27,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String userId = "";
+
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
     return id;
   }
 
-  late Future<String> userId;
-
   @override
   void initState() {
-    setState(() {
-      userId = getUser();
-    });
     super.initState();
+    getUser();
   }
 
   @override
@@ -48,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     const splashDuration = Duration(seconds: 2);
 
     Future.delayed(splashDuration, () {
+      print(userId);
       if (userId != "") {
         Navigator.pushReplacement(
           context,
@@ -57,6 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
         );
+        return;
       }
       Navigator.pushReplacement(
         context,

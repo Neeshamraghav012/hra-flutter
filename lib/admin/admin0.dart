@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/user-registration/login.dart';
 import 'package:hra/config/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Admin extends StatefulWidget {
   final String title;
@@ -39,6 +40,12 @@ class _AdminState extends State<Admin> {
   List<UserData> usersData = [];
   bool loading = false;
 
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+    return id;
+  }
+
   Future<void> fetchUsers() async {
     setState(() {
       loading = true;
@@ -57,6 +64,10 @@ class _AdminState extends State<Admin> {
             id: userDataMap['id'],
             establishment: userDataMap['establishment']);
       }).toList();
+
+      usersData = [
+        UserData(username: "JohnDoe", id: "1noajr", establishment: "ABC Company")
+      ];
 
       print(usersData);
       setState(() {
