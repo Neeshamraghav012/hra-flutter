@@ -1,12 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hra/cliprect.dart';
 import 'package:hra/custom-appbar.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/config/app-config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/social.dart';
-import 'package:hra/reset-password.dart';
+import 'package:hra/user-registration/reset-password.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hra/forgot-password.dart';
+import 'package:hra/user-registration/forgot-password.dart';
 import 'dart:convert';
-import 'package:hra/login.dart';
+import 'package:hra/user-registration/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:hra/social.dart';
-import 'package:hra/signup.dart';
+import 'package:hra/user-registration/signup.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hra/admin.dart';
+import 'package:hra/admin/admin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/login.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/user-registration/login.dart';
+import 'package:hra/config/app-config.dart';
 
 class Admin extends StatefulWidget {
   final String title;

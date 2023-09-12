@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hra/social.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hra/ui/home.dart';
+// import 'package:hra/ui/home.dart';
+import 'package:hra/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.grey,
           accentColor: Color(0xFFFF4D4D),
-          fontFamily: 'nunito'),
+          fontFamily: 'Poppins'),
       home: SplashScreen(),
     );
   }

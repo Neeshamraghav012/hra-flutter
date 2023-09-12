@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:hra/login.dart';
+import 'package:hra/user-registration/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:hra/signup.dart';
-import 'package:hra/registered.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/user-registration/signup.dart';
+import 'package:hra/user-registration/registered.dart';
+import 'package:hra/config/app-config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';

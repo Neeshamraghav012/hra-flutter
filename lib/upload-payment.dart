@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 import 'package:hra/verify-payment.dart';
 import 'dart:math';
-import 'package:hra/app-config.dart';
+import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadPaymentPage extends StatefulWidget {
