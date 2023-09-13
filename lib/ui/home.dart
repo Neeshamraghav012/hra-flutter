@@ -4,6 +4,9 @@ import 'package:hra/custom/fab_bottom_app_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/profilePage/profile.dart';
+import 'package:hra/ui/createPost.dart';
+import 'package:hra/ui/discoverPage.dart';
+import 'package:hra/ui/notifications.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,7 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  int _selectedDrawerIndex = 0;
+  int _selectedDrawerIndex = 1;
   List<MenuModel> bottomMenuItems = [];
 
   _selectedTab(int pos) {
@@ -21,11 +24,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     switch (pos) {
       case 0:
-        return Container();
+        return NotificationPage();
       case 1:
         return NewsFeed();
       case 2:
-        return Container();
+        return DiscoverPage();
       case 3:
         return ProfilePage();
       default:
@@ -42,12 +45,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
 
     _selectedTab(_selectedDrawerIndex);
-    bottomMenuItems.add(new MenuModel('Create a post',
-        'share your thoughts with the community', Icons.colorize));
-    bottomMenuItems.add(new MenuModel(
-        'Ask a Question', 'Any doubts? As the community', Icons.info));
-    bottomMenuItems.add(
-        new MenuModel('Upload Image', 'Upload event images', Icons.equalizer));
+    bottomMenuItems.add(new MenuModel('Camera', '', Icons.camera));
+    bottomMenuItems
+        .add(new MenuModel('Upload Image', '', Icons.browse_gallery));
+    bottomMenuItems.add(new MenuModel('Take Video', '', Icons.video_call));
+
+    bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
   }
 
   @override
@@ -59,7 +62,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Create Post',
         splashColor: Colors.teal,
-        onPressed: _modalBottomSheetMenu,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => createPage()),
+          );
+          return;
+        },
         child: Icon(CupertinoIcons.add),
         elevation: 0,
       ),
@@ -73,7 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onTabSelected: _selectedTab,
         items: [
           FABBottomAppBarItem(iconData: FontAwesomeIcons.bell, text: ''),
-          FABBottomAppBarItem(iconData: FontAwesomeIcons.home, text: ''),
+          FABBottomAppBarItem(iconData: FontAwesomeIcons.house, text: ''),
           FABBottomAppBarItem(iconData: FontAwesomeIcons.globe, text: ''),
           FABBottomAppBarItem(iconData: FontAwesomeIcons.user, text: ''),
         ],
@@ -109,19 +118,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                             child: Icon(
                               bottomMenuItems[index].icon,
-                              color: Color(0xFFFF4D4D),
+                              color: Colors.black,
                             ),
                           ),
+                          /*
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             size: 15,
-                          ),
+                          ),*/
                           title: Text(
                             bottomMenuItems[index].title,
-                            style: TextStyle(
-                                color: Color(0xFFFF4D4D), fontSize: 18),
+                            style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
-                          subtitle: Text(bottomMenuItems[index].subtitle),
+                          // subtitle: Text(bottomMenuItems[index].subtitle),
                           onTap: () {
                             Navigator.pop(context);
                             debugPrint(bottomMenuItems[index].title);

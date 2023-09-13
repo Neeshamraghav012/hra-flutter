@@ -48,7 +48,7 @@ class _NewsFeedState extends State<NewsFeed> {
               child: Column(
                 children: <Widget>[
                   topSpace(),
-                  searchTextField(),
+                  searchTextField(context),
                   banner(),
                   // topSpace(),
                   //Container(height: 55, child: CategoryList()),

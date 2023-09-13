@@ -3,7 +3,6 @@ import 'package:hra/social.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:hra/ui/home.dart';
 import 'package:hra/home.dart';
-import 'package:hra/admin/admin0.dart';
 
 void main() {
   runApp(MyApp());
@@ -56,7 +55,9 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Admin(title: 'HRA',),
+            builder: (context) => SocialPage(
+              user_id: userId.toString(),
+            ),
           ),
         );
         return;

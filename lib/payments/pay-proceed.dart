@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hra/verify-payment.dart';
-import 'package:hra/upload-payment.dart';
-import 'package:hra/make-payment.dart';
 
-class MembershipPage1 extends StatefulWidget {
+class ProceedPage extends StatefulWidget {
   @override
-  _Membership1State createState() => _Membership1State();
+  _ProceedState createState() => _ProceedState();
 }
 
-class _Membership1State extends State<MembershipPage1> {
+class _ProceedState extends State<ProceedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,45 +20,49 @@ class _Membership1State extends State<MembershipPage1> {
         child: ListView(
           children: [
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Image.asset(
-                'images/membership.png',
-                height: 200, // Adjust the height as needed
-              ),
-              SizedBox(height: 27.17),
-              const Text(
-                'Your request for member\n'
-                'verification has been successfully\n '
-                'processed.',
-                style: TextStyle(
-                  fontFamily: "Poppins",
+              Text(
+                "Thank you!",
+                style: const TextStyle(
+                  fontFamily: "Roboto",
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   color: Color(0xff252525),
+                  height: 23 / 16,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 12.8),
-              Container(
-                width: 328, // Adjust the width of the divider as needed
-                child: Divider(
-                  color: Color.fromARGB(255, 156, 151, 151),
-                  thickness: 1.0,
-                ),
-              ),
-              SizedBox(height: 12.8),
+              SizedBox(height: 10),
               Text(
-                "Complete payment to become a\n"
-                "member.",
+                "You are now a member",
+                style: const TextStyle(
+                  fontFamily: "Roboto",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff252525),
+                  height: 23 / 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 17.8),
+              Image.asset(
+                'images/pay2.jpg',
+                width: 310,
+                height: 223, // Adjust the height as needed
+              ),
+              SizedBox(height: 17),
+              Text(
+                "Your request has been successfully\n"
+                "confirmed and processed.",
                 style: const TextStyle(
                   fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Color(0xff252525),
-                  //height: 50/16,
+                  //height: 42/16,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 44.8),
+              SizedBox(height: 30.17),
               ElevatedButton(
                   onPressed: () {
                     // Add your payment logic here
@@ -70,14 +71,14 @@ class _Membership1State extends State<MembershipPage1> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: Colors.black,
+                    backgroundColor: Colors.red,
                     padding: EdgeInsets.symmetric(
                       horizontal: 40,
                       vertical: 11,
                     ),
                   ),
                   child: Text(
-                    "PAY NOW",
+                    "PROCEED",
                     style: const TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 16,
@@ -85,7 +86,7 @@ class _Membership1State extends State<MembershipPage1> {
                       color: Colors.white,
                       height: 20 / 16,
                     ),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                   )),
             ]),
           ],

@@ -1,7 +1,6 @@
-import 'package:dotted_border/dotted_border.dart';
+
 import 'package:flutter/material.dart';
-import 'package:hra/verify-payment.dart';
-import 'package:hra/upload-payment.dart';
+import 'package:hra/payments/upload-payment.dart';
 
 class PayPage extends StatelessWidget {
   @override

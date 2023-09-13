@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:hra/verify-payment.dart';
+import 'package:hra/payments/verify-payment.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -355,7 +355,7 @@ class _Frame3875State extends State<Frame3875>
                   height: 100,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('images/profile.png'),
+                      image: userData.profile_url != '' ?  NetworkImage(userData.profile_url!) : const AssetImage('images/profile.png')  as ImageProvider,
                       fit: BoxFit.fill,
                     ),
                     shape: BoxShape.circle,
@@ -718,7 +718,7 @@ class _Frame3875State extends State<Frame3875>
                                   userData.ref_name != ''
                                       ? Info(
                                           label: "Reference name",
-                                          val: "Leslie Alexander")
+                                          val: userData.ref_name)
                                       : Container(
                                           child: Padding(
                                             padding: EdgeInsets.only(top: 40),
@@ -730,12 +730,12 @@ class _Frame3875State extends State<Frame3875>
                                   userData.ref_phone != ''
                                       ? Info(
                                           label: "Reference contact number",
-                                          val: "(316) 555-0116")
+                                          val: userData.ref_phone)
                                       : Container(),
                                   userData.ref_email != ''
                                       ? Info(
                                           label: "Reference Email",
-                                          val: "abc@domain.com")
+                                          val: userData.ref_email)
                                       : Container(),
                                 ]),
                               ),
