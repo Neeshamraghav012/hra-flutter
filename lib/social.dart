@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/home.dart';
 
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(100);
@@ -87,12 +86,14 @@ class _SocialPageState extends State<SocialPage> {
       data = apiData[0];
       print(apiData[0]);
 
-      setState(() {
-        loading = false;
-        is_profile_activated = data['is_profile_activated'];
-        is_payment_verified = data['is_payment_verified'];
-        is_email_activated = data['is_email_activated'];
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+          is_profile_activated = data['is_profile_activated'];
+          is_payment_verified = data['is_payment_verified'];
+          is_email_activated = data['is_email_activated'];
+        });
+      }
 
       if (!is_email_activated) {
         message = "We have sent you an email\n please verify it.";
@@ -104,25 +105,17 @@ class _SocialPageState extends State<SocialPage> {
             "You have successfully applied\n for the member verification.\n Please wait for the admin's approval.";
       }
 
-      // ########## ########### change it later
-      if (true) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
-        return;
-      }
-
       print(is_payment_verified);
       print(is_profile_activated);
       print(is_email_activated);
     } else {
       print('API request failed with status code:');
-      setState(() {
-        loading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
@@ -142,6 +135,16 @@ class _SocialPageState extends State<SocialPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                },
+                child: Text("Go to SocialPage")),
             Image.asset(
               'images/registered.jpg',
               height: 200, // Adjust the height as needed

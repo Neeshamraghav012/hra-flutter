@@ -5,7 +5,6 @@ import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
 import 'package:hra/ui/createPost.dart';
 
-
 Widget actionBarRow() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -236,13 +235,16 @@ Widget feedNewsCardWithImageItem(BuildContext context, Feed feed) {
                 maxLines: 2,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),*/
             space15(),
-            Text(feed.description,
+            Text(feed.title,
                 style: TextStyle(fontSize: 14, color: Colors.black)),
             space15(),
             // show Image Preview
 
-            Image.asset('images/running_girl.jpeg',
-                fit: BoxFit.cover, height: 180, width: double.infinity),
+            feed.bannerImg != ''
+                ? Image.network(feed.bannerImg,
+                    fit: BoxFit.cover, height: 180, width: double.infinity)
+                : Image.asset("images/home.jpg",
+                    fit: BoxFit.cover, height: 180, width: double.infinity),
 
             space15(),
             // shows location
