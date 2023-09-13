@@ -387,32 +387,29 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          color: Color.fromRGBO(245, 251, 252, 1),
-                          child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your full name';
-                              }
-                              return null; // Return null if the input is valid
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              hintText: 'Your Full Name',
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 10),
+                        TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your full name';
+                            }
+                            return null; // Return null if the input is valid
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            onChanged: (value) {
-                              setState(() {
-                                username = value;
-                              });
-                            },
+                            hintText: 'Your Full Name',
+                            filled: true, // Enable filling the background
+                            fillColor: Color.fromRGBO(245, 251, 252, 1),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 10),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              username = value;
+                            });
+                          },
                         ),
                       ]),
                     ),
@@ -434,36 +431,35 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          color: Color.fromRGBO(245, 251, 252, 1),
-                          child: TextFormField(
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]'))
-                            ],
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your phone number';
-                              } else if (value.length != 10) {
-                                return 'Phone number must be 10 digits';
-                              }
-                              return null; // Return null if the input is valid
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                hintText: 'Your phone number'),
-                            onChanged: (value) {
-                              setState(() {
-                                phone = value;
-                              });
-                            },
+                        TextFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            hintText: 'Your phone number',
+                            filled: true, // Enable filling the background
+                            fillColor: Color.fromRGBO(245, 251, 252, 1),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 10),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                          ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your phone number';
+                            } else if (value.length != 10) {
+                              return 'Phone number must be 10 digits';
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              phone = value;
+                            });
+                          },
                         ),
                       ]),
                     ),
@@ -485,33 +481,33 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          color: Color.fromRGBO(245, 251, 252, 1),
-                          child: TextFormField(
-                            keyboardType: TextInputType
-                                .emailAddress, // Set keyboard type to email
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your email address';
-                              } else if (!isValidEmail(value)) {
-                                return 'Please enter a valid email address';
-                              }
-                              return null; // Return null if the input is valid
-                            },
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                hintText: 'Your Email address'),
-                            onChanged: (value) {
-                              setState(() {
-                                email = value;
-                              });
-                            },
+                        TextFormField(
+                          keyboardType: TextInputType
+                              .emailAddress, // Set keyboard type to email
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your email address';
+                            } else if (!isValidEmail(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            hintText: 'Your Email address',
+                            filled: true, // Enable filling the background
+                            fillColor: Color.fromRGBO(245, 251, 252, 1),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 10),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              email = value;
+                            });
+                          },
                         ),
                       ]),
                     ),
@@ -533,45 +529,45 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          color: Color.fromRGBO(245, 251, 252, 1),
-                          child: TextFormField(
-                            obscureText: !show_password,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your password';
-                              } else if (value.length < 6) {
-                                return 'Password must be atleast 6 digits long';
-                              }
-                              return null; // Return null if the input is valid
-                            },
-                            decoration: InputDecoration(
-                                suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      show_password = !show_password;
-                                    });
-                                  },
-                                  child: Icon(
-                                    show_password
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                hintText: 'Your password'),
-                            onChanged: (value) {
-                              setState(() {
-                                password = value;
-                              });
-                            },
+                        TextFormField(
+                          obscureText: !show_password,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your password';
+                            } else if (value.length < 6) {
+                              return 'Password must be atleast 6 digits long';
+                            }
+                            return null; // Return null if the input is valid
+                          },
+                          decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  show_password = !show_password;
+                                });
+                              },
+                              child: Icon(
+                                show_password
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            hintText: 'Your password',
+                            filled: true, // Enable filling the background
+                            fillColor: Color.fromRGBO(245, 251, 252, 1),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 10),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              password = value;
+                            });
+                          },
                         ),
                       ]),
                     ),
@@ -593,29 +589,29 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          color: Color.fromRGBO(245, 251, 252, 1),
-                          height: 50,
-                          child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your address';
-                              }
-                              return null; // Return null if the input is valid
-                            },
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                hintText: 'Your address'),
-                            onChanged: (value) {
-                              setState(() {
-                                address = value;
-                              });
-                            },
+                        TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            hintText: 'Your address',
+                            filled: true, // Enable filling the background
+                            fillColor: Color.fromRGBO(245, 251, 252, 1),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 10),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              address = value;
+                            });
+                          },
                         ),
                       ]),
                     ),
@@ -641,30 +637,30 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                height: 50,
-                                color: Color.fromRGBO(245, 251, 252, 1),
-                                child: TextFormField(
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter your city';
-                                    }
-                                    return null; // Return null if the input is valid
-                                  },
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    hintText: 'Enter your city',
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your city';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      city = value;
-                                    });
-                                  },
+                                  hintText: 'Enter your city',
+                                  filled: true, // Enable filling the background
+                                  fillColor: Color.fromRGBO(245, 251, 252, 1),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 10),
                                 ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    city = value;
+                                  });
+                                },
                               ),
                             ]),
                           ),
@@ -677,7 +673,7 @@ class _SignupPageState extends State<SignupPage> {
                                 alignment: Alignment.topLeft,
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                       left: 5, bottom: 5, top: 5),
+                                      left: 5, bottom: 5, top: 5),
                                   child: Text(
                                     'State',
                                     style: TextStyle(
@@ -785,38 +781,38 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                color: Color.fromRGBO(245, 251, 252, 1),
-                                height: 50,
-                                child: TextFormField(
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter your phone number';
-                                    } else if (value.length < 0 &&
-                                        value.length > 60) {
-                                      return 'Please enter a valid experience';
-                                    }
-                                    return null; // Return null if the input is valid
-                                  },
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9]'))
-                                  ],
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    hintText: 'Years of experience',
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your phone number';
+                                  } else if (value.length < 0 &&
+                                      value.length > 60) {
+                                    return 'Please enter a valid experience';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]'))
+                                ],
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      experience = value;
-                                    });
-                                  },
+                                  hintText: 'Years of experience',
+                                  filled: true, // Enable filling the background
+                                  fillColor: Color.fromRGBO(245, 251, 252, 1),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 10),
                                 ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    experience = value;
+                                  });
+                                },
                               ),
                             ]),
                           ),
@@ -853,9 +849,6 @@ class _SignupPageState extends State<SignupPage> {
                                   child: MultiSelectDialogField(
                                       chipDisplay:
                                           MultiSelectChipDisplay.none(),
-                                      // title: Text(
-                                      //   "Select Speciality",
-                                      // ),
                                       buttonText: Text(
                                         "Select",
                                         style: TextStyle(
@@ -1142,30 +1135,30 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                height: 50,
-                                color: Color.fromRGBO(245, 251, 252, 1),
-                                child: TextFormField(
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter the name of establishment';
-                                    }
-                                    return null; // Return null if the input is valid
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      hintText: 'Name of Establishment'),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      est = value;
-                                    });
-                                  },
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter the name of establishment';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  hintText: 'Name of Establishment',
+                                  filled: true, // Enable filling the background
+                                  fillColor: Color.fromRGBO(245, 251, 252, 1),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 10),
                                 ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    est = value;
+                                  });
+                                },
                               ),
                             ]),
                           )
