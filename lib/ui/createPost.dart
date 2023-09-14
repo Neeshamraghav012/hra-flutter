@@ -27,6 +27,9 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   final ImagePicker picker = ImagePicker();
   bool isUploading = false;
   String caption = "";
+  String image_url = "";
+  XFile? uploadedImage;
+  String userId = "";
 
   _selectedTab(int pos) {
     setState(() {
@@ -51,6 +54,17 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     setState(() => _selectedDrawerIndex = index);
   }
 
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
+
+    return id;
+  }
+
   String generateRandomName() {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -64,21 +78,26 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
   Future<void> scanImage() async {
     var choosedimage = await picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      uploadedImage = choosedimage;
+    });
   }
 
   Future<void> chooseImage() async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
+    uploadedImage = choosedimage;
   }
 
-  Future<void> uploadImage() async {
+  Future<void> uploadImage(XFile? image) async {
     setState(() {
       isUploading = true;
     });
     try {
-      XFile? selectedImage;
-
-      List<int> imageBytes = File(selectedImage!.path).readAsBytesSync();
+      List<int> imageBytes = File(image!.path).readAsBytesSync();
       String base64Image = base64Encode(imageBytes);
+
+      print(base64Image);
 
       String randomName = generateRandomName();
 
@@ -88,7 +107,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
         "image_input": {
           "base64_image_string": base64Image,
           "image_name": filename,
-          "document_type": "documents"
+          "document_type": "Posts"
         }
       };
 
@@ -102,6 +121,72 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
       final jsonResponse = json.decode(response.body);
 
       if (jsonResponse['status']) {
+        setState(() {
+          image_url = jsonResponse['data'];
+        });
+      } else {
+        print('File upload failed');
+      }
+    } catch (e) {
+      print('Error uploading file: $e');
+    } finally {
+      setState(() {
+        isUploading = false;
+      });
+    }
+  }
+
+  Future<void> post() async {
+    setState(() {
+      isUploading = true;
+    });
+    try {
+      if (uploadedImage != null) {
+        await uploadImage(uploadedImage);
+      }
+
+      print("image url is: ");
+      print(image_url);
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/socialmedia/api/post'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "post_input": {
+            "user_id": userId,
+            "title": caption,
+            "description": " ",
+            "content": " ",
+            "views_count": 0,
+            "created_by": userId,
+            "updated_by": userId,
+            "post_attachments": [
+              {
+                "name": "Posts",
+                "document_number": " ",
+                "document_path": image_url,
+                "document_type": "Posts",
+                "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+              }
+            ]
+          }
+        }),
+      );
+      final jsonResponse = json.decode(response.body);
+
+      if (jsonResponse['status']) {
+        setState(() {
+          isUploading = false;
+        });
+
+        SnackBar(content: Text("Posted"));
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewsFeed()));
       } else {
         print('File upload failed');
       }
@@ -121,11 +206,13 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     bottomMenuItems.add(new MenuModel('Camera', '', Icons.camera));
     bottomMenuItems
         .add(new MenuModel('Upload Image', '', Icons.browse_gallery));
-    bottomMenuItems.add(new MenuModel('Take Video', '', Icons.video_call));
+    // bottomMenuItems.add(new MenuModel('Take Video', '', Icons.video_call));
 
-    bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
+    // bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
 
     _selectedTab(_selectedDrawerIndex);
+
+    getUser();
   }
 
   @override
@@ -186,12 +273,17 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                       Padding(
                         padding: EdgeInsets.only(top: 20, left: 20),
                         child: TextButton(
-                          onPressed: () {},
-                          child: Text("Post",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFFFF4D4D))),
+                          onPressed: () {
+                            post();
+                            // Navigator.pop(context);
+                          },
+                          child: isUploading
+                              ? CircularProgressIndicator()
+                              : Text("Post",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFFFF4D4D))),
                         ),
                       )
                     ],
@@ -208,7 +300,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Container(
-                  height: 200,
+                  height: 100,
                   child: Padding(
                     padding: EdgeInsets.only(left: 20, top: 20),
                     child: TextField(
@@ -227,9 +319,27 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                   ),
                 ),
                 //Spacer(),
-                SizedBox(
-                  height: 100,
+
+                Container(
+                  child: uploadedImage != null
+                      ? Container(
+                          child: Padding(
+                            padding: EdgeInsets.all(6.0),
+                            child: AspectRatio(
+                              aspectRatio: 16 / 8,
+                              child: Image.file(
+                                File(uploadedImage!.path),
+                                fit: BoxFit.cover,
+                                height: 200,
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 100,
+                        ),
                 ),
+
                 Expanded(
                   child: Container(
                     color: Colors.white,

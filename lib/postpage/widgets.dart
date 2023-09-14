@@ -46,7 +46,7 @@ Widget othersComment(BuildContext context, Feed feed) {
                   space15(),
                   Divider(thickness: 1),
                   SizedBox(height: 10),
-                  menuReply(feed),
+                  // menuReply(feed),
                   space15(),
                 ],
               ),
@@ -199,13 +199,10 @@ Widget usernameSectionWithoutAvatar(BuildContext context) {
                         SizedBox(
                           width: 10,
                         ),
-                        Text('1Min',
-                            style: TextStyle(fontSize: 14, color: Colors.grey))
+
                       ],
                     ),
-                    SizedBox(height: 4),
-                    Text('DIAGNOSE RECENTRLY',
-                        style: TextStyle(fontSize: 12, color: Colors.teal)),
+
                   ],
                 )
               ],

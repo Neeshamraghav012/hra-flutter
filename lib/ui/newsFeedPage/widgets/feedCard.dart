@@ -6,10 +6,16 @@ import 'package:share/share.dart';
 import 'package:like_button/like_button.dart';
 
 Widget feedCard(BuildContext context, Feed listFeed) {
+  Feed? feed;
   return Card(
     child: GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PostPageDetails())),
+          context,
+          MaterialPageRoute(
+              builder: (context) => PostPageDetails(
+                    postId: '1',
+                    feed: feed!,
+                  ))),
       child: Container(
           padding: EdgeInsets.all(8),
           child: Column(
@@ -51,7 +57,6 @@ Widget feedCard(BuildContext context, Feed listFeed) {
 }
 
 Future<bool> onLikeButtonTapped(bool isLiked) async {
-
   return !isLiked;
 }
 
@@ -84,13 +89,13 @@ Widget likeCommentShare(Feed listFeed) {
                   size: 20,
                 );
               },
-              likeCount: 665,
+              likeCount: 0,
               countBuilder: (int? count, bool isLiked, String text) {
                 var color = isLiked ? Color(0xFFFF4D4D) : Colors.black;
                 Widget result;
                 if (count == 0) {
                   result = Text(
-                    "love",
+                    "like",
                     style: TextStyle(color: color),
                   );
                 } else
@@ -135,7 +140,6 @@ Widget likeCommentShare(Feed listFeed) {
   );
 }
 
-
 Widget setLocation(Feed listFeed) {
   return Row(
     children: <Widget>[
@@ -160,7 +164,7 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
               children: <Widget>[
                 CircleAvatar(
                     backgroundColor: Colors.grey,
-                    child: ClipOval(child: Image.network(listFeed.avatarImg)),
+                    child: ClipOval(child: listFeed.avatarImg != '' ? Image.network(listFeed.avatarImg) : Image.asset('images/icon.png')),
                     radius: 20),
                 SizedBox(width: 10),
                 Column(

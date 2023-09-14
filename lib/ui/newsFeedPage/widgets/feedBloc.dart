@@ -13,10 +13,10 @@ import 'dart:async';
 
 class Feed {
 
-  int feedId, type, likes;
-  String title, description, category, subcategory, time, name, avatarImg, bannerImg, location, comments, members;
+  int? id, type, likes;
+  String feedId, title, description, category, subcategory, time, name, avatarImg, bannerImg, location, comments, members;
 
-  Feed({required this.feedId,required this.type,required this.title,required this.description,required this.category,required this.subcategory,required this.time,required this.name,required this.avatarImg,required this.bannerImg,required this.location,required this.likes,required this.comments,required this.members});
+  Feed({this.id, required this.feedId,required this.type,required this.title,required this.description,required this.category,required this.subcategory,required this.time,required this.name,required this.avatarImg,required this.bannerImg,required this.location,required this.likes,required this.comments,required this.members});
 }
 
 
@@ -43,7 +43,7 @@ class FeedBloc {
   List<Feed> feedList = [
 
     Feed(
-        feedId: 1,
+        feedId: "1",
         type: 0,
         title: 'Prani Kumar',
         description:
@@ -60,7 +60,7 @@ class FeedBloc {
         members: '24'),
 
     Feed(
-        feedId: 2,
+        feedId: "2",
         type: 0,
         title: 'rohit.shetty02',
         description:
@@ -77,7 +77,7 @@ class FeedBloc {
         members: '12'),
 
     Feed(
-        feedId: 3,
+        feedId: "3",
         type: 0,
         title: 'username1275',
         description: '',
@@ -93,7 +93,7 @@ class FeedBloc {
         members: '12'),
 
     Feed(
-        feedId: 4,
+        feedId: "4",
         type: 0,
         title: 'super987',
         description: '#itsokeyto #cancerserviver',
@@ -109,7 +109,7 @@ class FeedBloc {
         members: '18'),
 
     Feed(
-        feedId: 5,
+        feedId: "5",
         type: 0,
         title: 'username1275',
         description: '#itsokeyto #cancerserviver',
@@ -148,17 +148,17 @@ class FeedBloc {
 
   _incrementLike(Feed feed)
   {
-    int like = feed.likes;
+    int like = feed.likes!;
     int incrementLike = like + 1;
-    feedList[feed.feedId - 1].likes = like + incrementLike;
+    feedList[feed.id!].likes = like + incrementLike;
     feedListSink.add(feedList);
   }
 
   _decrementLike(Feed feed)
   {
-    int like = feed.likes;
+    int like = feed.likes!;
     int decrementLike = like - 1;
-    feedList[feed.feedId - 1].likes = like - decrementLike;
+    feedList[feed.id!].likes = like - decrementLike;
     feedListSink.add(feedList);
   }
 

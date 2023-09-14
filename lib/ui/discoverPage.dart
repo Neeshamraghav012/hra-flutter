@@ -6,6 +6,7 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverState extends State<DiscoverPage> {
+  bool clicked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +26,6 @@ class _DiscoverState extends State<DiscoverPage> {
             bottomRight: Radius.circular(56), // Adjust the radius as needed
           ),
         ),
-
       ),
       body: Column(
         children: [
@@ -125,27 +125,23 @@ class _DiscoverState extends State<DiscoverPage> {
                           padding: EdgeInsets.only(right: 0),
                           child: ElevatedButton(
                               onPressed: () {
-                                // Navigator.push(
-                                //   // context,
-                                //   // MaterialPageRoute(
-                                //   //   builder: (context) => DiscoverPage(
-                                //   //     user_id: user_id,
-                                //   //   ),
-                                //   // ),
-                                // );
+                                setState(() {
+                                  clicked = true;
+                                });
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                backgroundColor: Colors.red,
+                                backgroundColor: clicked ? Colors.grey :
+                                 Colors.red,
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 1,
                                   vertical: 5,
                                 ),
                               ),
                               child: Text(
-                                "Follow +",
+                               clicked ? "Following" : "Follow +",
                                 style: const TextStyle(
                                   fontFamily: "Poppins",
                                   fontSize: 14,

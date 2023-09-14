@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
-import 'package:hra/ui/newsFeedPage/FeedLatestArticle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hra/config/app-config.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -12,21 +13,80 @@ class NewsFeed extends StatefulWidget {
 }
 
 class _NewsFeedState extends State<NewsFeed> {
+  List<Feed> feedListData = [];
+  bool isloading = false;
+  String userId = "";
+
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
+    print(id);
+    return id;
+  }
+
   Future<void> fetchPosts() async {
-    final response = await http.post(Uri.parse('/user/api/login-user'),
-        headers: {'Content-Type': 'application/json'}, body: jsonEncode({}));
+    setState(() {
+      isloading = true;
+    });
+    final response = await http.get(
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/posts?user_id=$userId'),
+      headers: {'Content-Type': 'application/json'},
+    );
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print(jsonData);
+
+      if (jsonData['data'] is List) {
+        final List<dynamic> dataList = jsonData['data'];
+        feedListData = dataList
+            .asMap()
+            .map((index, data) {
+              return MapEntry(
+                index,
+                Feed(
+                  id: index,
+                  feedId: data['id'],
+                  type: 1,
+                  title: data['title'],
+                  description: ' ',
+                  category: ' ',
+                  subcategory: ' ',
+                  time: ' ',
+                  name: data['username'],
+                  avatarImg: data['avatarImg'],
+                  bannerImg: data['bannerImg'],
+                  location: ' ',
+                  likes: 0,
+                  comments: '0',
+                  members: '0',
+                ),
+              );
+            })
+            .values
+            .toList();
+        print("feedlist is: ");
+        print(feedListData);
+      }
     }
+
+    setState(() {
+      isloading = false;
+    });
+  }
+
+  Future<void> initializeData() async {
+    await getUser(); // Wait for getUser to finish
+    fetchPosts(); // Call fetchPosts after getUser completes
   }
 
   @override
   void initState() {
     super.initState();
-
-    fetchPosts();
+    initializeData();
   }
 
   @override
@@ -55,58 +115,47 @@ class _NewsFeedState extends State<NewsFeed> {
                 ],
               ),
             ),
-            Expanded(
-              child: Container(
-                color: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      // List section for the News Feed.
-                      GestureDetector(
-                        onTap: viewDetailPage,
-                        child: feedNewsCardWithImageItem(
-                            context, FeedBloc().feedList[0]),
+            isloading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.builder(
+                        itemCount: feedListData.length,
+                        itemBuilder: (context, index) {
+                          final feedItem = feedListData[index];
+                          return GestureDetector(
+                            onTap: () => viewDetailPage(
+                                feedItem.feedId.toString(), feedItem),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                feedNewsCardWithImageItem(context, feedItem),
+                                topSpace(),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-
-                      topSpace(),
-                      GestureDetector(
-                        onTap: viewDetailPage,
-                        child: feedNewsCardWithImageItem(
-                            context, FeedBloc().feedList[0]),
-                      ),
-
-                      topSpace(),
-                      GestureDetector(
-                        onTap: viewDetailPage,
-                        child: feedNewsCardWithImageItem(
-                            context, FeedBloc().feedList[0]),
-                      ),
-
-                      topSpace(),
-                      GestureDetector(
-                        onTap: viewDetailPage,
-                        child: feedNewsCardWithImageItem(
-                            context, FeedBloc().feedList[0]),
-                      ),
-
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+                    ),
+                  )
           ],
         ),
       ),
     );
   }
 
-  Widget viewDetailPage() {
-    print('Go To Detail Screen');
-    Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => PostPageDetails()));
+  Widget viewDetailPage(String postId, Feed feed) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PostPageDetails(
+                  postId: postId,
+                  feed: feed,
+                )));
     return SizedBox();
   }
 }

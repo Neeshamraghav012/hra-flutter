@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:hra/config/app-config.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -13,16 +14,66 @@ class _ProfilePageState extends State<ProfilePage>
   late TabController _tabController;
 
   bool loading = false;
+  String posts = "";
+  String followers = "";
+  String following = "";
+
+  Future<void> fetchStats() async {
+    setState(() {
+      loading = true;
+    });
+
+    final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/user/api/stats'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({}));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+    } else {
+      print('API request failed with status code: ${response.statusCode}');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // _tabController = TabController(length: 5, vsync: this);
+    fetchStats();
+    _tabController = TabController(length: 4, vsync: this);
+
+  _tabController.addListener(() {
+    print('Tab index changed to ${_tabController.index}');
+  });
+
   }
+
+    Future<void> fetchData() async {
+    setState(() {
+      loading = true;
+    });
+
+    final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/user/api/stats'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({}));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+    } else {
+      print('API request failed with status code: ${response.statusCode}');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
 
   @override
   void dispose() {
-    // _tabController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -100,6 +151,71 @@ class _ProfilePageState extends State<ProfilePage>
                             fontWeight: FontWeight.w400,
                           ))),
                 ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text("22",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                            Text("Post",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text("8.3K",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                            Text("Following",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text("35.5K",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                            Text("Followers",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ]),
             ),
             // Tabs
@@ -114,6 +230,7 @@ class _ProfilePageState extends State<ProfilePage>
                           )
                         : Container(
                             child: TabBar(
+                              controller: _tabController,
                                 labelColor: Colors.black,
                                 labelPadding:
                                     EdgeInsets.symmetric(horizontal: 8.0),
@@ -133,7 +250,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 ]),
                           ),
                     Expanded(
-                      child: Container(          
+                      child: Container(
                         child: loading
                             ? Container()
                             : TabBarView(children: [
@@ -141,17 +258,17 @@ class _ProfilePageState extends State<ProfilePage>
                                 SingleChildScrollView(
                                   child: Container(),
                                 ),
-                    
+
                                 // Organization Tab
                                 SingleChildScrollView(
                                   child: Container(),
                                 ),
-                    
+
                                 // Document tab
                                 SingleChildScrollView(
                                   child: Container(),
                                 ),
-                    
+
                                 // Reference tab
                                 SingleChildScrollView(
                                   child: Container(),
