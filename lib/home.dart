@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hra/login.dart';
-import 'package:hra/make-payment.dart';
-import 'package:hra/upload-payment.dart';
-import 'package:hra/membership.dart';
-import 'package:hra/registered.dart';
+import 'package:hra/user-registration/login.dart';
+import 'package:hra/payments/make-payment.dart';
+import 'package:hra/payments/upload-payment.dart';
+import 'package:hra/payments/membership.dart';
+import 'package:hra/user-registration/registered.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

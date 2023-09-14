@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hra/home.dart';
-import 'package:hra/login.dart';
-import 'package:hra/verify-payment.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'dart:convert';
-import 'package:hra/membership.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/payments/membership.dart';
+import 'package:hra/config/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
+import 'package:hra/ui/home.dart';
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          // automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false,
         ),
       ),
     );
@@ -63,6 +63,15 @@ class _SocialPageState extends State<SocialPage> {
   bool is_email_activated = false;
   String message = "";
 
+  Future<String> removeUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    await prefs.remove('userId');
+
+    return id;
+  }
+
   Future<void> fetchUserDetails() async {
     setState(() {
       loading = true;
@@ -90,8 +99,20 @@ class _SocialPageState extends State<SocialPage> {
       } else if (is_email_activated && is_profile_activated) {
         message =
             "Your profile has been\n verified by the admin.\n You can pay the membership fees now.";
-      } else if (is_email_activated){
-        message = "You have successfully applied\n for the member verification.\n Please wait for the admin's approval.";
+      } else if (is_email_activated) {
+        message =
+            "You have successfully applied\n for the member verification.\n Please wait for the admin's approval.";
+      }
+
+      // ########## ########### change it later
+      if (true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+        return;
       }
 
       print(is_payment_verified);
@@ -109,6 +130,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     fetchUserDetails();
+    // removeUser();
   }
 
   @override
@@ -125,17 +147,21 @@ class _SocialPageState extends State<SocialPage> {
               height: 200, // Adjust the height as needed
             ),
             SizedBox(height: 20),
-            loading ? Center(child: CircularProgressIndicator(),) : Text(
-              message,
-              style: TextStyle(
-                fontFamily: "Roboto",
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff000000),
-                //height: 64 / 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            loading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Text(
+                    message,
+                    style: TextStyle(
+                      fontFamily: "Roboto",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff000000),
+                      //height: 64 / 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
             is_profile_activated && is_email_activated
                 ? Padding(
                     padding: EdgeInsets.only(top: 10),

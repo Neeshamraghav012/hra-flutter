@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hra/forgot-password.dart';
+import 'package:hra/user-registration/forgot-password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/signup.dart';
-import 'package:hra/admin.dart';
-import 'package:hra/admin0.dart';
+import 'package:hra/user-registration/signup.dart';
+import 'package:hra/admin/admin.dart';
+import 'package:hra/admin/admin0.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/social.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/config/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -92,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
   String message = '';
   String id = '';
   bool show_password = false;
+  bool is_admin = false;
 
   Future<void> saveUser(String user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,21 +104,6 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       loading = true;
     });
-
-    if (email_or_phone == "admin@hra.com" && password == "hra_admin@123") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Admin(
-                  title: "HRA",
-                )),
-      );
-
-      setState(() {
-        loading = false;
-      });
-      return;
-    }
 
     if (email_or_phone == '' && password == '') {
       setState(() {
@@ -150,7 +136,24 @@ class _LoginPageState extends State<LoginPage> {
         status = jsonData['status'];
         message = jsonData['message'];
         id = jsonData['data'];
+        is_admin = jsonData['is_admin'];
       });
+
+      if (is_admin) {
+        saveUser(id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Admin(
+                    title: "HRA",
+                  )),
+        );
+
+        setState(() {
+          loading = false;
+        });
+        return;
+      }
 
       saveUser(id);
 

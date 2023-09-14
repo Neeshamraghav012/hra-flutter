@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hra/social.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hra/ui/home.dart';
+// import 'package:hra/ui/home.dart';
+import 'package:hra/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,8 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
           primaryColor: Colors.grey,
-          accentColor: Color(0xFFFF4D4D),
-          fontFamily: 'nunito'),
+          fontFamily: 'Poppins',
+          colorScheme:
+              ColorScheme.fromSwatch().copyWith(secondary: Color(0xFFFF4D4D))),
       home: SplashScreen(),
     );
   }
@@ -26,20 +28,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String userId = "";
+
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
     return id;
   }
 
-  late Future<String> userId;
-
   @override
   void initState() {
-    setState(() {
-      userId = getUser();
-    });
     super.initState();
+    getUser();
   }
 
   @override
@@ -47,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
     const splashDuration = Duration(seconds: 2);
 
     Future.delayed(splashDuration, () {
+      print(userId);
       if (userId != "") {
         Navigator.pushReplacement(
           context,
@@ -56,6 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
         );
+        return;
       }
       Navigator.pushReplacement(
         context,

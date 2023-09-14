@@ -2,7 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/app-config.dart';
+import 'package:hra/config/app-config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

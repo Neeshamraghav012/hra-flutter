@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hra/admin.dart';
+import 'package:hra/admin/admin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/login.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/user-registration/login.dart';
+import 'package:hra/config/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Admin extends StatefulWidget {
   final String title;
@@ -73,6 +74,15 @@ class _AdminState extends State<Admin> {
     setState(() {
       loading = false;
     });
+  }
+
+  Future<String> removeUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    await prefs.remove('userId');
+
+    return id;
   }
 
   @override
@@ -235,6 +245,7 @@ class _AdminState extends State<Admin> {
                   leading: const Icon(Icons.logout),
                   title: const Text('LogOut'),
                   onTap: () {
+                    removeUser();
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => LoginPage()),

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hra/verify-payment.dart';
-import 'package:hra/upload-payment.dart';
-import 'package:hra/make-payment.dart';
 
 class MembershipPage extends StatefulWidget {
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:hra/login.dart';
+import 'package:hra/user-registration/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:hra/signup.dart';
-import 'package:hra/registered.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/user-registration/signup.dart';
+import 'package:hra/user-registration/registered.dart';
+import 'package:hra/config/app-config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -174,21 +174,31 @@ class _SignupPage2State extends State<SignupPage2> {
                 "username": widget.userData['username'],
                 "phone": widget.userData['phone'],
                 "email": widget.userData['email'],
-                "address": widget.userData['address'],
-                "city": widget.userData['city'],
-                "state": widget.userData['state'],
                 "speciality": widget.userData['speciality'],
                 "operating_region": widget.userData['region'],
-                "user_type": 1,
+                "user_type": int.parse(widget.userData['user_type']),
                 "rera_expiry_date": widget.userData['establishment_date'],
                 "total_experience": widget.userData['experience'],
                 "password": widget.userData['password'],
                 "tnc": terms,
                 "privacy_policy": privacy,
+                "establishment_name": widget.userData['est'],
+                "core_business": widget.userData['core_buisness'],
+                "team_size": widget.userData['team_size'],
                 "created_at ": formattedDateTime,
                 "updated_at": formattedDateTime,
                 "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
                 "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                "address": [
+                  {
+                    "state": widget.userData['state'],
+                    "city": widget.userData['city'],
+                    "zip": " ",
+                    "address": widget.userData['address'],
+                    "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+                    "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+                  }
+                ],
                 "references": [
                   {
                     "name": ref_name,
@@ -567,7 +577,6 @@ class _SignupPage2State extends State<SignupPage2> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   register();
-
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(

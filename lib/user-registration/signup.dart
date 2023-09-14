@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hra/forgot-password.dart';
+import 'package:hra/user-registration/forgot-password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hra/signup1.dart';
-import 'package:hra/login.dart';
+import 'package:hra/user-registration/signup1.dart';
+import 'package:hra/user-registration/login.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:flutter/services.dart';
-import 'package:hra/app-config.dart';
+import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -278,7 +278,7 @@ class _SignupPageState extends State<SignupPage> {
       'state': state,
       'speciality': speciality,
       'region': region_id,
-      'user_type': user_type,
+      'user_type': user_type_id,
       'team_size': team_size,
       'core_buisness': core_buisness,
       'establishment_date': establishment_date,

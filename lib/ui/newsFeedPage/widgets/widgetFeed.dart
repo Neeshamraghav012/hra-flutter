@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
+import 'package:hra/ui/createPost.dart';
+
 
 Widget actionBarRow() {
   return Row(
@@ -33,30 +35,38 @@ Widget actionBarRow() {
   );
 }
 
-Widget searchTextField() {
+Widget searchTextField(context) {
   return Container(
     width: double.infinity,
-
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          child: Container(
-            height: 100,
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.0),
-              border: Border.all(color: Colors.grey, width: 0.5),
-            ),
-            child: TextField(
-              maxLines: null, // Allows multiple lines of text
-              decoration: InputDecoration.collapsed(
-                hintText: "What's on your mind?",
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+            child: Container(
+              height: 100,
+              padding: EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: TextField(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => createPage()),
+                  );
+                  return;
+                },
+                maxLines: null, // Allows multiple lines of text
+                decoration: InputDecoration.collapsed(
+                  hintText: "What's on your mind?",
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),
         ),
-  
       ],
     ),
   );
