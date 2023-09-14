@@ -223,10 +223,15 @@ class _SignupPage1State extends State<SignupPage1> {
         pan_number == '' ||
         aadhar_number == '' ||
         rera_number == '') {
+      // if  {
       setState(() {
         error = "Please provide all the details";
       });
       return;
+    } else {
+      setState(() {
+        error = "";
+      });
     }
 
     print(pan_number);
@@ -794,29 +799,32 @@ class _SignupPage1State extends State<SignupPage1> {
                             isuploaded: profile_uploaded,
                           )
                         : Container(),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          next();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                    if (profile_image != null &&
+                        doc == 'Profile' &&
+                        profile_uploaded)
+                      Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            next();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: Color(0xFFFF4D4D),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
                           ),
-                          backgroundColor: Color(0xFFFF4D4D),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
-                        ),
-                        child: Text(
-                          'Next',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white, // Text color
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, // Text color
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: error != null
@@ -1069,10 +1077,10 @@ class Info extends StatelessWidget {
                 ),
                 Spacer(),
                 Padding(
-                  padding: EdgeInsets.all(4),
+                  padding: EdgeInsets.all(8),
                   child: Container(
-                    width: 40, // Adjust the width as needed
-                    height: 40,
+                    width: 16, // Adjust the width as needed
+                    height: 16,
                     // Adjust the height as needed
                     child: ElevatedButton(
                       onPressed: () {
@@ -1090,15 +1098,15 @@ class Info extends StatelessWidget {
                       ),
                       child: Icon(
                         Icons.close,
-                        size: 20,
+                        size: 15,
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-            width: 250,
-            height: 50,
+            width: 225,
+            height: 32,
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -1112,35 +1120,39 @@ class Info extends StatelessWidget {
           ),
           // Spacer(),
           Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: isuploaded
-                ? Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text("Uploaded!"))
-                : isloading
-                    ? Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: () {
-                          onUploadPressed!();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFA1FF89), // Background color
+            padding: EdgeInsets.only(left: 8),
+            child: Container(
+              width: 91,
+              height: 32,
+              child: isuploaded
+                  ? Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text("Uploaded!"))
+                  : isloading
+                      ? Padding(
+                          padding: EdgeInsets.only(left: 10),
+                          child: CircularProgressIndicator())
+                      : ElevatedButton(
+                          onPressed: () {
+                            onUploadPressed!();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFFA1FF89), // Background color
 
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 22,
-                            vertical: 15,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                          ),
+                          child: Text(
+                            'Upload',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black, // Text color
+                            ),
                           ),
                         ),
-                        child: Text(
-                          'Upload',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black, // Text color
-                          ),
-                        ),
-                      ),
+            ),
           ),
         ],
       ),
