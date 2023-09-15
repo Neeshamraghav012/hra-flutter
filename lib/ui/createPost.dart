@@ -184,9 +184,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
         SnackBar(content: Text("Posted"));
 
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NewsFeed()));
+            context, MaterialPageRoute(builder: (context) => NewsFeed()));
       } else {
         print('File upload failed');
       }
@@ -218,6 +216,50 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: Text(
+            "Create a post",
+            style: const TextStyle(
+              fontFamily: "Lato",
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              color: Color(0xff5b5b5b),
+              //height: 25/20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 70,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Image.asset(
+              'images/cross.jpg', // Replace with the path to your image asset
+              width: 24, // Adjust the width as needed
+              height: 24, // Adjust the height as needed
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 20, left: 20),
+              child: TextButton(
+                onPressed: () {
+                  post();
+                  // Navigator.pop(context);
+                },
+                child: isUploading
+                    ? CircularProgressIndicator()
+                    : Text("Post",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFFF4D4D))),
+              ),
+            )
+          ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         tooltip: 'Create Post',
@@ -245,52 +287,66 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
           FABBottomAppBarItem(iconData: FontAwesomeIcons.user, text: ''),
         ],
       ),
+      backgroundColor: Colors.white,
       body: _selectedDrawerIndex != -1
           ? _selectedTab(_selectedDrawerIndex)
-          : SafeArea(
+          : Center(
               child: Column(
               children: [
+                // Container(
+                //   child: Row(
+                //     children: [
+                //       Padding(
+                //           padding: EdgeInsets.only(top: 20, left: 10),
+                //           child: IconButton(
+                //             onPressed: () {
+                //               Navigator.pop(context);
+                //             },
+                //             icon: Image.asset(
+                //               'images/cross.jpg', // Replace with the path to your image asset
+                //               width: 24, // Adjust the width as needed
+                //               height: 24, // Adjust the height as needed
+                //             ),
+                //           )),
+                //       Spacer(),
+                //       Padding(
+                //         padding: EdgeInsets.only(top: 20, left: 20),
+                //         child: Text("Create a post",
+                //             style: TextStyle(
+                //               fontSize: 20,
+                //               fontWeight: FontWeight.w400,
+                //             )),
+                //       ),
+                //       Spacer(),
+                //       Padding(
+                //         padding: EdgeInsets.only(top: 20, left: 20),
+                //         child: TextButton(
+                //           onPressed: () {
+                //             post();
+                //             // Navigator.pop(context);
+                //           },
+                //           child: isUploading
+                //               ? CircularProgressIndicator()
+                //               : Text("Post",
+                //                   style: TextStyle(
+                //                       fontSize: 16,
+                //                       fontWeight: FontWeight.w700,
+                //                       color: Color(0xFFFF4D4D))),
+                //         ),
+                //       )
+                //     ],
+                //   ),
+                // ),
                 Container(
-                  child: Row(
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(top: 20, left: 20),
-                          child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: Icon(Icons.close))),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20, left: 20),
-                        child: Text("Create a post",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                            )),
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20, left: 20),
-                        child: TextButton(
-                          onPressed: () {
-                            post();
-                            // Navigator.pop(context);
-                          },
-                          child: isUploading
-                              ? CircularProgressIndicator()
-                              : Text("Post",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xFFFF4D4D))),
-                        ),
-                      )
-                    ],
+                  width: 342,
+                  child: Divider(
+                    color: Color(0xFFF1F4F5), // Adjust the color as needed
+                    thickness: 1, // Adjust the thickness as needed
                   ),
                 ),
+
                 Padding(
-                  padding: EdgeInsets.only(left: 20, top: 40),
+                  padding: EdgeInsets.only(left: 20, top: 16),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: CircleAvatar(
@@ -300,9 +356,9 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Container(
-                  height: 100,
+                  //height: 150,
                   child: Padding(
-                    padding: EdgeInsets.only(left: 20, top: 20),
+                    padding: EdgeInsets.only(left: 20, top: 17),
                     child: TextField(
                       maxLines: 5,
                       autofocus: true,
@@ -320,78 +376,95 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                 ),
                 //Spacer(),
 
-                Container(
-                  child: uploadedImage != null
-                      ? Container(
-                          child: Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: AspectRatio(
-                              aspectRatio: 16 / 8,
-                              child: Image.file(
-                                File(uploadedImage!.path),
-                                fit: BoxFit.cover,
-                                height: 200,
-                              ),
+                //Container(
+                uploadedImage != null
+                    ? Container(
+                        child: Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: AspectRatio(
+                            aspectRatio: 16 / 8,
+                            child: Image.file(
+                              File(uploadedImage!.path),
+                              fit: BoxFit.cover,
+                              height: 200,
                             ),
                           ),
-                        )
-                      : SizedBox(
-                          height: 100,
                         ),
-                ),
+                      )
+                    : SizedBox(
+                        height: 80,
+                      ),
+                // ),
 
+                // Expanded(
+                //   child: Container(
+                //     //color: Colors.white,
+                //     child: Column(
+                //       children: <Widget>[
                 Expanded(
                   child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 15),
-                            decoration: new BoxDecoration(
-                                color: Colors.white, //Color(0xFF737373),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            child: ListView.builder(
-                                itemCount: bottomMenuItems.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    leading: Container(
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        color: Colors.white,
-                                      ),
-                                      child: Icon(
-                                        bottomMenuItems[index].icon,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    /*
+                    width: 390,
+                    // margin: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: new BoxDecoration(
+                      color: Colors.white, //Color(0xFF737373),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                              0.2), // Color and opacity of the shadow
+                          offset: Offset(0,
+                              -4), // Offset of the shadow (0, -4) will create a top shadow
+                          blurRadius: 4, // Blur radius of the shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(children: [
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: bottomMenuItems.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                    color: Colors.white,
+                                  ),
+                                  child: Icon(
+                                    bottomMenuItems[index].icon,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                /*
                                   trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     size: 15,
                                   ),*/
-                                    title: Text(
-                                      bottomMenuItems[index].title,
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 18),
-                                    ),
-                                    // subtitle: Text(bottomMenuItems[index].subtitle),
-                                    onTap: () {
-                                      // Navigator.pop(context);
-                                      scanImage();
-                                      debugPrint(bottomMenuItems[index].title);
-                                    },
-                                  );
-                                }),
-                          ),
-                        ),
-                      ],
-                    ),
+                                title: Text(
+                                  bottomMenuItems[index].title,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18),
+                                ),
+                                // subtitle: Text(bottomMenuItems[index].subtitle),
+                                onTap: () {
+                                  // Navigator.pop(context);
+                                  scanImage();
+                                  debugPrint(bottomMenuItems[index].title);
+                                },
+                              );
+                            }),
+                      ),
+                    ]),
                   ),
                 ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             )),
     );
