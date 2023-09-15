@@ -355,7 +355,10 @@ class _Frame3875State extends State<Frame3875>
                   height: 100,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: userData.profile_url != '' ?  NetworkImage(userData.profile_url!) : const AssetImage('images/profile.png')  as ImageProvider,
+                      image: userData.profile_url != ''
+                          ? NetworkImage(userData.profile_url!)
+                          : const AssetImage('images/profile.png')
+                              as ImageProvider,
                       fit: BoxFit.fill,
                     ),
                     shape: BoxShape.circle,
@@ -579,8 +582,8 @@ class _Frame3875State extends State<Frame3875>
                                               child: IconButton(
                                                 onPressed: () async {
                                                   if (await canLaunchUrl(
-                                                      Uri.parse(userData
-                                                          .pan_url!))) {
+                                                      Uri.parse(
+                                                          userData.pan_url!))) {
                                                     await launchUrl(
                                                       Uri.parse(
                                                           userData.pan_url!),

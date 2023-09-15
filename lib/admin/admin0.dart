@@ -37,7 +37,9 @@ class UserData {
 }
 
 class _AdminState extends State<Admin> {
-  List<UserData> usersData = [];
+  List<UserData> usersData = [
+    UserData(username: "JohnDoe", id: "1noajr", establishment: "ABC Company")
+  ];
   bool loading = false;
 
   Future<void> fetchUsers() async {
