@@ -4,107 +4,83 @@ import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:share/share.dart';
 import 'package:like_button/like_button.dart';
-
-Widget feedCard(BuildContext context, Feed listFeed) {
-  Feed? feed;
-  return Card(
-    child: GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PostPageDetails(
-                    postId: '1',
-                    feed: feed!,
-                  ))),
-      child: Container(
-          padding: EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              renderCategoryTime(listFeed),
-              space10(),
-              userAvatarSection(context, listFeed),
-              space15(),
-              Text(listFeed.name,
-                  softWrap: true,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              space15(),
-              Text(listFeed.description,
-                  style: TextStyle(fontSize: 14, color: Colors.grey)),
-              space15(),
-              setLocation(listFeed),
-              Divider(thickness: 1),
-              Row(
-                children: <Widget>[
-                  Icon(FontAwesomeIcons.addressBook),
-                  SizedBox(width: 10),
-                  Text(
-                    '${listFeed.members} Members have this questions',
-                    style: TextStyle(
-                        fontSize: 14, color: Theme.of(context).primaryColor),
-                  ),
-                ],
-              ),
-              Divider(thickness: 1),
-              SizedBox(height: 10),
-              likeCommentShare(listFeed),
-              space15(),
-            ],
-          )),
-    ),
-  );
-}
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:hra/config/app-config.dart';
 
 Future<bool> onLikeButtonTapped(bool isLiked) async {
   return !isLiked;
 }
 
-Widget likeCommentShare(Feed listFeed) {
+Future<bool> LikeButtonTapped(
+    String user_id, String post_id, bool isLiked) async {
+  print("post id is: ");
+  print(post_id);
+  print("User id is: ");
+  print(user_id);
+  final response = await http.get(
+    Uri.parse(
+        '${AppConfig.apiUrl}/socialmedia//api/like?user_id=$user_id&post_id=$post_id'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    print(jsonData);
+    return !isLiked;
+  }
+  return isLiked;
+}
+
+bool isLiked = false;
+
+Widget likeCommentShare(BuildContext context, Feed listFeed, String user_id) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       GestureDetector(
-        onTap: () {
-          print('Like Tapped');
-          // Handle liking the post here
-          // FbReactionBox();
-        },
         child: Row(
           children: <Widget>[
-            LikeButton(
-              onTap: onLikeButtonTapped,
-              size: 20,
-              circleColor:
-                  CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-              bubblesColor: BubblesColor(
-                dotPrimaryColor: Color(0xff33b5e5),
-                dotSecondaryColor: Color(0xff0099cc),
+            Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: LikeButton(
+                // onTap: onLikeButtonTapped,
+                size: 20,
+                circleColor: CircleColor(
+                    start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                bubblesColor: BubblesColor(
+                  dotPrimaryColor: Color(0xff33b5e5),
+                  dotSecondaryColor: Color(0xff0099cc),
+                ),
+                likeBuilder: (bool isLiked) {
+                  return IconButton(
+                      onPressed: () async {
+                        await LikeButtonTapped(
+                            user_id, listFeed.feedId, isLiked);
+                      },
+                      icon: Icon(
+                        Icons.thumb_up_outlined,
+                        color: isLiked ? Color(0xFFFF4D4D) : Colors.black,
+                      ));
+                },
+                likeCount: 0,
+                countBuilder: (int? count, bool isLiked, String text) {
+                  var color = isLiked ? Color(0xFFFF4D4D) : Colors.black;
+                  Widget result;
+                  if (count == 0) {
+                    result = Text(
+                      "",
+                      style: TextStyle(color: color),
+                    );
+                  } else
+                    result = Text(
+                      '',
+                      style: TextStyle(color: color),
+                    );
+                  return result;
+                },
               ),
-              likeBuilder: (bool isLiked) {
-                return Icon(
-                  Icons.thumb_up_outlined,
-                  color: isLiked ? Color(0xFFFF4D4D) : Colors.black,
-                  size: 20,
-                );
-              },
-              likeCount: 0,
-              countBuilder: (int? count, bool isLiked, String text) {
-                var color = isLiked ? Color(0xFFFF4D4D) : Colors.black;
-                Widget result;
-                if (count == 0) {
-                  result = Text(
-                    "like",
-                    style: TextStyle(color: color),
-                  );
-                } else
-                  result = Text(
-                    text,
-                    style: TextStyle(color: color),
-                  );
-                return result;
-              },
             ),
           ],
         ),
@@ -112,6 +88,7 @@ Widget likeCommentShare(Feed listFeed) {
       GestureDetector(
         onTap: () {
           print('Comment Tapped');
+          viewDetailPage(context, listFeed.feedId.toString(), listFeed);
           // Handle commenting on the post here
         },
         child: Row(
@@ -140,6 +117,17 @@ Widget likeCommentShare(Feed listFeed) {
   );
 }
 
+Widget viewDetailPage(context, String postId, Feed feed) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => PostPageDetails(
+                postId: postId,
+                feed: feed,
+              )));
+  return SizedBox();
+}
+
 Widget setLocation(Feed listFeed) {
   return Row(
     children: <Widget>[
@@ -164,7 +152,46 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
               children: <Widget>[
                 CircleAvatar(
                     backgroundColor: Colors.grey,
-                    child: ClipOval(child: listFeed.avatarImg != '' ? Image.network(listFeed.avatarImg) : Image.asset('images/icon.png')),
+                    child: ClipOval(
+                        child: listFeed.avatarImg != ''
+                            ? Image.network(
+                                listFeed.avatarImg,
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    // Image is fully loaded
+                                    return child;
+                                  } else {
+                                    // Image is still loading, show a loading indicator
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  }
+                                },
+                                errorBuilder: (BuildContext context,
+                                    Object error, StackTrace? stackTrace) {
+                                  // This callback is called if the image couldn't be loaded
+                                  // You can display an error message or a placeholder image here
+                                  return Center(
+                                    child: Icon(
+                                      Icons.error_outline,
+                                      color: Colors.red,
+                                      size: 48.0,
+                                    ),
+                                  );
+                                },
+                              )
+                            : Image.asset('images/icon.png')),
                     radius: 20),
                 SizedBox(width: 10),
                 Column(
@@ -173,7 +200,7 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(listFeed.title,
+                        Text(listFeed.name,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(

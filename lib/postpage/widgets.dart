@@ -20,8 +20,8 @@ Widget othersComment(BuildContext context, Feed feed) {
         CircleAvatar(
             backgroundColor: Colors.grey,
             child: ClipOval(
-                child: Image.network(
-                    'https://www.w3schools.com/w3images/avatar4.png')),
+                child: feed.avatarImg != '' ? Image.asset('images/icon.png') : Image.network(
+                    feed.avatarImg)),
             radius: 20),
         SizedBox(width: 20),
         Expanded(
@@ -36,15 +36,19 @@ Widget othersComment(BuildContext context, Feed feed) {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: <Widget>[
-                  usernameSectionWithoutAvatar(context),
+                  usernameSectionWithoutAvatar(context, feed.name == " " ? "User" : feed.name),
                   space15(),
-                  Text(
-                      'Not sure about rights. Looks like its matter of concern that our shool dont take it seriously such matters and trats it like lightly that it is fault of student',
-                      softWrap: true,
-                      maxLines: 3,
-                      style: TextStyle(fontSize: 14)),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                        feed.title,
+                        softWrap: true,
+                        maxLines: 3,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 14, )),
+                  ),
                   space15(),
-                  Divider(thickness: 1),
+                  // Divider(thickness: 1),
                   SizedBox(height: 10),
                   // menuReply(feed),
                   space15(),
@@ -85,7 +89,7 @@ Widget othersCommentWithImageSlider(BuildContext context, Feed feed) {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: <Widget>[
-                  usernameSectionWithoutAvatar(context),
+                  usernameSectionWithoutAvatar(context, feed.name),
                   space15(),
                   Text(
                       'Not sure about rights. Looks like its matter of concern that our shool dont take it seriously such matters and trats it like lightly that it is fault of student',
@@ -178,7 +182,7 @@ Widget menuReply(Feed listFeed) {
   );
 }
 
-Widget usernameSectionWithoutAvatar(BuildContext context) {
+Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
   return Row(
     children: <Widget>[
       Expanded(
@@ -193,7 +197,7 @@ Widget usernameSectionWithoutAvatar(BuildContext context) {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('username1275',
+                        Text(username,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(

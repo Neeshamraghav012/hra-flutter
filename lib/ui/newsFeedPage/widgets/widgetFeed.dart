@@ -108,111 +108,8 @@ Widget topSpace() {
   return SizedBox(height: 10);
 }
 
-Widget feedNewsCardItem(BuildContext context, Feed feed) {
-  return Container(
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        border: Border.all(
-            style: BorderStyle.solid, color: Colors.grey, width: 0.5)),
-    child: Card(
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            renderCategoryTime(feed),
-            space10(),
-            userAvatarSection(context, feed),
-            space15(),
-            Visibility(
-                visible: feed.name.isEmpty == true ? false : true,
-                child: Text(feed.name,
-                    softWrap: true,
-                    maxLines: 2,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-            space15(),
-            Visibility(
-                visible: feed.description.isEmpty == true ? false : true,
-                child: Text(feed.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey))),
-            space15(),
-            setLocation(feed),
-            Divider(thickness: 1),
-            Row(
-              children: <Widget>[
-                Icon(FontAwesomeIcons.addressBook),
-                SizedBox(width: 10),
-                Text(
-                  '${feed.members} Members have this questions',
-                  style: TextStyle(
-                      fontSize: 14, color: Theme.of(context).primaryColor),
-                ),
-              ],
-            ),
-            Divider(thickness: 1),
-            SizedBox(height: 10),
-            likeCommentShare(feed),
-            space15(),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget feedNewsCardItemQuestion(BuildContext context, Feed feed) {
-  return Container(
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        border: Border.all(
-            style: BorderStyle.solid, color: Colors.grey, width: 0.5)),
-    child: Card(
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            renderCategoryTime(feed),
-            space10(),
-            userAvatarSection(context, feed),
-            space15(),
-            Visibility(
-                visible: feed.name.isEmpty == true ? false : true,
-                child: Text(feed.name,
-                    softWrap: true,
-                    maxLines: 2,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-            space15(),
-            setLocation(feed),
-            space15(),
-            questionPallet(),
-            space15(),
-            Divider(thickness: 1),
-            Row(
-              children: <Widget>[
-                Icon(FontAwesomeIcons.addressBook),
-                SizedBox(width: 10),
-                Text(
-                  '${feed.members} Members have this questions',
-                  style: TextStyle(
-                      fontSize: 14, color: Theme.of(context).primaryColor),
-                ),
-              ],
-            ),
-            Divider(thickness: 1),
-            SizedBox(height: 10),
-            likeCommentShare(feed),
-            space15(),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget feedNewsCardWithImageItem(BuildContext context, Feed feed) {
+Widget feedNewsCardWithImageItem(
+    BuildContext context, Feed feed, String user_id) {
   return Container(
     decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -240,11 +137,46 @@ Widget feedNewsCardWithImageItem(BuildContext context, Feed feed) {
             space15(),
             // show Image Preview
 
+            Image.network(
+              feed.bannerImg != '' ? feed.bannerImg : '',
+              fit: BoxFit.cover,
+              height: 180,
+              width: double.infinity,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  // Image is fully loaded
+                  return child;
+                } else {
+                  // Image is still loading, show a loading indicator
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  );
+                }
+              },
+              errorBuilder:
+                  (BuildContext context, Object error, StackTrace? stackTrace) {
+                // This callback is called if the image couldn't be loaded
+                // You can display an error message or a placeholder image here
+                return Center(
+                  child: Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 48.0,
+                  ),
+                );
+              },
+            ),
+
             feed.bannerImg != ''
                 ? Image.network(feed.bannerImg,
                     fit: BoxFit.cover, height: 180, width: double.infinity)
-                : Image.asset("images/home.jpg",
-                    fit: BoxFit.cover, height: 180, width: double.infinity),
+                : Container(),
 
             space15(),
             // shows location
@@ -264,7 +196,7 @@ Widget feedNewsCardWithImageItem(BuildContext context, Feed feed) {
             ),*/
             Divider(thickness: 1),
             SizedBox(height: 10),
-            likeCommentShare(feed),
+            likeCommentShare(context, feed, user_id),
             space15(),
           ],
         ),
@@ -318,57 +250,6 @@ Widget questionPallet() {
           ],
         )
       ],
-    ),
-  );
-}
-
-Widget pollingCard(BuildContext context, Feed feed) {
-  return Container(
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        border: Border.all(
-            style: BorderStyle.solid, color: Colors.grey, width: 0.5)),
-    child: Card(
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            renderCategoryTime(feed),
-            space10(),
-            userAvatarSection(context, feed),
-            space15(),
-            Visibility(
-                visible: feed.name.isEmpty == true ? false : true,
-                child: Text(feed.name,
-                    softWrap: true,
-                    maxLines: 2,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-            space15(),
-            pollCartSection(),
-            space15(),
-            setLocation(feed),
-            Divider(thickness: 1),
-            Row(
-              children: <Widget>[
-                Icon(FontAwesomeIcons.addressBook),
-                SizedBox(width: 10),
-                Text(
-                  'You and ${feed.members} Members Liked this poll',
-                  style: TextStyle(
-                      fontSize: 14, color: Theme.of(context).primaryColor),
-                ),
-              ],
-            ),
-            Divider(thickness: 1),
-            SizedBox(height: 10),
-            likeCommentShare(feed),
-            space15(),
-          ],
-        ),
-      ),
     ),
   );
 }

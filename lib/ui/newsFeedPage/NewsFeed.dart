@@ -79,8 +79,8 @@ class _NewsFeedState extends State<NewsFeed> {
   }
 
   Future<void> initializeData() async {
-    await getUser(); // Wait for getUser to finish
-    fetchPosts(); // Call fetchPosts after getUser completes
+    await getUser();
+    fetchPosts();
   }
 
   @override
@@ -133,7 +133,7 @@ class _NewsFeedState extends State<NewsFeed> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                feedNewsCardWithImageItem(context, feedItem),
+                                feedNewsCardWithImageItem(context, feedItem, userId),
                                 topSpace(),
                               ],
                             ),

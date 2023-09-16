@@ -181,12 +181,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
           isUploading = false;
         });
 
-        SnackBar(content: Text("Posted"));
-
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NewsFeed()));
+            context, MaterialPageRoute(builder: (context) => NewsFeed()));
       } else {
         print('File upload failed');
       }
@@ -203,9 +199,9 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    bottomMenuItems.add(new MenuModel('Camera', '', Icons.camera));
+    bottomMenuItems.add(new MenuModel('Camera', 'camera', Icons.camera));
     bottomMenuItems
-        .add(new MenuModel('Upload Image', '', Icons.browse_gallery));
+        .add(new MenuModel('Upload Image', 'scan', Icons.browse_gallery));
     // bottomMenuItems.add(new MenuModel('Take Video', '', Icons.video_call));
 
     // bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
@@ -274,6 +270,15 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(top: 20, left: 20),
                         child: TextButton(
                           onPressed: () {
+                            var snackdemo = SnackBar(
+                              content: Text("Posting your updates"),
+                              backgroundColor: Colors.green,
+                              elevation: 10,
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.all(5),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackdemo);
                             post();
                             // Navigator.pop(context);
                           },
@@ -381,7 +386,12 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                                     // subtitle: Text(bottomMenuItems[index].subtitle),
                                     onTap: () {
                                       // Navigator.pop(context);
-                                      scanImage();
+                                      if (bottomMenuItems[index].subtitle ==
+                                          'camera') {
+                                        scanImage();
+                                      } else {
+                                        chooseImage();
+                                      }
                                       debugPrint(bottomMenuItems[index].title);
                                     },
                                   );

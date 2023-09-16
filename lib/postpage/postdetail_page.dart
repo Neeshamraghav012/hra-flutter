@@ -5,6 +5,7 @@ import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/config/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PostPageDetails extends StatefulWidget {
   final String postId;
@@ -21,21 +22,38 @@ class _PostPageDetailsState extends State<PostPageDetails> {
   String comment = "";
   bool isloading = false;
   bool isuploading = false;
+  String userId = "";
+
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
+
+    return id;
+  }
+
+  void initializeData() async {
+    await getUser();
+  }
+
+  TextEditingController _textEditingController = TextEditingController();
 
   Future<void> fetchComments() async {
     setState(() {
       isloading = true;
     });
-    final response = await http.post(
+    final response = await http.get(
       Uri.parse(
-          '${AppConfig.apiUrl}/socialmedia/api/comments/${widget.postId}'),
+          '${AppConfig.apiUrl}/socialmedia//api/fetch_comment?post_id=${widget.postId}'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({}),
     );
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-
+      print(jsonData);
       if (jsonData['data'] is List) {
         final List<dynamic> dataList = jsonData['data'];
         feedList = dataList
@@ -53,8 +71,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                   subcategory: ' ',
                   time: ' ',
                   name: data['username'],
-                  avatarImg: data['avatarImg'],
-                  bannerImg: data['bannerImg'],
+                  avatarImg: " ",
+                  bannerImg: " ",
                   location: ' ',
                   likes: 0,
                   comments: '0',
@@ -64,7 +82,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             })
             .values
             .toList();
-        print("feedlist is: ");
+        print("comment list is: ");
         print(feedList);
       }
     }
@@ -73,37 +91,72 @@ class _PostPageDetailsState extends State<PostPageDetails> {
     });
   }
 
-  Future<void> postComment() async {
+  Future<int> postComment(String feedId) async {
     setState(() {
       isuploading = true;
     });
     final response = await http.post(
-      Uri.parse('${AppConfig.apiUrl}/user/api/comments/'),
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/comment'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({}),
+      body: jsonEncode({
+        "comment_input": {
+          "user_id": userId,
+          "post_id": feedId,
+          "comment": comment,
+          "updated_by": userId,
+          "created_by": userId,
+        }
+      }),
     );
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       print(jsonData);
+      if (jsonData['status']) {
+        Feed latestcomment = Feed(
+            feedId: " ",
+            type: 1,
+            title: comment,
+            description: " ",
+            category: " ",
+            subcategory: " ",
+            time: " ",
+            name: "You",
+            avatarImg: " ",
+            bannerImg: " ",
+            location: " ",
+            likes: 0,
+            comments: " ",
+            members: " ");
 
-      // add to feedList
+        // Insert the new feed at the beginning of the list
+
+        setState(() {
+          comment = '';
+          _textEditingController.text = "";
+          feedList.insert(0, latestcomment);
+          isuploading = false;
+        });
+      }
+
+      return 1;
     }
     setState(() {
       isuploading = false;
     });
+    return 0;
   }
 
   @override
   void initState() {
     super.initState();
-
-    //fetchComments();
+    initializeData();
+    fetchComments();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildMessageComposer() {
+    Widget _buildMessageComposer(String feedId) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         color: Colors.white,
@@ -112,6 +165,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             Expanded(
               child: TextField(
                 textCapitalization: TextCapitalization.sentences,
+                controller: _textEditingController,
                 onChanged: (value) {
                   setState(() {
                     comment = value;
@@ -122,14 +176,36 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.send),
-              iconSize: 25.0,
-              color: Theme.of(context).primaryColor,
-              onPressed: () {
-                postComment();
-              },
-            ),
+            isuploading
+                ? CircularProgressIndicator()
+                : IconButton(
+                    icon: Icon(Icons.send),
+                    iconSize: 25.0,
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () async {
+                      int status = await postComment(feedId);
+                      if (status == 1) {
+                        var snackdemo = SnackBar(
+                          content: Text("Your comment has been posted!"),
+                          backgroundColor: Colors.green,
+                          elevation: 10,
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.all(5),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+                      } else {
+                        var snackdemo = SnackBar(
+                          content:
+                              Text("Something went wrong, please try again"),
+                          backgroundColor: Colors.green,
+                          elevation: 10,
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.all(5),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+                      }
+                    },
+                  ),
           ],
         ),
       );
@@ -150,10 +226,10 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                feedNewsCardWithImageItem(context, widget.feed),
+                feedNewsCardWithImageItem(context, widget.feed, userId),
                 topSpace(),
 
-                _buildMessageComposer(),
+                _buildMessageComposer(widget.feed.feedId),
 
                 //Comments
                 isloading
@@ -173,7 +249,6 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                feedNewsCardWithImageItem(context, feedItem),
                                 topSpace(),
                                 const SizedBox(height: 30),
                                 othersComment(context, feedItem),

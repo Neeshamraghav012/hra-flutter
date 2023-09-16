@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/config/app-config.dart';
+import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
+import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
+import 'package:hra/postpage/postdetail_page.dart';
+import 'package:hra/user-registration/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -12,45 +17,163 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  String userId = "";
+
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    setState(() {
+      userId = id;
+    });
+
+    return id;
+  }
+
+  Future<String> removeUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString("userId") ?? "";
+
+    await prefs.remove('userId');
+
+    return id;
+  }
 
   bool loading = false;
-  String posts = "";
-  String followers = "";
-  String following = "";
+  int posts = 0;
+  int followers = 0;
+  int following = 0;
+  bool _isMounted = false;
+  List<Feed> feedListData = [];
+  bool fetching = false;
 
   Future<void> fetchStats() async {
+    if (!_isMounted) return; // Check if widget is mounted
+
     setState(() {
       loading = true;
     });
 
-    final response = await http.post(
-        Uri.parse('${AppConfig.apiUrl}/user/api/stats'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({}));
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/user-stats?user_id=$userId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (!_isMounted) return; // Check if widget is mounted
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData['status']) {
+        setState(() {
+          posts = jsonData['data'][0]['posts'];
+          followers = jsonData['data'][0]['followers'];
+          following = jsonData['data'][0]['following'];
+          loading = false;
+        });
+      }
     } else {
       print('API request failed with status code: ${response.statusCode}');
     }
+    if (_isMounted) {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<void> fetchPosts() async {
     setState(() {
-      loading = false;
+      fetching = true;
     });
+    final response = await http.get(
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/posts?user_id=$userId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData['data'] is List) {
+        final List<dynamic> dataList = jsonData['data'];
+        feedListData = dataList
+            .asMap()
+            .map((index, data) {
+              return MapEntry(
+                index,
+                Feed(
+                  id: index,
+                  feedId: data['id'],
+                  type: 1,
+                  title: data['title'],
+                  description: ' ',
+                  category: ' ',
+                  subcategory: ' ',
+                  time: ' ',
+                  name: data['username'],
+                  avatarImg: data['avatarImg'],
+                  bannerImg: data['bannerImg'],
+                  location: ' ',
+                  likes: 0,
+                  comments: '0',
+                  members: '0',
+                ),
+              );
+            })
+            .values
+            .toList();
+        print("feedlist is: ");
+        print(feedListData);
+      }
+    }
+
+    setState(() {
+      fetching = false;
+    });
+  }
+
+  void p() {
+    print("function 1");
+  }
+
+  void p1() {
+    print("functionn 2");
+  }
+
+  Future<void> initializeData() async {
+    await getUser();
+    fetchStats();
+    fetchPosts();
   }
 
   @override
   void initState() {
     super.initState();
-    fetchStats();
+    initializeData();
     _tabController = TabController(length: 4, vsync: this);
 
-  _tabController.addListener(() {
-    print('Tab index changed to ${_tabController.index}');
-  });
+    _tabController.addListener(() {
+      print('Tab index changed to ${_tabController.index}');
 
+      if (_tabController.index == 1) {
+        p();
+      } else {
+        p1();
+      }
+    });
+
+    _isMounted = true; // Widget is mounted
   }
 
-    Future<void> fetchData() async {
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _isMounted = false; // Widget is disposed
+    super.dispose();
+  }
+
+  Future<void> fetchData() async {
     setState(() {
       loading = true;
     });
@@ -68,13 +191,6 @@ class _ProfilePageState extends State<ProfilePage>
     setState(() {
       loading = false;
     });
-  }
-
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
@@ -125,13 +241,19 @@ class _ProfilePageState extends State<ProfilePage>
                 Padding(
                   padding: EdgeInsets.all(4),
                   child: Center(
-                    child: Text("User Name",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ),
+                      child: TextButton(
+                    child: Text("Logout"),
+                    onPressed: () async {
+                      await removeUser();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false,
+                      );
+                    },
+                  )),
                 ),
+                /*
                 Padding(
                   padding: EdgeInsets.all(2),
                   child: Center(
@@ -141,7 +263,8 @@ class _ProfilePageState extends State<ProfilePage>
                           fontWeight: FontWeight.w400,
                         )),
                   ),
-                ),
+                ),*/
+                /*
                 Padding(
                   padding: EdgeInsets.all(4),
                   child: Center(
@@ -150,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage>
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ))),
-                ),
+                ),*/
                 Align(
                   alignment: Alignment.topCenter,
                   child: Row(
@@ -160,12 +283,12 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsets.all(10),
                         child: Column(
                           children: [
-                            Text("22",
+                            Text(posts.toString(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 )),
-                            Text("Post",
+                            Text("Posts",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
@@ -180,7 +303,7 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsets.all(10),
                         child: Column(
                           children: [
-                            Text("8.3K",
+                            Text(following.toString(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -200,7 +323,7 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsets.all(10),
                         child: Column(
                           children: [
-                            Text("35.5K",
+                            Text(followers.toString(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -230,7 +353,7 @@ class _ProfilePageState extends State<ProfilePage>
                           )
                         : Container(
                             child: TabBar(
-                              controller: _tabController,
+                                controller: _tabController,
                                 labelColor: Colors.black,
                                 labelPadding:
                                     EdgeInsets.symmetric(horizontal: 8.0),
@@ -252,24 +375,67 @@ class _ProfilePageState extends State<ProfilePage>
                     Expanded(
                       child: Container(
                         child: loading
-                            ? Container()
+                            ? Center(
+                                child: Container(),
+                              )
                             : TabBarView(children: [
-                                // Personal Info
+                                // All Posts
+                                SingleChildScrollView(
+                                    child: Column(
+                                  children: <Widget>[
+                                    fetching
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemCount: feedListData.length,
+                                              itemBuilder: (context, index) {
+                                                final feedItem =
+                                                    feedListData[index];
+                                                return GestureDetector(
+                                                  onTap: () => viewDetailPage(
+                                                      feedItem.feedId
+                                                          .toString(),
+                                                      feedItem),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      feedNewsCardWithImageItem(
+                                                          context,
+                                                          feedItem,
+                                                          userId),
+                                                      topSpace(),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                  ],
+                                )),
+
+                                // Photos Tab
+                                SingleChildScrollView(
+                                  child: Container(
+                                    child: Text("Photos"),
+                                  ),
+                                ),
+
+                                // Videos tab
                                 SingleChildScrollView(
                                   child: Container(),
                                 ),
 
-                                // Organization Tab
-                                SingleChildScrollView(
-                                  child: Container(),
-                                ),
-
-                                // Document tab
-                                SingleChildScrollView(
-                                  child: Container(),
-                                ),
-
-                                // Reference tab
+                                // Saved Post tab
                                 SingleChildScrollView(
                                   child: Container(),
                                 ),
@@ -284,5 +450,16 @@ class _ProfilePageState extends State<ProfilePage>
         ),
       ),
     );
+  }
+
+  Widget viewDetailPage(String postId, Feed feed) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PostPageDetails(
+                  postId: postId,
+                  feed: feed,
+                )));
+    return SizedBox();
   }
 }

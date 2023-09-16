@@ -18,7 +18,6 @@ class _NotificationState extends State<NotificationPage> {
         backgroundColor: Colors.white,
         elevation: 2,
         toolbarHeight: 75,
-        automaticallyImplyLeading: false,
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(60), // Adjust the radius as needed
@@ -98,7 +97,7 @@ class _NotificationState extends State<NotificationPage> {
                             height: 48,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage("images/icon.png"),
+                                image: AssetImage("images/soc1.jpg"),
                                 fit: BoxFit.fill,
                               ),
                             ),

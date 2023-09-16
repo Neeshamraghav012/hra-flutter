@@ -6,6 +6,7 @@ import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/home.dart';
+import 'package:hra/user-registration/login.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -188,6 +189,7 @@ class _SocialPageState extends State<SocialPage> {
                     ),
                   )
                 : Container(),
+
           ],
         ),
       ),
