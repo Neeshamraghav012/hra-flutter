@@ -9,8 +9,8 @@ import 'package:hra/config/app-config.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:hra/ui/home.dart';
 import 'package:hra/admin/Articles.dart';
-import 'package:hra/admin/Events.dart';
 import 'package:hra/admin/Gallery.dart';
+import 'package:hra/admin/Event-list.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -269,10 +269,9 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.bar_chart_sharp),
               title: const Text(' Events '),
               onTap: () {
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EventPage()),
-                  (route) => false,
+                  MaterialPageRoute(builder: (context) => EventPage1()),
                 );
               },
             ),
@@ -282,10 +281,9 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.image),
               title: const Text(' Images '),
               onTap: () {
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GalleryPage()),
-                  (route) => false,
                 );
               },
             ),
@@ -313,10 +311,10 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.article),
               title: const Text(' Articles '),
               onTap: () {
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ArtPage()),
-                  (route) => false,
+                  
                 );
               },
             ),

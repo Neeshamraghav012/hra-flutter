@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hra/admin/Events-details.dart';
+import 'package:hra/admin/eventblock.dart';
 
 class EventPage1 extends StatefulWidget {
   @override
@@ -6,6 +8,8 @@ class EventPage1 extends StatefulWidget {
 }
 
 class _Event1State extends State<EventPage1> {
+  final EventBloc eventBloc = EventBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,72 +50,28 @@ class _Event1State extends State<EventPage1> {
         padding: EdgeInsets.only(top: 16.0),
         child: Column(
           children: [
-            Center(
-              child: Container(
-                width: 342,
-                height: 68,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(10.0),
-                  image: DecorationImage(
-                    image: AssetImage('images/adssss.jpg'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+            // Use ListView.builder to build the EventCard widgets
+            Expanded(
+              child: ListView.builder(
+                itemCount: eventBloc.eventList.length,
+                itemBuilder: (context, index) {
+                  Event event = eventBloc.eventList[index];
+                  return EventCard(
+                    imagePath:
+                        event.bannerImg, // You can use the bannerImg here
+                    title: event.title,
+                    subTitle: event.subtitle,
+                    buttonLabel: 'View Details',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EventPage(eventId: index,)),
+                      );
+                    },
+                  );
+                },
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 4, left: 8, right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  EventCard(
-                    imagePath: 'images/E1.jpg',
-                    title: "CP Event",
-                    subTitle: "Just for PROH Members",
-                    buttonLabel: 'View Details',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  EventCard(
-                    imagePath: 'images/E2.jpg',
-                    title: "CP Event",
-                    subTitle: "Just for PROH Members",
-                    buttonLabel: 'View Details',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 4, left: 8, right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  EventCard(
-                    imagePath: 'images/E3.jpg',
-                    title: "CP Event 2",
-                    subTitle: "Just for HRA Members",
-                    buttonLabel: 'View Details',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  EventCard(
-                    imagePath: 'images/E4.jpg',
-                    title: "CP Event name",
-                    subTitle: "Just for HRA Members",
-                    buttonLabel: 'View Details',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

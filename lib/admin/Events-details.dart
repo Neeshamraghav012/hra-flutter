@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hra/admin/eventblock.dart';
 
 class EventPage extends StatefulWidget {
+  final int eventId;
+
+  EventPage({required this.eventId});
   @override
   State<EventPage> createState() => _EventState();
 }
 
 class _EventState extends State<EventPage> {
+  final EventBloc eventBloc = EventBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +42,8 @@ class _EventState extends State<EventPage> {
           Container(
             margin: EdgeInsets.all(8.0), // Adjust margin as needed
             child: CircleAvatar(
-              backgroundImage: AssetImage('images/pp.jpg'),
+              backgroundImage:
+                  NetworkImage(eventBloc.eventList[widget.eventId].bannerImg),
               radius: 20, // Adjust the radius to control the size of the circle
             ),
           ),
@@ -90,7 +97,7 @@ class _EventState extends State<EventPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Event name",
+                        eventBloc.eventList[widget.eventId].title,
                         style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 16,
@@ -100,7 +107,7 @@ class _EventState extends State<EventPage> {
                         textAlign: TextAlign.left,
                       ),
                       Text(
-                        "Date: 01/05/2021",
+                        "Date: ${eventBloc.eventList[widget.eventId].date}",
                         style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 14,
@@ -125,8 +132,7 @@ class _EventState extends State<EventPage> {
                           ),
                         ),
                         TextSpan(
-                          text:
-                              "on the future of ticketing systems. Honed over time, combined with research, experience, and an eye for the best possible future state of support, we think you’ll be interested in knowing these perspectives of modern ticketing.on the future of ticketing systems. Honed over time, combined with research, experience, and an eye for the best possible future state of support, we think you’ll be interested in knowing these perspectives of modern ticketing.",
+                          text: eventBloc.eventList[widget.eventId].description,
                           style: const TextStyle(
                             fontSize:
                                 14, // Change the font size for the remaining text
@@ -141,7 +147,7 @@ class _EventState extends State<EventPage> {
 
                   SizedBox(height: 20),
                   Text(
-                    "Location",
+                    "Location: ${eventBloc.eventList[widget.eventId].location}",
                     style: const TextStyle(
                       fontFamily: "Roboto",
                       fontSize: 16,
@@ -151,17 +157,6 @@ class _EventState extends State<EventPage> {
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    "Full address",
-                    style: const TextStyle(
-                      fontFamily: "Roboto",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                      //height: 244 / 14,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
                 ],
               ),
             )
