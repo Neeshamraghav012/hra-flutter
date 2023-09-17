@@ -5,23 +5,44 @@ import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
 import 'package:hra/ui/createPost.dart';
 
-Widget actionBarRow() {
+Widget actionBarRow(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Icon(
-                Icons.menu,
-                color: Color(0xFFFF4D4D),
-              )
-            ],
-          )
-        ],
+      Drawer(
+        // Add your drawer content here
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {
+                // Handle drawer item click here
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                // Handle drawer item click here
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+          ],
+        ),
       ),
       CircleAvatar(
           child: ClipOval(
@@ -126,7 +147,7 @@ Widget feedNewsCardWithImageItem(
             space10(),
             userAvatarSection(context, feed),
             space15(),
-          
+
             space15(),
             Text(feed.title,
                 style: TextStyle(fontSize: 14, color: Colors.black)),
@@ -134,7 +155,9 @@ Widget feedNewsCardWithImageItem(
             // show Image Preview
 
             Image.network(
-              feed.bannerImg != '' ? feed.bannerImg : 'https://res.cloudinary.com/hire-easy/image/upload/v1659026436/media/images/WhatsApp_Image_2022-07-26_at_6.45.36_PM_xs9x6b.jpg',
+              feed.bannerImg != ''
+                  ? feed.bannerImg
+                  : 'https://res.cloudinary.com/hire-easy/image/upload/v1659026436/media/images/WhatsApp_Image_2022-07-26_at_6.45.36_PM_xs9x6b.jpg',
               fit: BoxFit.cover,
               height: 180,
               width: double.infinity,

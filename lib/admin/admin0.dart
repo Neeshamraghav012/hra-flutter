@@ -76,6 +76,48 @@ class _AdminState extends State<Admin> {
     });
   }
 
+  String userId = "";
+  String username = "";
+  String email = "";
+
+  Future<String> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String id = prefs.getString("userId") ?? "";
+    String username = prefs.getString("username") ?? "";
+    String email = prefs.getString("email") ?? "";
+
+    setState(() {
+      userId = id;
+      email = email;
+      username = username;
+    });
+
+    return id;
+  }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(true), // <-- SEE HERE
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   Future<String> removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
@@ -94,11 +136,7 @@ class _AdminState extends State<Admin> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop();
-
-        return false;
-      },
+      onWillPop: _onWillPop,
       child: Scaffold(
           appBar: AppBar(
             actions: [
@@ -126,18 +164,18 @@ class _AdminState extends State<Admin> {
             child: ListView(
               padding: const EdgeInsets.all(0),
               children: [
-                const DrawerHeader(
+                DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.white,
                   ), //BoxDecoration
                   child: UserAccountsDrawerHeader(
                     decoration: BoxDecoration(color: Colors.white),
                     accountName: Text(
-                      "Raghavendra Maram",
+                      username,
                       style: TextStyle(fontSize: 18, color: Colors.black),
                     ),
                     accountEmail: Text(
-                      "raghu@squareselect.in",
+                      email,
                       style: TextStyle(color: Colors.black),
                     ),
                     currentAccountPictureSize: Size.square(50),

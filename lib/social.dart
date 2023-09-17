@@ -6,7 +6,11 @@ import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/home.dart';
-import 'package:flutter/services.dart';
+import 'package:hra/admin/Articles.dart';
+import 'package:hra/admin/Aricles1.dart';
+import 'package:hra/admin/Gallery.dart';
+import 'package:hra/admin/brochures.dart';
+import 'package:hra/admin/training-material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

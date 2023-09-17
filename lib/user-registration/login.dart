@@ -93,11 +93,15 @@ class _LoginPageState extends State<LoginPage> {
   String id = '';
   bool show_password = false;
   bool is_admin = false;
+  String username = '';
+  String email = '';
 
-  Future<void> saveUser(String user) async {
+  Future<void> saveUser(String userId, String username, String email) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString("userId", user);
+    await prefs.setString("userId", userId);
+    await prefs.setString("username", username);
+    await prefs.setString("email", email);
   }
 
   Future<void> fetchPost() async {
@@ -135,12 +139,14 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         status = jsonData['status'];
         message = jsonData['message'];
-        id = jsonData['data'];
+        id = jsonData['data'][0]['id'];
+        username = jsonData['data'][0]['username'];
+        email = jsonData['data'][0]['email'];
         is_admin = jsonData['is_admin'];
       });
 
       if (is_admin) {
-        saveUser(id);
+        saveUser(id, username, email);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -155,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      saveUser(id);
+      saveUser(id, username, email);
 
       if (status) {
         Navigator.push(
