@@ -88,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage>
       fetching = true;
     });
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/posts?user_id=$userId'),
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/user_posts?user_id=$userId'),
       headers: {'Content-Type': 'application/json'},
     );
 

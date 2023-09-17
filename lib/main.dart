@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hra/social.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:hra/ui/home.dart';
+//import 'package:hra/ui/home.dart';
 import 'package:hra/home.dart';
 
 void main() {

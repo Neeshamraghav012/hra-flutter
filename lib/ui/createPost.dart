@@ -30,6 +30,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   String image_url = "";
   XFile? uploadedImage;
   String userId = "";
+  String error = "";
 
   _selectedTab(int pos) {
     setState(() {
@@ -90,48 +91,59 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   }
 
   Future<void> uploadImage(XFile? image) async {
-    setState(() {
-      isUploading = true;
-    });
     try {
+      setState(() {
+        isUploading = true; // Set the loading indicator
+      });
+
       List<int> imageBytes = File(image!.path).readAsBytesSync();
-      String base64Image = base64Encode(imageBytes);
 
-      print(base64Image);
-
-      String randomName = generateRandomName();
-
-      String filename = '$randomName.jpg';
-
-      final Map<String, dynamic> requestBody = {
-        "image_input": {
-          "base64_image_string": base64Image,
-          "image_name": filename,
-          "document_type": "Posts"
-        }
-      };
-
-      final response = await http.post(
-        Uri.parse('${AppConfig.apiUrl}/admin/api/file-upload-base64'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(requestBody),
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
       );
-      final jsonResponse = json.decode(response.body);
 
-      if (jsonResponse['status']) {
+      String filename = generateRandomName();
+
+      request.fields['upload_preset'] = 'cyberbolt';
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          imageBytes,
+          filename: '${filename}.jpg',
+          contentType: MediaType('image', 'jpg'),
+        ),
+      );
+
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+
+      final jsonResponse = json.decode(responseString);
+
+      print(jsonResponse);
+
+      if (response.statusCode == 200) {
         setState(() {
-          image_url = jsonResponse['data'];
+          image_url = jsonResponse['secure_url'];
         });
+        print('File uploaded successfully');
       } else {
+        setState(() {
+          error = jsonResponse['message'];
+          isUploading = false;
+        });
         print('File upload failed');
       }
     } catch (e) {
+      setState(() {
+        isUploading = false;
+        error = "Something went wrong please try again.";
+      });
       print('Error uploading file: $e');
     } finally {
       setState(() {
         isUploading = false;
+        error = "Something went wrong please try again.";
       });
     }
   }
@@ -279,7 +291,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackdemo);
-                            post();
+                            // post();
+                            uploadImage(uploadedImage);
                             // Navigator.pop(context);
                           },
                           child: isUploading
@@ -344,7 +357,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                           height: 100,
                         ),
                 ),
-
+                Center(child: Text(error),),
                 Expanded(
                   child: Container(
                     color: Colors.white,

@@ -71,8 +71,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                   subcategory: ' ',
                   time: ' ',
                   name: data['username'],
-                  avatarImg: " ",
-                  bannerImg: " ",
+                  avatarImg: "",
+                  bannerImg: "",
                   location: ' ',
                   likes: 0,
                   comments: '0',
@@ -122,11 +122,11 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             subcategory: " ",
             time: " ",
             name: "You",
-            avatarImg: " ",
-            bannerImg: " ",
+            avatarImg: "",
+            bannerImg: "",
             location: " ",
             likes: 0,
-            comments: " ",
+            comments: widget.feed.comments.toString(),
             members: " ");
 
         // Insert the new feed at the beginning of the list
@@ -136,6 +136,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
           _textEditingController.text = "";
           feedList.insert(0, latestcomment);
           isuploading = false;
+          widget.feed.comments = (int.parse(widget.feed.comments)  + 1).toString();
         });
       }
 
@@ -152,6 +153,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
     super.initState();
     initializeData();
     fetchComments();
+    print("feed is : ");
+    print(widget.feed);
   }
 
   @override

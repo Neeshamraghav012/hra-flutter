@@ -19,9 +19,7 @@ Widget othersComment(BuildContext context, Feed feed) {
       children: <Widget>[
         CircleAvatar(
             backgroundColor: Colors.grey,
-            child: ClipOval(
-                child: feed.avatarImg != '' ? Image.asset('images/icon.png') : Image.network(
-                    feed.avatarImg)),
+            child: ClipOval(child: Image.asset('images/icon.png')),
             radius: 20),
         SizedBox(width: 20),
         Expanded(
@@ -36,16 +34,18 @@ Widget othersComment(BuildContext context, Feed feed) {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: <Widget>[
-                  usernameSectionWithoutAvatar(context, feed.name == " " ? "User" : feed.name),
+                  usernameSectionWithoutAvatar(
+                      context, feed.name == " " ? "User" : feed.name),
                   space15(),
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                        feed.title,
+                    child: Text(feed.title,
                         softWrap: true,
                         maxLines: 3,
                         textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 14, )),
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
                   ),
                   space15(),
                   // Divider(thickness: 1),
@@ -57,56 +57,6 @@ Widget othersComment(BuildContext context, Feed feed) {
             ),
           ),
         )
-            //commentReply(context, FeedBloc().feedList[2]),
-            )
-      ],
-    ),
-  );
-}
-
-Widget othersCommentWithImageSlider(BuildContext context, Feed feed) {
-  return Container(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CircleAvatar(
-            backgroundColor: Colors.grey,
-            child: ClipOval(
-                child: Image.network(
-                    'https://www.w3schools.com/w3images/avatar4.png')),
-            radius: 20),
-        SizedBox(width: 20),
-        Expanded(
-            child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              border: Border.all(
-                  style: BorderStyle.solid, color: Colors.grey, width: 0.5)),
-          child: Card(
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: <Widget>[
-                  usernameSectionWithoutAvatar(context, feed.name),
-                  space15(),
-                  Text(
-                      'Not sure about rights. Looks like its matter of concern that our shool dont take it seriously such matters and trats it like lightly that it is fault of student',
-                      softWrap: true,
-                      maxLines: 3,
-                      style: TextStyle(fontSize: 14)),
-                  space15(),
-                  Divider(thickness: 1),
-                  SizedBox(height: 10),
-                  menuReply(feed),
-                  space15(),
-                ],
-              ),
-            ),
-          ),
-        )
-            //commentReply(context, FeedBloc().feedList[2]),
             )
       ],
     ),
@@ -115,72 +65,6 @@ Widget othersCommentWithImageSlider(BuildContext context, Feed feed) {
 
 
 
-Widget menuReply(Feed listFeed) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          GestureDetector(
-              onTap: () => debugPrint('${listFeed.likes} tapped'),
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.arrowUp,
-                    size: 16,
-                    color: Colors.teal,
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    '${listFeed.likes}',
-                    style: TextStyle(
-                        color: Colors.teal,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  )
-                ],
-              )),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () => debugPrint('Comment Tapped'),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.arrowDown, size: 16),
-                        SizedBox(width: 5),
-                        Text(
-                          listFeed.comments,
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ))
-              ]),
-          GestureDetector(
-              onTap: () {
-                Share.share('check out my website https://example.com');
-              },
-              child: Icon(Icons.share, size: 18)),
-          Text('Reply',
-              style: TextStyle(
-                  color: Colors.teal,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold))
-        ],
-      ),
-      SizedBox(height: 20),
-      Container(
-        padding: EdgeInsets.only(left: 20),
-        child: Text('2 Replies',
-            style: TextStyle(color: Colors.teal, fontSize: 14)),
-      )
-    ],
-  );
-}
 
 Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
   return Row(
@@ -203,10 +87,8 @@ Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
                         SizedBox(
                           width: 10,
                         ),
-
                       ],
                     ),
-
                   ],
                 )
               ],

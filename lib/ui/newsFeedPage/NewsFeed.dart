@@ -61,7 +61,7 @@ class _NewsFeedState extends State<NewsFeed> {
                   bannerImg: data['bannerImg'],
                   location: ' ',
                   likes: 0,
-                  comments: '0',
+                  comments: data['comments'].toString(),
                   members: '0',
                 ),
               );
@@ -119,7 +119,7 @@ class _NewsFeedState extends State<NewsFeed> {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : Expanded(
+                : feedListData.length == 0 ? Center(child: Text("No posts yet."),) : Expanded(
                     child: Container(
                       color: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 10),

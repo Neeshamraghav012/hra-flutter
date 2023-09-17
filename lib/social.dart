@@ -6,7 +6,7 @@ import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/home.dart';
-import 'package:hra/user-registration/login.dart';
+import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -127,70 +127,95 @@ class _SocialPageState extends State<SocialPage> {
     // removeUser();
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(true), // <-- SEE HERE
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(),
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: CustomAppBar(),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
+                  },
+                  child: Text("Go to SocialPage")),
+              Image.asset(
+                'images/registered.jpg',
+                height: 200, // Adjust the height as needed
+              ),
+              SizedBox(height: 20),
+              loading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(
+                      message,
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff000000),
+                        //height: 64 / 14,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  );
-                },
-                child: Text("Go to SocialPage")),
-            Image.asset(
-              'images/registered.jpg',
-              height: 200, // Adjust the height as needed
-            ),
-            SizedBox(height: 20),
-            loading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Text(
-                    message,
-                    style: TextStyle(
-                      fontFamily: "Roboto",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff000000),
-                      //height: 64 / 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-            is_profile_activated && is_email_activated
-                ? Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MembershipPage()),
-                        );
-                      },
-                      child: Text(
-                        "Make Payment",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              Colors.blue, // Change the text color when clicked
+              is_profile_activated && is_email_activated
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MembershipPage()),
+                          );
+                        },
+                        child: Text(
+                          "Make Payment",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors
+                                .blue, // Change the text color when clicked
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                : Container(),
-
-          ],
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );

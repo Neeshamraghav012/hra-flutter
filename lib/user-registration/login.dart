@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
   FocusNode _emailFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
 
-  String emailHint = 'Your E-mail/phone number';
+  String emailHint = 'Your E-mail';
   String passwordHint = 'Your Password';
 
   bool rememberMe = false;
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'E-mail / Phone number',
+                              'E-mail',
                               style: TextStyle(
                                 color: Color(0xFF312E49),
                                 fontSize: 16,
@@ -323,7 +323,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                         Text(
-                          'Show Password',
+                          'Remeber Me',
                           style: TextStyle(
                             fontSize: 14,
                           ),

@@ -152,46 +152,7 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
               children: <Widget>[
                 CircleAvatar(
                     backgroundColor: Colors.grey,
-                    child: ClipOval(
-                        child: listFeed.avatarImg != ''
-                            ? Image.network(
-                                listFeed.avatarImg,
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    // Image is fully loaded
-                                    return child;
-                                  } else {
-                                    // Image is still loading, show a loading indicator
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  }
-                                },
-                                errorBuilder: (BuildContext context,
-                                    Object error, StackTrace? stackTrace) {
-                                  // This callback is called if the image couldn't be loaded
-                                  // You can display an error message or a placeholder image here
-                                  return Center(
-                                    child: Icon(
-                                      Icons.error_outline,
-                                      color: Colors.red,
-                                      size: 48.0,
-                                    ),
-                                  );
-                                },
-                              )
-                            : Image.asset('images/icon.png')),
+                    child: ClipOval(child: Image.asset('images/icon.png')),
                     radius: 20),
                 SizedBox(width: 10),
                 Column(
