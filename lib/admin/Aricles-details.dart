@@ -98,19 +98,24 @@ class _Art1State extends State<ArtPage1> {
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    articleBloc.articleList[widget.articleId].description,
-                    style: const TextStyle(
-                      fontFamily: "Roboto",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff000000),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        articleBloc.articleList[widget.articleId].description,
+                        style: const TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff000000),
+                        ),
+                        textAlign: TextAlign.left,
+                        maxLines:
+                            1000, // Adjust the number of visible lines as needed
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    textAlign: TextAlign.left,
-                    overflow:
-                        TextOverflow.ellipsis, // Handle overflow with ellipsis
-                    maxLines: 12,
-                  ),
+                  )
                 ],
               ),
             ),
