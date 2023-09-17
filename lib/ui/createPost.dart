@@ -88,7 +88,10 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
   Future<void> chooseImage() async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
-    uploadedImage = choosedimage;
+    setState(() {
+      uploadedImage = choosedimage;
+    });
+
   }
 
   Future<void> uploadImage(XFile? image) async {
@@ -144,7 +147,6 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     } finally {
       setState(() {
         isUploading = false;
-        error = "Something went wrong please try again.";
       });
     }
   }
@@ -189,6 +191,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
       );
       final jsonResponse = json.decode(response.body);
 
+      print(jsonResponse);
       if (jsonResponse['status']) {
         setState(() {
           isUploading = false;
@@ -197,10 +200,10 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => NewsFeed()));
       } else {
-        print('File upload failed');
+        print('Post request failed');
       }
     } catch (e) {
-      print('Error uploading file: $e');
+      print('Error uploading post: $e');
     } finally {
       setState(() {
         isUploading = false;
@@ -292,8 +295,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackdemo);
-                            // post();
-                            uploadImage(uploadedImage);
+                            post();
+                            // uploadImage(uploadedImage);
                             // Navigator.pop(context);
                           },
                           child: isUploading
