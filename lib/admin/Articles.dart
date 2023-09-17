@@ -1,4 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:hra/admin/Aricles-details.dart';
+import 'package:hra/admin/Events-details.dart';
+import 'package:hra/admin/articleblock.dart';
+import 'package:hra/admin/eventblock.dart';
+
+class EventCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String description;
+  final String date;
+  final VoidCallback onPressed;
+
+  EventCard({
+    required this.imagePath,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: GestureDetector(
+        onTap: onPressed, // Trigger the callback when the card is tapped
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
+                ),
+                child: GestureDetector(
+                  onTap:
+                      onPressed, // Trigger the callback when the image is tapped
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    height: 150.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    // Text(
+                    //   subTitle,
+                    //   style: TextStyle(
+                    //     fontSize: 14.0,
+                    //     color: Colors.grey,
+                    //   ),
+                    // ),
+                    // SizedBox(height: 8.0), // Add some space
+                    // Text(
+                    //   date, // Display the date here
+                    //   style: TextStyle(
+                    //     fontSize: 14.0,
+                    //     color: Colors.grey,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class ArtPage extends StatefulWidget {
   @override
@@ -6,6 +105,7 @@ class ArtPage extends StatefulWidget {
 }
 
 class _ArtState extends State<ArtPage> {
+  final ArticleBloc articleBloc = ArticleBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,249 +134,35 @@ class _ArtState extends State<ArtPage> {
         ),
         actions: [
           Container(
-            margin: EdgeInsets.all(8.0), // Adjust margin as needed
+            margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
-              radius: 20, // Adjust the radius to control the size of the circle
+              radius: 20,
             ),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0), // Adjust the top padding as needed
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Container(
-                width: 342,
-                height: 68,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(10.0),
-                  image: DecorationImage(
-                    image: AssetImage(
-                        'images/adssss.jpg'), // Replace with your image path
-                    fit: BoxFit.cover,
+        padding: EdgeInsets.only(top: 16.0),
+        child: ListView.builder(
+          itemCount: articleBloc.articleList.length,
+          itemBuilder: (context, index) {
+            Article article = articleBloc.articleList[index];
+            return EventCard(
+              imagePath: article.bannerImg,
+              title: article.title,
+              description: article.description,
+              date: article.date, // Use the date from your event data
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ArtPage1(articleId: index),
                   ),
-                ),
-              ),
-            ),
-            //SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(
-                  8.0), // Add spacing between the images and the container above
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween, // Align images at the ends
-                children: [
-                  Container(
-                    width: 163,
-                    padding:
-                        EdgeInsets.all(8.0), // Adjust the padding as needed
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'images/media.jpg',
-                          width: 163,
-                          height: 107,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Understand The Real Estate Market Analysis",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Real estate is a diverse sector encompassing various physical properties, such as land, buildings, and structures.",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff3c4042),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "2022-06-08",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1e1e1e),
-                          ),
-                          textAlign: TextAlign.left,
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 163,
-                    padding:
-                        EdgeInsets.all(8.0), // Adjust the padding as needed
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'images/media1.jpg',
-                          width: 163,
-                          height: 107,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Real Estate Sector To Benefit From RBI’s Eased Norms",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff14303c),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "The Reserve Bank of India (RBI) recently announced its bi-monthly monetary policy statement, which had some good news",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff3c4042),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "2022-06-08",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1e1e1e),
-                          ),
-                          textAlign: TextAlign.left,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              padding: EdgeInsets.all(
-                  8.0), // Add spacing between the images and the container above
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween, // Align images at the ends
-                children: [
-                  Container(
-                    width: 163,
-                    padding:
-                        EdgeInsets.all(8.0), // Adjust the padding as needed
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'images/media2.jpg',
-                          width: 163,
-                          height: 107,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Telangana Mobility Valley",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Telangana, the second largest state in India, is witnessing remarkable growth in the automotive engineering and research sector.",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff3c4042),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "2022-06-08",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1e1e1e),
-                          ),
-                          textAlign: TextAlign.left,
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 163,
-                    padding:
-                        EdgeInsets.all(8.0), // Adjust the padding as needed
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'images/media3.jpg',
-                          width: 163,
-                          height: 107,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "GMR AeroCity",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff14303c),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "GMR AeroCity envisions a dynamic and varied environment where workplaces, retail stores, recreational areas, hospitality choices",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff3c4042),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "2022-06-08",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 7,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1e1e1e),
-                          ),
-                          textAlign: TextAlign.left,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                );
+              },
+            );
+          },
         ),
       ),
     );

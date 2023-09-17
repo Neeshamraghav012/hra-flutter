@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hra/admin/articleblock.dart';
 
 class ArtPage1 extends StatefulWidget {
+  final int articleId;
+
+  ArtPage1({required this.articleId});
+
   @override
   State<ArtPage1> createState() => _Art1State();
 }
 
 class _Art1State extends State<ArtPage1> {
+  final ArticleBloc articleBloc = ArticleBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,18 +41,17 @@ class _Art1State extends State<ArtPage1> {
         ),
         actions: [
           Container(
-            margin: EdgeInsets.all(8.0), // Adjust margin as needed
+            margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
-              radius: 20, // Adjust the radius to control the size of the circle
+              radius: 20,
             ),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0), // Adjust the top padding as needed
+        padding: EdgeInsets.only(top: 16.0),
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: Container(
@@ -55,18 +61,15 @@ class _Art1State extends State<ArtPage1> {
                   border: Border.all(),
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
-                    image: AssetImage(
-                        'images/adssss.jpg'), // Replace with your image path
+                    image: AssetImage('images/adssss.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
             SizedBox(height: 16),
-            // Add some space between the two images
             Padding(
-              padding:
-                  const EdgeInsets.all(16.0), // Adjust the padding as needed
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -76,19 +79,16 @@ class _Art1State extends State<ArtPage1> {
                       height: 200,
                       decoration: BoxDecoration(
                         border: Border.all(),
-                        // borderRadius: BorderRadius.circular(10.0),
                         image: DecorationImage(
-                          image: AssetImage(
-                              'images/media4.jpg'), // Replace with your image path
+                          image: AssetImage('images/media4.jpg'),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                      height: 8), // Add some space between the image and text
+                  SizedBox(height: 8),
                   Text(
-                    "Understand The Real Estate Market Analysis",
+                    articleBloc.articleList[widget.articleId].title,
                     style: const TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 16,
@@ -99,22 +99,21 @@ class _Art1State extends State<ArtPage1> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "on the future of ticketing systems. Honed over time, combined with research, experience, and an eye for the best possible future state of support, we think you’ll be interested in knowing these perspectives of modern ticketing.on the future of ticketing systems. Honed over time, combined with research, experience, and an eye for the best possible future state of support, we think you’ll be interested in knowing these perspectives of modern ticketing.",
+                    articleBloc.articleList[widget.articleId].description,
                     style: const TextStyle(
                       fontFamily: "Roboto",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff000000),
-                      //height: 244 / 14,
                     ),
                     textAlign: TextAlign.left,
+                    overflow:
+                        TextOverflow.ellipsis, // Handle overflow with ellipsis
+                    maxLines: 12,
                   ),
                 ],
               ),
-            )
-
-            // ],
-            // )
+            ),
           ],
         ),
       ),
