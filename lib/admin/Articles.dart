@@ -52,7 +52,7 @@ class EventCard extends StatelessWidget {
                 child: GestureDetector(
                   onTap:
                       onPressed, // Trigger the callback when the image is tapped
-                  child: Image.asset(
+                  child: Image.network(
                     imagePath,
                     width: double.infinity,
                     height: 150.0,

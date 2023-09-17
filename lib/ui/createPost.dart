@@ -88,6 +88,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
   Future<void> chooseImage() async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
+
+
     uploadedImage = choosedimage;
   }
 
@@ -144,7 +146,6 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     } finally {
       setState(() {
         isUploading = false;
-        error = "Something went wrong please try again.";
       });
     }
   }
@@ -292,8 +293,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackdemo);
-                            // post();
-                            uploadImage(uploadedImage);
+                            post();
+                            // uploadImage(uploadedImage);
                             // Navigator.pop(context);
                           },
                           child: isUploading

@@ -88,7 +88,8 @@ class _ProfilePageState extends State<ProfilePage>
       fetching = true;
     });
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/user_posts?user_id=$userId'),
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/user_posts?user_id=$userId'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -238,21 +239,6 @@ class _ProfilePageState extends State<ProfilePage>
 
             Container(
               child: Column(children: [
-                Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Center(
-                      child: TextButton(
-                    child: Text("Logout"),
-                    onPressed: () async {
-                      await removeUser();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false,
-                      );
-                    },
-                  )),
-                ),
                 /*
                 Padding(
                   padding: EdgeInsets.all(2),
