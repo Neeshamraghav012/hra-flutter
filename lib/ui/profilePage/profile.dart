@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage>
     fetchStats();
     fetchPosts();
   }
-
+  List<Widget> widgets = [];
   @override
   void initState() {
     super.initState();
@@ -364,7 +364,9 @@ class _ProfilePageState extends State<ProfilePage>
                             ? Center(
                                 child: Container(),
                               )
-                            : TabBarView(children: [
+                            : TabBarView(
+                            controller: _tabController,
+                            children: [
                                 // All Posts
                                 SingleChildScrollView(
                                     child: Column(

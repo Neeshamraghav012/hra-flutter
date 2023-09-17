@@ -96,16 +96,19 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Container(
-      width: 164,
+      // width: 164,
       padding: EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(
+          Image.network(
             imagePath,
-            width: 164,
-            height: 133,
+            width: width * 0.9,
+            height: height * 0.2,
+            fit: BoxFit.cover,
           ),
           SizedBox(height: 5),
           Text(
@@ -131,8 +134,8 @@ class EventCard extends StatelessWidget {
           ),
           if (buttonLabel.isNotEmpty) SizedBox(height: 5),
           Container(
-            width: 110,
-            height: 30,
+            width: width * 0.3,
+            height: height* 0.05,
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
