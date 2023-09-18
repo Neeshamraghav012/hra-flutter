@@ -414,18 +414,18 @@ class _ProfilePageState extends State<ProfilePage>
                                 // Photos Tab
                                 SingleChildScrollView(
                                   child: Container(
-                                    child: Text("Photos"),
+                                    child: Center(child: Text("No Photos yet.")),
                                   ),
                                 ),
 
                                 // Videos tab
                                 SingleChildScrollView(
-                                  child: Container(),
+                                  child: Container(child:  Center(child: Text("No Videos yet.")),),
                                 ),
 
                                 // Saved Post tab
                                 SingleChildScrollView(
-                                  child: Container(),
+                                  child: Container(child: Center(child: Text("No saved posts yet.")),),
                                 ),
                               ]),
                       ),

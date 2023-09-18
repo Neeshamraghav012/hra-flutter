@@ -99,17 +99,19 @@ Widget likeCommentShare(BuildContext context, Feed listFeed, String user_id) {
           ],
         ),
       ),
+      /*
       GestureDetector(
         onTap: () {
           print('Bookmark Tapped');
           // Handle bookmarking the post here
         },
         child: Icon(FontAwesomeIcons.bookmark, size: 18),
-      ),
+      ),*/
       GestureDetector(
         onTap: () {
           print('Share Tapped');
           // Handle sharing the post here
+          Share.share('https://www.onfocussoft.com');
         },
         child: Icon(FontAwesomeIcons.shareAlt, size: 18),
       ),
@@ -180,7 +182,7 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
                 )
               ],
             ),
-            moreOptions3Dots(context),
+            // moreOptions3Dots(context),
           ],
         ),
       )

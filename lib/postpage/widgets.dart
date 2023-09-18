@@ -93,7 +93,7 @@ Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
                 )
               ],
             ),
-            moreOptions3Dots(context),
+            // moreOptions3Dots(context),
           ],
         ),
       )

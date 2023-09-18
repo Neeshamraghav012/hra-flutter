@@ -11,6 +11,9 @@ import 'package:hra/ui/home.dart';
 import 'package:hra/admin/Articles.dart';
 import 'package:hra/admin/Gallery.dart';
 import 'package:hra/admin/Event-list.dart';
+import 'package:hra/admin/Network.dart';
+import 'package:hra/admin/training-material.dart';
+import 'package:hra/admin/brochures.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -260,7 +263,10 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.network_locked),
               title: const Text(' Network Members '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NetworkPage()),
+                );
               },
             ),
 
@@ -293,7 +299,10 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.dock),
               title: const Text(' Brochures '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BroPage()),
+                );
               },
             ),
 
@@ -302,7 +311,10 @@ class _NewsFeedState extends State<NewsFeed> {
               leading: const Icon(Icons.panorama_horizontal_select),
               title: const Text(' Training Material '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TrainPage()),
+                );
               },
             ),
 
@@ -314,7 +326,6 @@ class _NewsFeedState extends State<NewsFeed> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ArtPage()),
-                  
                 );
               },
             ),

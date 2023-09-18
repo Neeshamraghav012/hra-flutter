@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hra/admin/articleblock.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'dart:async';
+import 'dart:core';
+import 'dart:typed_data';
+import 'dart:math';
 
 class ArtPage1 extends StatefulWidget {
   final int articleId;
@@ -12,6 +20,77 @@ class ArtPage1 extends StatefulWidget {
 
 class _Art1State extends State<ArtPage1> {
   final ArticleBloc articleBloc = ArticleBloc();
+  bool downloading = false;
+  final pdf = pw.Document();
+
+  Future<void> writeOnPdf() async {
+    setState(() {
+      downloading = true;
+    });
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: pw.EdgeInsets.all(32),
+      build: (pw.Context context) {
+        return <pw.Widget>[
+          pw.Header(
+              level: 0,
+              child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: <pw.Widget>[
+                    pw.Text('Geeksforgeeks', textScaleFactor: 2),
+                  ])),
+          pw.Header(level: 1, text: 'What is Lorem Ipsum?'),
+          pw.Paragraph(
+              text:
+                  '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                  tempor incididunt ut labore et dolore magna aliqua. Nunc mi ipsum faucibus
+                  vitae aliquet nec. Nibh cras pulvinar mattis nunc sed blandit libero
+                  volutpat Vitae elementum curabitur vitae nunc sed velit. Nibh tellus
+                  molestie nunc non blandit massa. Bibendum enim facilisis gravida neque.
+                  Arcu cursus euismod quis viverra nibh cras pulvinar mattis. Enim diam
+                  vulputate ut pharetra sit. Tellus pellentesque eu tincidunt tortor
+                  aliquam nulla facilisi cras fermentum. ''',
+              style: pw.TextStyle(font: pw.Font.symbol())),
+          pw.Header(level: 1, text: 'This is Header'),
+          pw.Padding(padding: const pw.EdgeInsets.all(10)),
+          pw.Table.fromTextArray(
+            context: context,
+            data: const <List<String>>[
+              <String>['Year', 'Sample'],
+              <String>['SN0', 'GFG1'],
+              <String>['SN1', 'GFG2'],
+              <String>['SN2', 'GFG3'],
+              <String>['SN3', 'GFG4'],
+            ],
+          ),
+        ];
+      },
+    ));
+
+    // Save the PDF to a file
+    final pdfData = await pdf.save();
+    final Uint8List uint8List = Uint8List.fromList(pdfData);
+    final directory = await getApplicationDocumentsDirectory();
+
+    String name = generateRandomName();
+    final file = File('${directory.path}/${name}.pdf');
+    await file.writeAsBytes(uint8List);
+
+    setState(() {
+      downloading = false;
+    });
+  }
+
+  String generateRandomName() {
+    final random = Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final length = 10;
+
+    return String.fromCharCodes(
+      List.generate(
+          length, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +176,25 @@ class _Art1State extends State<ArtPage1> {
                     ),
                     textAlign: TextAlign.left,
                   ),
-                  SizedBox(height: 10),
+                  downloading
+                      ? CircularProgressIndicator()
+                      : IconButton(
+                          onPressed: () {
+                            writeOnPdf();
+
+                            var snackdemo = SnackBar(
+                              content: Text("Article downloaded!"),
+                              backgroundColor: Colors.green,
+                              elevation: 10,
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.all(5),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackdemo);
+                          },
+                          icon: Icon(Icons.download)),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     child: SingleChildScrollView(
                       child: Text(
                         articleBloc.articleList[widget.articleId].description,
