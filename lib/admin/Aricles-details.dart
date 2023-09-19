@@ -154,16 +154,19 @@ class _Art1State extends State<ArtPage1> {
                 children: [
                   Center(
                     child: Container(
-                      width: 341,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        image: DecorationImage(
-                          image: AssetImage('images/media4.jpg'),
-                          fit: BoxFit.cover,
+                        width: 341,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
                         ),
-                      ),
-                    ),
+                        child: Image.asset(
+                          articleBloc.articleList[widget.articleId]
+                              .img, // Provide the URL of the image
+                          width: 341, // Adjust the width as needed
+                          height: 200, // Adjust the height as needed
+                          fit: BoxFit
+                              .cover, // Choose the appropriate fit for your image
+                        )),
                   ),
                   SizedBox(height: 8),
                   Row(

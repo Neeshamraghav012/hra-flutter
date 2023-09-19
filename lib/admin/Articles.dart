@@ -24,7 +24,7 @@ class EventCard extends StatelessWidget {
     return Container(
       width: 163,
       height: 200,
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
+      margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0),
       // decoration: BoxDecoration(
       //   borderRadius: BorderRadius.circular(10.0),
       //   boxShadow: [
@@ -91,7 +91,7 @@ class EventCard extends StatelessWidget {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow
                           .ellipsis, // Handle overflow with ellipsis
-                      maxLines: 4,
+                      maxLines: 3,
                     ),
                     SizedBox(height: 4.0), // Add some space
                     Text(
