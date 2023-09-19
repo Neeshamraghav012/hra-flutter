@@ -22,18 +22,20 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
+      width: 163,
+      height: 200,
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(10.0),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.5),
+      //       spreadRadius: 1,
+      //       blurRadius: 5,
+      //       offset: Offset(0, 3),
+      //     ),
+      //   ],
+      // ),
       child: GestureDetector(
         onTap: onPressed, // Trigger the callback when the card is tapped
         child: Card(
@@ -54,40 +56,55 @@ class EventCard extends StatelessWidget {
                       onPressed, // Trigger the callback when the image is tapped
                   child: Image.network(
                     imagePath,
-                    width: double.infinity,
-                    height: 150.0,
+                    width: 163,
+                    height: 95,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.only(right: 10, left: 2, top: 2, bottom: 2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                      style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff14303c),
+//height: 32/11,
                       ),
+                      textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 8.0),
-                    // Text(
-                    //   subTitle,
-                    //   style: TextStyle(
-                    //     fontSize: 14.0,
-                    //     color: Colors.grey,
-                    //   ),
-                    // ),
-                    // SizedBox(height: 8.0), // Add some space
-                    // Text(
-                    //   date, // Display the date here
-                    //   style: TextStyle(
-                    //     fontSize: 14.0,
-                    //     color: Colors.grey,
-                    //   ),
-                    // ),
+                    SizedBox(height: 2.0),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 7,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff3c4042),
+//height: 32/7,
+                      ),
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow
+                          .ellipsis, // Handle overflow with ellipsis
+                      maxLines: 4,
+                    ),
+                    SizedBox(height: 4.0), // Add some space
+                    Text(
+                      date, // Display the date here
+                      style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromARGB(255, 160, 155, 155),
+                        // height: 24 / 7,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
                   ],
                 ),
               ),
@@ -143,8 +160,12 @@ class _ArtState extends State<ArtPage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0),
-        child: ListView.builder(
+        padding: EdgeInsets.only(top: 10.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // 2 cards in a row
+            childAspectRatio: 0.8, // You can adjust the aspect ratio as needed
+          ),
           itemCount: articleBloc.articleList.length,
           itemBuilder: (context, index) {
             Article article = articleBloc.articleList[index];

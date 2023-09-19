@@ -105,6 +105,15 @@ class _SocialPageState extends State<SocialPage> {
             "You have successfully applied\n for the member verification.\n Please wait for the admin's approval.";
       }
 
+      if (is_payment_verified && is_profile_activated && is_email_activated) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      }
+
       print(is_payment_verified);
       print(is_profile_activated);
       print(is_email_activated);
@@ -160,16 +169,6 @@ class _SocialPageState extends State<SocialPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                    );
-                  },
-                  child: Text("Go to SocialPage")),
               Image.asset(
                 'images/registered.jpg',
                 height: 200, // Adjust the height as needed

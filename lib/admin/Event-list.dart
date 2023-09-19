@@ -52,7 +52,12 @@ class _Event1State extends State<EventPage1> {
           children: [
             // Use ListView.builder to build the EventCard widgets
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 cards in a row
+                  childAspectRatio:
+                      0.8, // You can adjust the aspect ratio as needed
+                ),
                 itemCount: eventBloc.eventList.length,
                 itemBuilder: (context, index) {
                   Event event = eventBloc.eventList[index];
@@ -65,7 +70,10 @@ class _Event1State extends State<EventPage1> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EventPage(eventId: index,)),
+                        MaterialPageRoute(
+                            builder: (context) => EventPage(
+                                  eventId: index,
+                                )),
                       );
                     },
                   );
@@ -96,19 +104,16 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Container(
-      // width: 164,
+      width: 164,
       padding: EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.network(
             imagePath,
-            width: width * 0.9,
-            height: height * 0.2,
-            fit: BoxFit.cover,
+            width: 164,
+            height: 133,
           ),
           SizedBox(height: 5),
           Text(
@@ -134,8 +139,8 @@ class EventCard extends StatelessWidget {
           ),
           if (buttonLabel.isNotEmpty) SizedBox(height: 5),
           Container(
-            width: width * 0.3,
-            height: height* 0.05,
+            width: 110,
+            height: 30,
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(

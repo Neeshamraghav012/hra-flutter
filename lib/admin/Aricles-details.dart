@@ -129,7 +129,7 @@ class _Art1State extends State<ArtPage1> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: EdgeInsets.only(top: 10.0),
         child: Column(
           children: [
             Center(
@@ -148,7 +148,7 @@ class _Art1State extends State<ArtPage1> {
             ),
             SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -166,33 +166,41 @@ class _Art1State extends State<ArtPage1> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    articleBloc.articleList[widget.articleId].title,
-                    style: const TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff14303c),
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  downloading
-                      ? CircularProgressIndicator()
-                      : IconButton(
-                          onPressed: () {
-                            writeOnPdf();
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .spaceBetween, // Place items at start and end of the row
+                    children: [
+                      Text(
+                        articleBloc.articleList[widget.articleId].title,
+                        style: const TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff14303c),
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      downloading
+                          ? CircularProgressIndicator()
+                          : IconButton(
+                              onPressed: () {
+                                writeOnPdf();
 
-                            var snackdemo = SnackBar(
-                              content: Text("Article downloaded!"),
-                              backgroundColor: Colors.green,
-                              elevation: 10,
-                              behavior: SnackBarBehavior.floating,
-                              margin: EdgeInsets.all(5),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackdemo);
-                          },
-                          icon: Icon(Icons.download)),
+                                var snackdemo = SnackBar(
+                                  content: Text("Article downloaded!"),
+                                  backgroundColor: Colors.green,
+                                  elevation: 10,
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.all(5),
+                                );
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackdemo);
+                              },
+                              icon: Icon(Icons.download),
+                            ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.3,
                     child: SingleChildScrollView(

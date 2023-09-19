@@ -25,8 +25,9 @@ class ArticleBloc {
   List<Article> articleList = [
     Article(
       articleId: "1",
-      title:
-          'Striving to Achieve Over INR 100 Crore in Revenue for FY24, Housr Sets Ambitious Growth Goals',
+      title: "Striving to Achieve Over INR 100\n"
+          "Crore in Revenue for FY24, Housr\n"
+          "Sets Ambitious Growth Goals",
       //subtitle: 'Just for PROH Members',
       date: "22-09-2023",
       //location: "Hi-Tech City",
@@ -39,8 +40,9 @@ class ArticleBloc {
     ),
     Article(
       articleId: "2",
-      title:
-          'Catalyzing Southern Growth: Awfis Sets Sights on 11 New Properties Expansion in South India',
+      title: "Catalyzing Southern Growth: Awfis\n"
+          "Sets Sights on 11 New Properties\n"
+          "Expansion in South India",
       //subtitle: 'Just for PROH Members',
       date: "22-09-2023",
       //location: "Hi-Tech City",
@@ -53,8 +55,9 @@ class ArticleBloc {
     ),
     Article(
       articleId: "3",
-      title:
-          "Telangana HC Stays Memo Allowing Flat Owners' Associations to Register Under Societies Act",
+      title: "Telangana HC Stays Memo Allowing\n"
+          "Flat Owners' Associations to Register\n"
+          "Under Societies Act",
       //subtitle: 'Just for PROH Members',
       date: "22-09-2023",
       //location: "Hi-Tech City",
