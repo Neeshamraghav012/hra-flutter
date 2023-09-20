@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hra/ui/videoItem.dart';
 import 'package:http/http.dart' as http;
+import 'package:video_player/video_player.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/config/app-config.dart';
@@ -29,10 +31,10 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   bool isUploading = false;
   String caption = "";
   String image_url = "";
-  XFile? uploadedImage;
+  XFile? uploadedContent;
+  String uploadedContentType= "";
   String userId = "";
   String error = "";
-  XFile? uploadedContent;
 
   _selectedTab(int pos) {
     setState(() {
@@ -79,57 +81,86 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> scanImage() async {
+  Future<void> choosePhotoFromCamera() async {
     var choosedimage = await picker.pickImage(source: ImageSource.camera);
 
     setState(() {
-      uploadedImage = choosedimage;
+      uploadedContent = choosedimage;
+      uploadedContentType = "Image";
     });
   }
 
-  Future<void> scanVideo() async {
+  Future<void> chooseVideoFromCamera() async {
     var choosedimage = await picker.pickVideo(source: ImageSource.camera);
 
     setState(() {
-      uploadedImage = choosedimage;
+      uploadedContent = choosedimage;
+      uploadedContentType = "Video";
+      _controller = VideoPlayerController.networkUrl(Uri.parse(
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
+        ..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        });
     });
   }
 
-  Future<void> chooseMedia() async {
-    var choosedMedia = await picker.pickMedia();
-
-    print(choosedMedia);
-
+  Future<void> choosePhotoFromGallery() async {
+    var choosedMedia = await picker.pickImage(source: ImageSource.gallery);
+    print(choosedMedia?.name);
     setState(() {
       uploadedContent = choosedMedia;
+      uploadedContentType = "Image";
+    });
+  }
+  Future<void> chooseVideoFromGallery() async {
+    var choosedMedia = await picker.pickVideo(source: ImageSource.gallery);
+    print("video selected");
+    print(choosedMedia?.name);
+    setState(() {
+      uploadedContent = choosedMedia;
+      uploadedContentType = "Video";
     });
   }
 
-  Future<void> uploadImage(XFile? image) async {
+  Future<void> uploadContent(XFile? content) async {
     try {
       setState(() {
         isUploading = true; // Set the loading indicator
       });
 
-      List<int> imageBytes = File(image!.path).readAsBytesSync();
+      List<int> contentBytes = File(content!.path).readAsBytesSync();
 
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/image/upload'),
+        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/upload'),
       );
 
       String filename = generateRandomName();
 
       request.fields['upload_preset'] = 'cyberbolt';
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          imageBytes,
-          filename: '${filename}.jpg',
-          contentType: MediaType('image', 'jpg'),
-        ),
-      );
+      if(uploadedContentType == "Image") {
 
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            contentBytes,
+            filename: '${filename}.jpg',
+            contentType: MediaType('image', 'jpg'),
+          ),
+        );
+      }
+      else{
+        print("video upload");
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            contentBytes,
+            filename: '${filename}.mp4',
+            contentType: MediaType('video', 'mp4'),
+          ),
+        );
+      }
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
 
@@ -167,8 +198,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
       isUploading = true;
     });
     try {
-      if (uploadedImage != null) {
-        await uploadImage(uploadedImage);
+      if (uploadedContent != null) {
+        await uploadContent(uploadedContent);
       }
 
       print("image url is: ");
@@ -222,13 +253,16 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     }
   }
 
+  late VideoPlayerController _controller;
   @override
   void initState() {
     super.initState();
 
     bottomMenuItems.add(new MenuModel('Camera', 'camera', Icons.camera));
     bottomMenuItems
-        .add(new MenuModel('Upload Image', 'scan', Icons.browse_gallery));
+        .add(new MenuModel('Upload Photo from Gallery', 'scan_photo', Icons.browse_gallery));
+    bottomMenuItems
+        .add(new MenuModel('Upload video from Gallery', 'scan_video', Icons.video_library_outlined));
     bottomMenuItems.add(new MenuModel('Take Video', 'video', Icons.video_call));
 
     // bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
@@ -307,7 +341,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackdemo);
                             post();
-                            // uploadImage(uploadedImage);
+                            // uploadImage(uploadedContent);
                             // Navigator.pop(context);
                           },
                           child: isUploading
@@ -354,17 +388,17 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                 //Spacer(),
 
                 Container(
-                  child: uploadedImage != null
+                  child: uploadedContent != null
                       ? Container(
                           child: Padding(
                             padding: EdgeInsets.all(6.0),
                             child: AspectRatio(
                               aspectRatio: 16 / 8,
-                              child: Image.file(
-                                File(uploadedImage!.path),
+                              child: uploadedContentType=="Image"?Image.file(
+                                File(uploadedContent!.path),
                                 fit: BoxFit.cover,
                                 height: 200,
-                              ),
+                              ):VideoItems(videoPlayerController: VideoPlayerController.file(File(uploadedContent!.path)), looping: true, autoplay: true),
                             ),
                           ),
                         )
@@ -418,13 +452,20 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                                       // Navigator.pop(context);
                                       if (bottomMenuItems[index].subtitle ==
                                           'camera') {
-                                        scanImage();
+                                        choosePhotoFromCamera();
                                       } else if (bottomMenuItems[index]
                                               .subtitle ==
-                                          'scan') {
-                                        chooseMedia();
-                                      } else {
-                                        scanVideo();
+                                          'scan_photo') {
+                                        choosePhotoFromGallery();
+                                      }
+                                      else if (bottomMenuItems[index]
+                                          .subtitle ==
+                                          'scan_video') {
+                                        chooseVideoFromGallery();
+                                      }
+
+                                      else {
+                                        chooseVideoFromCamera();
                                       }
                                       debugPrint(bottomMenuItems[index].title);
                                     },

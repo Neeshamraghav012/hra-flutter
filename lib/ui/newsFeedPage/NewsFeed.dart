@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
+import 'package:hra/ui/videoItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:path/path.dart' as p;
 import 'package:hra/config/app-config.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:hra/ui/home.dart';
@@ -14,6 +16,7 @@ import 'package:hra/admin/Event-list.dart';
 import 'package:hra/admin/Network.dart';
 import 'package:hra/admin/training-material.dart';
 import 'package:hra/admin/brochures.dart';
+import 'package:video_player/video_player.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -387,7 +390,9 @@ class _NewsFeedState extends State<NewsFeed> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    feedNewsCardWithImageItem(
+                                    p.extension(feedItem.bannerImg)==".mp4"?
+                                        VideoItems(videoPlayerController: VideoPlayerController.networkUrl(Uri.parse(feedItem.bannerImg)), looping: false, autoplay: true)
+                                        :feedNewsCardWithImageItem(
                                         context, feedItem, userId, feedItem.likes),
                                     topSpace(),
                                   ],
