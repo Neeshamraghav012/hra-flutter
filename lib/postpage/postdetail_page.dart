@@ -74,7 +74,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                   avatarImg: "",
                   bannerImg: "",
                   location: ' ',
-                  likes: 0,
+                  likes: true,
                   comments: '0',
                   members: '0',
                 ),
@@ -125,7 +125,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             avatarImg: "",
             bannerImg: "",
             location: " ",
-            likes: 0,
+            likes: false,
             comments: widget.feed.comments.toString(),
             members: " ");
 
@@ -136,7 +136,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
           _textEditingController.text = "";
           feedList.insert(0, latestcomment);
           isuploading = false;
-          widget.feed.comments = (int.parse(widget.feed.comments)  + 1).toString();
+          widget.feed.comments =
+              (int.parse(widget.feed.comments) + 1).toString();
         });
       }
 
@@ -220,6 +221,14 @@ class _PostPageDetailsState extends State<PostPageDetails> {
         title: Text('Post'),
         elevation: 0,
         backgroundColor: Colors.white,
+        leading: IconButton(
+          color: Colors.black,
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context);
+          },
+        ),
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -229,7 +238,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                feedNewsCardWithImageItem(context, widget.feed, userId),
+                feedNewsCardWithImageItem(context, widget.feed, userId, widget.feed.likes),
                 topSpace(),
 
                 _buildMessageComposer(widget.feed.feedId),

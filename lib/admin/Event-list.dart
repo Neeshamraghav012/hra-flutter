@@ -139,16 +139,23 @@ class EventCard extends StatelessWidget {
           ),
           if (buttonLabel.isNotEmpty) SizedBox(height: 5),
           Container(
-            width: 110,
-            height: 30,
+            width: MediaQuery.of(context).size.width, // Adjust width as needed
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Adjust the radius as needed
+                ),
               ),
-              child: Text(buttonLabel),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10), // Adjust vertical padding as needed
+                child: Text(buttonLabel),
+              ),
             ),
-          ),
+          )
         ],
       ),
     );

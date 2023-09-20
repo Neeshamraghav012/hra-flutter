@@ -90,7 +90,7 @@ class _NewsFeedState extends State<NewsFeed> {
                   avatarImg: data['avatarImg'],
                   bannerImg: data['bannerImg'],
                   location: ' ',
-                  likes: 0,
+                  likes: data['isLiked'],
                   comments: data['comments'].toString(),
                   members: '0',
                 ),
@@ -332,15 +332,6 @@ class _NewsFeedState extends State<NewsFeed> {
 
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-              leading: const Icon(Icons.branding_watermark),
-              title: const Text(' Banners '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-
-            ListTile(
-              visualDensity: VisualDensity(horizontal: 0, vertical: -4),
               leading: const Icon(Icons.help),
               title: const Text(' Help '),
               onTap: () {
@@ -397,7 +388,7 @@ class _NewsFeedState extends State<NewsFeed> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     feedNewsCardWithImageItem(
-                                        context, feedItem, userId),
+                                        context, feedItem, userId, feedItem.likes),
                                     topSpace(),
                                   ],
                                 ),

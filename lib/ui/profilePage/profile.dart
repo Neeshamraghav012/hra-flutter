@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage>
                   avatarImg: data['avatarImg'],
                   bannerImg: data['bannerImg'],
                   location: ' ',
-                  likes: 0,
+                  likes: data['isLiked'],
                   comments: '0',
                   members: '0',
                 ),
@@ -400,7 +400,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                       feedNewsCardWithImageItem(
                                                           context,
                                                           feedItem,
-                                                          userId),
+                                                          userId, feedItem.likes),
                                                       topSpace(),
                                                     ],
                                                   ),

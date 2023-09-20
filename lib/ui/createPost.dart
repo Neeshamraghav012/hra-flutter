@@ -32,6 +32,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   XFile? uploadedImage;
   String userId = "";
   String error = "";
+  XFile? uploadedContent;
 
   _selectedTab(int pos) {
     setState(() {
@@ -86,12 +87,22 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     });
   }
 
-  Future<void> chooseImage() async {
-    var choosedimage = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> scanVideo() async {
+    var choosedimage = await picker.pickVideo(source: ImageSource.camera);
+
     setState(() {
       uploadedImage = choosedimage;
     });
+  }
 
+  Future<void> chooseMedia() async {
+    var choosedMedia = await picker.pickMedia();
+
+    print(choosedMedia);
+
+    setState(() {
+      uploadedContent = choosedMedia;
+    });
   }
 
   Future<void> uploadImage(XFile? image) async {
@@ -218,7 +229,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     bottomMenuItems.add(new MenuModel('Camera', 'camera', Icons.camera));
     bottomMenuItems
         .add(new MenuModel('Upload Image', 'scan', Icons.browse_gallery));
-    // bottomMenuItems.add(new MenuModel('Take Video', '', Icons.video_call));
+    bottomMenuItems.add(new MenuModel('Take Video', 'video', Icons.video_call));
 
     // bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
 
@@ -361,7 +372,9 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                           height: 100,
                         ),
                 ),
-                Center(child: Text(error),),
+                Center(
+                  child: Text(error),
+                ),
                 Expanded(
                   child: Container(
                     color: Colors.white,
@@ -406,8 +419,12 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                                       if (bottomMenuItems[index].subtitle ==
                                           'camera') {
                                         scanImage();
+                                      } else if (bottomMenuItems[index]
+                                              .subtitle ==
+                                          'scan') {
+                                        chooseMedia();
                                       } else {
-                                        chooseImage();
+                                        scanVideo();
                                       }
                                       debugPrint(bottomMenuItems[index].title);
                                     },

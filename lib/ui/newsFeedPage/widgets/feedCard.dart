@@ -8,33 +8,36 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/config/app-config.dart';
 
-Future<bool> onLikeButtonTapped(bool isLiked) async {
-  return !isLiked;
-}
-
 Future<bool> LikeButtonTapped(
-    String user_id, String post_id, bool isLiked) async {
+    String user_id, String post_id, bool isLiked, Feed listFeed, bool liked) async {
   print("post id is: ");
   print(post_id);
   print("User id is: ");
   print(user_id);
   final response = await http.get(
     Uri.parse(
-        '${AppConfig.apiUrl}/socialmedia//api/like?user_id=$user_id&post_id=$post_id'),
+        '${AppConfig.apiUrl}/socialmedia/api/like?user_id=$user_id&post_id=$post_id'),
     headers: {'Content-Type': 'application/json'},
   );
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
+    message = jsonData['message'];
     print(jsonData);
-    return !isLiked;
+
+    // listFeed.likes = true;
+
+    return true;
   }
-  return isLiked;
+
+  return false;
 }
 
-bool isLiked = false;
+String message = "";
+bool liked = false;
 
-Widget likeCommentShare(BuildContext context, Feed listFeed, String user_id) {
+Widget likeCommentShare(
+    BuildContext context, Feed listFeed, String user_id, bool isLiked) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,43 +46,26 @@ Widget likeCommentShare(BuildContext context, Feed listFeed, String user_id) {
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: LikeButton(
-                // onTap: onLikeButtonTapped,
-                size: 20,
-                circleColor: CircleColor(
-                    start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: Color(0xff33b5e5),
-                  dotSecondaryColor: Color(0xff0099cc),
+              padding: EdgeInsets.only(),
+              child: IconButton(
+                onPressed: () async {
+                  if (isLiked) {
+                    print('You already liked this post.');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('You already liked this post.'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  } else {
+                    await LikeButtonTapped(
+                        user_id, listFeed.feedId, isLiked, listFeed, liked);
+                  }
+                },
+                icon: Icon(
+                  Icons.thumb_up_outlined,
+                  color: listFeed.likes ? Color(0xFFFF4D4D) : Colors.black,
                 ),
-                likeBuilder: (bool isLiked) {
-                  return IconButton(
-                      onPressed: () async {
-                        await LikeButtonTapped(
-                            user_id, listFeed.feedId, isLiked);
-                      },
-                      icon: Icon(
-                        Icons.thumb_up_outlined,
-                        color: isLiked ? Color(0xFFFF4D4D) : Colors.black,
-                      ));
-                },
-                likeCount: 0,
-                countBuilder: (int? count, bool isLiked, String text) {
-                  var color = isLiked ? Color(0xFFFF4D4D) : Colors.black;
-                  Widget result;
-                  if (count == 0) {
-                    result = Text(
-                      "",
-                      style: TextStyle(color: color),
-                    );
-                  } else
-                    result = Text(
-                      '',
-                      style: TextStyle(color: color),
-                    );
-                  return result;
-                },
               ),
             ),
           ],

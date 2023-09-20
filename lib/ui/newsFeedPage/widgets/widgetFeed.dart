@@ -130,7 +130,7 @@ Widget topSpace() {
 }
 
 Widget feedNewsCardWithImageItem(
-    BuildContext context, Feed feed, String user_id) {
+    BuildContext context, Feed feed, String user_id, bool likes) {
   return Container(
     decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -210,7 +210,7 @@ Widget feedNewsCardWithImageItem(
             ),*/
             Divider(thickness: 1),
             SizedBox(height: 10),
-            likeCommentShare(context, feed, user_id),
+            likeCommentShare(context, feed, user_id, likes),
             space15(),
           ],
         ),
