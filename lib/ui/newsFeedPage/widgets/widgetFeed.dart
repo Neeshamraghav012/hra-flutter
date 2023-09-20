@@ -4,6 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
 import 'package:hra/ui/createPost.dart';
+import 'package:path/path.dart' as p;
+import 'package:video_player/video_player.dart';
+import 'package:hra/ui/videoItem.dart';
 
 Widget actionBarRow(BuildContext context) {
   return Row(
@@ -153,44 +156,49 @@ Widget feedNewsCardWithImageItem(
                 style: TextStyle(fontSize: 14, color: Colors.black)),
             space15(),
             // show Image Preview
-
-            Image.network(
-              feed.bannerImg != ''
-                  ? feed.bannerImg
-                  : 'https://res.cloudinary.com/hire-easy/image/upload/v1659026436/media/images/WhatsApp_Image_2022-07-26_at_6.45.36_PM_xs9x6b.jpg',
-              fit: BoxFit.cover,
-              height: 180,
-              width: double.infinity,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) {
-                  // Image is fully loaded
-                  return child;
-                } else {
-                  // Image is still loading, show a loading indicator
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  );
-                }
-              },
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                // This callback is called if the image couldn't be loaded
-                // You can display an error message or a placeholder image here
-                return Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 48.0,
+            p.extension(feed.bannerImg) == ".mp4"
+                ? VideoItems(
+                    videoPlayerController: VideoPlayerController.networkUrl(
+                        Uri.parse(feed.bannerImg)),
+                    looping: false,
+                    autoplay: true)
+                : Image.network(
+                    feed.bannerImg != ''
+                        ? feed.bannerImg
+                        : 'https://res.cloudinary.com/hire-easy/image/upload/v1659026436/media/images/WhatsApp_Image_2022-07-26_at_6.45.36_PM_xs9x6b.jpg',
+                    fit: BoxFit.cover,
+                    height: 180,
+                    width: double.infinity,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        // Image is fully loaded
+                        return child;
+                      } else {
+                        // Image is still loading, show a loading indicator
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      }
+                    },
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
+                      // This callback is called if the image couldn't be loaded
+                      // You can display an error message or a placeholder image here
+                      return Center(
+                        child: Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 48.0,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
 
             space15(),
             // shows location

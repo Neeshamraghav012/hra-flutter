@@ -390,10 +390,8 @@ class _NewsFeedState extends State<NewsFeed> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    p.extension(feedItem.bannerImg)==".mp4"?
-                                        VideoItems(videoPlayerController: VideoPlayerController.networkUrl(Uri.parse(feedItem.bannerImg)), looping: false, autoplay: true)
-                                        :feedNewsCardWithImageItem(
-                                        context, feedItem, userId, feedItem.likes),
+                                    feedNewsCardWithImageItem(context, feedItem,
+                                        userId, feedItem.likes),
                                     topSpace(),
                                   ],
                                 ),

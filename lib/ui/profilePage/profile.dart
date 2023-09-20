@@ -152,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
     initializeData();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
 
     _tabController.addListener(() {
       print('Tab index changed to ${_tabController.index}');
@@ -355,7 +355,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Tab(text: "All Post"),
                                   Tab(text: "Photos"),
                                   Tab(text: "Videos"),
-                                  Tab(text: "Saved"),
+                                  // Tab(text: "Saved"),
                                 ]),
                           ),
                     Expanded(
@@ -423,10 +423,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Container(child:  Center(child: Text("No Videos yet.")),),
                                 ),
 
-                                // Saved Post tab
-                                SingleChildScrollView(
-                                  child: Container(child: Center(child: Text("No saved posts yet.")),),
-                                ),
+
                               ]),
                       ),
                     ),
