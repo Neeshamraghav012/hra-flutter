@@ -106,6 +106,7 @@ class _ProfilePageState extends State<ProfilePage>
                 Feed(
                   id: index,
                   feedId: data['id'],
+                  isSaved: data['isSaved'],
                   type: 1,
                   title: data['title'],
                   description: ' ',
@@ -134,8 +135,60 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
-  void p() {
-    print("function 1");
+  Future<void> fetchSavedPosts() async {
+    setState(() {
+      fetching = true;
+    });
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/saved_posts?user_id=$userId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData['data'] is List) {
+        final List<dynamic> dataList = jsonData['data'];
+        feedListData = dataList
+            .asMap()
+            .map((index, data) {
+              return MapEntry(
+                index,
+                Feed(
+                  id: index,
+                  feedId: data['id'],
+                  isSaved: data['isSaved'],
+                  type: 1,
+                  title: data['title'],
+                  description: ' ',
+                  category: ' ',
+                  subcategory: ' ',
+                  time: ' ',
+                  name: data['username'],
+                  avatarImg: data['avatarImg'],
+                  bannerImg: data['bannerImg'],
+                  location: ' ',
+                  likes: data['isLiked'],
+                  comments: '0',
+                  members: '0',
+                ),
+              );
+            })
+            .values
+            .toList();
+        print("feedlist is: ");
+        print(feedListData);
+      }
+    }
+
+    setState(() {
+      fetching = false;
+    });
+  }
+
+  void p() async {
+    await fetchSavedPosts();
   }
 
   void p1() {
@@ -147,17 +200,18 @@ class _ProfilePageState extends State<ProfilePage>
     fetchStats();
     fetchPosts();
   }
+
   List<Widget> widgets = [];
   @override
   void initState() {
     super.initState();
     initializeData();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
 
     _tabController.addListener(() {
       print('Tab index changed to ${_tabController.index}');
 
-      if (_tabController.index == 1) {
+      if (_tabController.index == 3) {
         p();
       } else {
         p1();
@@ -355,7 +409,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Tab(text: "All Post"),
                                   Tab(text: "Photos"),
                                   Tab(text: "Videos"),
-                                  // Tab(text: "Saved"),
+                                  Tab(text: "Saved"),
                                 ]),
                           ),
                     Expanded(
@@ -364,66 +418,116 @@ class _ProfilePageState extends State<ProfilePage>
                             ? Center(
                                 child: Container(),
                               )
-                            : TabBarView(
-                            controller: _tabController,
-                            children: [
+                            : TabBarView(controller: _tabController, children: [
                                 // All Posts
                                 SingleChildScrollView(
-                                    child: Column(
-                                  children: <Widget>[
-                                    fetching
-                                        ? Center(
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : Container(
-                                            color: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              itemCount: feedListData.length,
-                                              itemBuilder: (context, index) {
-                                                final feedItem =
-                                                    feedListData[index];
-                                                return GestureDetector(
-                                                  onTap: () => viewDetailPage(
-                                                      feedItem.feedId
-                                                          .toString(),
-                                                      feedItem),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      feedNewsCardWithImageItem(
-                                                          context,
-                                                          feedItem,
-                                                          userId, feedItem.likes),
-                                                      topSpace(),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
+                                  child: Column(
+                                    children: <Widget>[
+                                      fetching
+                                          ? Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : Container(
+                                              color: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount: feedListData.length,
+                                                itemBuilder: (context, index) {
+                                                  final feedItem =
+                                                      feedListData[index];
+                                                  return GestureDetector(
+                                                    onTap: () => viewDetailPage(
+                                                        feedItem.feedId
+                                                            .toString(),
+                                                        feedItem),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        feedNewsCardWithImageItem(
+                                                            context,
+                                                            feedItem,
+                                                            userId,
+                                                            feedItem.likes),
+                                                        topSpace(),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                ),
 
                                 // Photos Tab
                                 SingleChildScrollView(
                                   child: Container(
-                                    child: Center(child: Text("No Photos yet.")),
+                                    child:
+                                        Center(child: Text("No Photos yet.")),
                                   ),
                                 ),
 
                                 // Videos tab
                                 SingleChildScrollView(
-                                  child: Container(child:  Center(child: Text("No Videos yet.")),),
+                                  child: Container(
+                                    child:
+                                        Center(child: Text("No Videos yet.")),
+                                  ),
                                 ),
 
-
+                                // Saved post tab
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: <Widget>[
+                                      fetching
+                                          ? Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : Container(
+                                              color: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount: feedListData.length,
+                                                itemBuilder: (context, index) {
+                                                  final feedItem =
+                                                      feedListData[index];
+                                                  return GestureDetector(
+                                                    onTap: () => viewDetailPage(
+                                                        feedItem.feedId
+                                                            .toString(),
+                                                        feedItem),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        feedNewsCardWithImageItem(
+                                                            context,
+                                                            feedItem,
+                                                            userId,
+                                                            feedItem.likes),
+                                                        topSpace(),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ),
                               ]),
                       ),
                     ),

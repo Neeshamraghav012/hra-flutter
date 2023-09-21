@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hra/config/app-config.dart';
 
-Future<bool> LikeButtonTapped(
-    String user_id, String post_id, bool isLiked, Feed listFeed, bool liked) async {
+Future<bool> LikeButtonTapped(String user_id, String post_id, bool isLiked,
+    Feed listFeed, bool liked) async {
   print("post id is: ");
   print(post_id);
   print("User id is: ");
@@ -31,6 +31,40 @@ Future<bool> LikeButtonTapped(
   }
 
   return false;
+}
+
+Future<bool> SaveButtonTapped(
+    String user_id, String post_id, bool isSaved, BuildContext context) async {
+  print("post id is: ");
+  print(post_id);
+  print("User id is: ");
+  print(user_id);
+  final response = await http.post(
+    Uri.parse('${AppConfig.apiUrl}/socialmedia/api/saved_post'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      "saved_post_input": {
+        "user_id": user_id,
+        "post_id": post_id,
+        "created_by": user_id,
+        "updated_by": user_id,
+      }
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    message = jsonData['message'];
+    print(jsonData);
+
+    if (jsonData['status']) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
 }
 
 String message = "";
@@ -79,20 +113,41 @@ Widget likeCommentShare(
         },
         child: Row(
           children: <Widget>[
-            Icon(FontAwesomeIcons.comment, size: 18),
+            Icon(
+              FontAwesomeIcons.comment,
+              size: 18,
+            ),
             SizedBox(width: 5),
             Text(listFeed.comments)
           ],
         ),
       ),
-      /*
       GestureDetector(
-        onTap: () {
-          print('Bookmark Tapped');
+        onTap: () async {
+          if (await SaveButtonTapped(
+              user_id, listFeed.feedId, listFeed.isSaved, context)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Post saved'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Post already saved'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
           // Handle bookmarking the post here
         },
-        child: Icon(FontAwesomeIcons.bookmark, size: 18),
-      ),*/
+        child: Icon(
+          FontAwesomeIcons.bookmark,
+          size: 18,
+          color: listFeed.isSaved ? Color(0xFFFF4D4D) : Colors.black,
+        ),
+      ),
       GestureDetector(
         onTap: () {
           print('Share Tapped');

@@ -85,6 +85,7 @@ class _NewsFeedState extends State<NewsFeed> {
                   feedId: data['id'],
                   type: 1,
                   title: data['title'],
+                  isSaved: data['isSaved'],
                   description: ' ',
                   category: ' ',
                   subcategory: ' ',

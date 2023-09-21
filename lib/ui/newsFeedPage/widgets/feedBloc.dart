@@ -12,7 +12,7 @@ import 'dart:async';
 
 class Feed {
   int? id, type;
-  bool likes;
+  bool likes, isSaved;
   String feedId,
       title,
       description,
@@ -41,7 +41,8 @@ class Feed {
       required this.location,
       required this.likes,
       required this.comments,
-      required this.members});
+      required this.members,
+      required this.isSaved});
 }
 
 class QuestionModel {
@@ -63,6 +64,7 @@ class FeedBloc {
         feedId: "1",
         type: 0,
         title: 'Prani Kumar',
+        isSaved: true,
         description:
             'Information Technology (IT) Hub: Hyderabad is often referred to as "Cyberabad" due to its significant presence in the IT and technology industry...',
         category: '',
