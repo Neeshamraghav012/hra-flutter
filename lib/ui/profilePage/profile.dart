@@ -1,4 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:hra/ui/profilePage/followersTab.dart';
+import 'package:hra/ui/profilePage/followingTab.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +19,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  late TabController _followersTabController;
   String userId = "";
 
   Future<String> getUser() async {
@@ -207,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     initializeData();
     _tabController = TabController(length: 4, vsync: this);
+    _followersTabController = TabController(length: 4, vsync: this);
 
     _tabController.addListener(() {
       print('Tab index changed to ${_tabController.index}');
@@ -316,9 +322,20 @@ class _ProfilePageState extends State<ProfilePage>
                 ),*/
                 Align(
                   alignment: Alignment.topCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                  child: TabBar(
+                    controller: _followersTabController,
+                    labelColor: Colors.black,
+                    labelPadding:
+                    const EdgeInsets.symmetric(horizontal: 8.0),
+                    labelStyle: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w700,
+                    ), // Adjust label font size
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorColor: Color(0xFF707070),
+                    tabs: [
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: Column(
@@ -336,9 +353,6 @@ class _ProfilePageState extends State<ProfilePage>
                           ],
                         ),
                       ),
-                      SizedBox(
-                        width: 20,
-                      ),
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: Column(
@@ -355,9 +369,6 @@ class _ProfilePageState extends State<ProfilePage>
                                 ))
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        width: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.all(10),
@@ -382,157 +393,161 @@ class _ProfilePageState extends State<ProfilePage>
               ]),
             ),
             // Tabs
-            DefaultTabController(
-              length: 4,
-              child: Expanded(
-                child: Column(
-                  children: <Widget>[
-                    loading
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : Container(
-                            child: TabBar(
-                                controller: _tabController,
-                                labelColor: Colors.black,
-                                labelPadding:
-                                    EdgeInsets.symmetric(horizontal: 8.0),
-                                labelStyle: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.black,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w700,
-                                ), // Adjust label font size
-                                indicatorSize: TabBarIndicatorSize.label,
-                                indicatorColor: Color(0xFF707070),
-                                tabs: [
-                                  Tab(text: "All Post"),
-                                  Tab(text: "Photos"),
-                                  Tab(text: "Videos"),
-                                  Tab(text: "Saved"),
+            Expanded(
+              child: TabBarView(
+                controller: _followersTabController,
+                children: [
+                  Column(
+                    children: <Widget>[
+                      loading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Container(
+                              child: TabBar(
+                                  controller: _tabController,
+                                  labelColor: Colors.black,
+                                  labelPadding:
+                                      EdgeInsets.symmetric(horizontal: 8.0),
+                                  labelStyle: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w700,
+                                  ), // Adjust label font size
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  indicatorColor: Color(0xFF707070),
+                                  tabs: [
+                                    Tab(text: "All Post"),
+                                    Tab(text: "Photos"),
+                                    Tab(text: "Videos"),
+                                    Tab(text: "Saved"),
+                                  ]),
+                            ),
+                      Expanded(
+                        child: Container(
+                          child: loading
+                              ? Center(
+                                  child: Container(),
+                                )
+                              : TabBarView(controller: _tabController, children: [
+                                  // All Posts
+                                  SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
+                                        fetching
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              )
+                                            : Container(
+                                                color: Colors.white,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemCount: feedListData.length,
+                                                  itemBuilder: (context, index) {
+                                                    final feedItem =
+                                                        feedListData[index];
+                                                    return GestureDetector(
+                                                      onTap: () => viewDetailPage(
+                                                          feedItem.feedId
+                                                              .toString(),
+                                                          feedItem),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          feedNewsCardWithImageItem(
+                                                              context,
+                                                              feedItem,
+                                                              userId,
+                                                              feedItem.likes),
+                                                          topSpace(),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Photos Tab
+                                  SingleChildScrollView(
+                                    child: Container(
+                                      child:
+                                          Center(child: Text("No Photos yet.")),
+                                    ),
+                                  ),
+
+                                  // Videos tab
+                                  SingleChildScrollView(
+                                    child: Container(
+                                      child:
+                                          Center(child: Text("No Videos yet.")),
+                                    ),
+                                  ),
+
+                                  // Saved post tab
+                                  SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
+                                        fetching
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              )
+                                            : Container(
+                                                color: Colors.white,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemCount: feedListData.length,
+                                                  itemBuilder: (context, index) {
+                                                    final feedItem =
+                                                        feedListData[index];
+                                                    return GestureDetector(
+                                                      onTap: () => viewDetailPage(
+                                                          feedItem.feedId
+                                                              .toString(),
+                                                          feedItem),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          feedNewsCardWithImageItem(
+                                                              context,
+                                                              feedItem,
+                                                              userId,
+                                                              feedItem.likes),
+                                                          topSpace(),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
                                 ]),
-                          ),
-                    Expanded(
-                      child: Container(
-                        child: loading
-                            ? Center(
-                                child: Container(),
-                              )
-                            : TabBarView(controller: _tabController, children: [
-                                // All Posts
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: <Widget>[
-                                      fetching
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : Container(
-                                              color: Colors.white,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount: feedListData.length,
-                                                itemBuilder: (context, index) {
-                                                  final feedItem =
-                                                      feedListData[index];
-                                                  return GestureDetector(
-                                                    onTap: () => viewDetailPage(
-                                                        feedItem.feedId
-                                                            .toString(),
-                                                        feedItem),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        feedNewsCardWithImageItem(
-                                                            context,
-                                                            feedItem,
-                                                            userId,
-                                                            feedItem.likes),
-                                                        topSpace(),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                    ],
-                                  ),
-                                ),
-
-                                // Photos Tab
-                                SingleChildScrollView(
-                                  child: Container(
-                                    child:
-                                        Center(child: Text("No Photos yet.")),
-                                  ),
-                                ),
-
-                                // Videos tab
-                                SingleChildScrollView(
-                                  child: Container(
-                                    child:
-                                        Center(child: Text("No Videos yet.")),
-                                  ),
-                                ),
-
-                                // Saved post tab
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: <Widget>[
-                                      fetching
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : Container(
-                                              color: Colors.white,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount: feedListData.length,
-                                                itemBuilder: (context, index) {
-                                                  final feedItem =
-                                                      feedListData[index];
-                                                  return GestureDetector(
-                                                    onTap: () => viewDetailPage(
-                                                        feedItem.feedId
-                                                            .toString(),
-                                                        feedItem),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        feedNewsCardWithImageItem(
-                                                            context,
-                                                            feedItem,
-                                                            userId,
-                                                            feedItem.likes),
-                                                        topSpace(),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ]),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                  FollowersTab(),
+                  FollowingTab()
+                ],
               ),
             )
           ],

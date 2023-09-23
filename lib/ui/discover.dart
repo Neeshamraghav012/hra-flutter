@@ -6,6 +6,14 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverState extends State<DiscoverPage> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("hello");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

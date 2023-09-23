@@ -7,6 +7,7 @@ import 'package:hra/user-registration/signup.dart';
 import 'package:hra/admin/admin0.dart';
 import 'package:hra/social.dart';
 import 'package:hra/config/app-config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -95,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
   String username = '';
   String email = '';
 
+
   Future<void> saveUser(String userId, String username, String email) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -143,6 +145,18 @@ class _LoginPageState extends State<LoginPage> {
         email = jsonData['data'][0]['email'];
         is_admin = jsonData['is_admin'];
       });
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      if(rememberMe == true){
+        await prefs.setString('loginEmail_Phone', email_or_phone);
+        await prefs.setString('loginPassword', password);
+        await prefs.setBool('rememberMe', true);
+      }
+      else{
+        await prefs.setString('loginEmail_Phone', '');
+        await prefs.setString('loginPassword', '');
+        await prefs.setBool('rememberMe', false);
+      }
+
 
       if (is_admin) {
         saveUser(id, username, email);
@@ -177,6 +191,23 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  @override
+  void initState() {
+    getSavedloginCreds();
+    super.initState();
+  }
+  getSavedloginCreds() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    email_or_phone =  prefs.getString('loginEmail_Phone')!;
+    password = prefs.getString('loginPassword')!;
+
+
+    setState(() {
+      _emailController.text = email_or_phone;
+      _passwordController.text = password;
+      rememberMe = prefs.getBool("rememberMe")!;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
