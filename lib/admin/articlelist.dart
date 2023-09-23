@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hra/admin/Aricles-details.dart';
-import 'package:hra/admin/Events-details.dart';
+import 'package:hra/admin/articledetails.dart';
 import 'package:hra/admin/articleblock.dart';
-import 'package:hra/admin/eventblock.dart';
 
-class EventCard extends StatelessWidget {
+class ArticleCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String description;
   final String date;
   final VoidCallback onPressed;
 
-  EventCard({
+  ArticleCard({
     required this.imagePath,
     required this.title,
     required this.description,
@@ -116,12 +114,12 @@ class EventCard extends StatelessWidget {
   }
 }
 
-class ArtPage extends StatefulWidget {
+class ArticlesPage extends StatefulWidget {
   @override
-  State<ArtPage> createState() => _ArtState();
+  State<ArticlesPage> createState() => _ArtState();
 }
 
-class _ArtState extends State<ArtPage> {
+class _ArtState extends State<ArticlesPage> {
   final ArticleBloc articleBloc = ArticleBloc();
   @override
   Widget build(BuildContext context) {
@@ -169,7 +167,7 @@ class _ArtState extends State<ArtPage> {
           itemCount: articleBloc.articleList.length,
           itemBuilder: (context, index) {
             Article article = articleBloc.articleList[index];
-            return EventCard(
+            return ArticleCard(
               imagePath: article.bannerImg,
               title: article.title,
               description: article.description,
@@ -178,7 +176,7 @@ class _ArtState extends State<ArtPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ArtPage1(articleId: index),
+                    builder: (context) => ArticleDetailsPage(articleId: index),
                   ),
                 );
               },

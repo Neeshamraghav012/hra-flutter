@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hra/admin/eventblock.dart';
 
-class EventPage extends StatefulWidget {
+class EventDetailsPage extends StatefulWidget {
   final int eventId;
 
-  EventPage({required this.eventId});
+  EventDetailsPage({required this.eventId});
   @override
-  State<EventPage> createState() => _EventState();
+  State<EventDetailsPage> createState() => _EventState();
 }
 
-class _EventState extends State<EventPage> {
-  final EventBloc eventBloc = EventBloc();
+class _EventState extends State<EventDetailsPage> {
+  final EventBlock eventBlock = EventBlock();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _EventState extends State<EventPage> {
             margin: EdgeInsets.all(8.0), // Adjust margin as needed
             child: CircleAvatar(
               backgroundImage:
-                  NetworkImage(eventBloc.eventList[widget.eventId].bannerImg),
+                  NetworkImage(eventBlock.eventList[widget.eventId].bannerImg),
               radius: 20, // Adjust the radius to control the size of the circle
             ),
           ),
@@ -97,7 +97,7 @@ class _EventState extends State<EventPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        eventBloc.eventList[widget.eventId].title,
+                        eventBlock.eventList[widget.eventId].title,
                         style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 16,
@@ -107,7 +107,7 @@ class _EventState extends State<EventPage> {
                         textAlign: TextAlign.left,
                       ),
                       Text(
-                        "Date: ${eventBloc.eventList[widget.eventId].date}",
+                        "Date: ${eventBlock.eventList[widget.eventId].date}",
                         style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 14,
@@ -132,7 +132,7 @@ class _EventState extends State<EventPage> {
                           ),
                         ),
                         TextSpan(
-                          text: eventBloc.eventList[widget.eventId].description,
+                          text: eventBlock.eventList[widget.eventId].description,
                           style: const TextStyle(
                             fontSize:
                                 14, // Change the font size for the remaining text
@@ -147,7 +147,7 @@ class _EventState extends State<EventPage> {
 
                   SizedBox(height: 20),
                   Text(
-                    "Location: ${eventBloc.eventList[widget.eventId].location}",
+                    "Location: ${eventBlock.eventList[widget.eventId].location}",
                     style: const TextStyle(
                       fontFamily: "Roboto",
                       fontSize: 16,

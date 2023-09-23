@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class NetworkPage extends StatefulWidget {
+class NetworkMembersPage extends StatefulWidget {
   @override
-  State<NetworkPage> createState() => _NetworkPageState();
+  State<NetworkMembersPage> createState() => _NetworkPageMembersState();
 }
 
-class _NetworkPageState extends State<NetworkPage> {
+class _NetworkPageMembersState extends State<NetworkMembersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

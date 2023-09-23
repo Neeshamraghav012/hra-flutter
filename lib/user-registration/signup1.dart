@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hra/user-registration/forgot-password.dart';
 import 'dart:convert';
 import 'package:hra/user-registration/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:hra/user-registration/signup2.dart';
 import 'dart:math';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hra/admin/admin.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

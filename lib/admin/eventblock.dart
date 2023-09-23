@@ -21,7 +21,7 @@ class Event {
       required this.date});
 }
 
-class EventBloc {
+class EventBlock {
   List<Event> eventList = [
     Event(
       eventId: "1",

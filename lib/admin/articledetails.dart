@@ -9,16 +9,16 @@ import 'dart:core';
 import 'dart:typed_data';
 import 'dart:math';
 
-class ArtPage1 extends StatefulWidget {
+class ArticleDetailsPage extends StatefulWidget {
   final int articleId;
 
-  ArtPage1({required this.articleId});
+  ArticleDetailsPage({required this.articleId});
 
   @override
-  State<ArtPage1> createState() => _Art1State();
+  State<ArticleDetailsPage> createState() => _Art1State();
 }
 
-class _Art1State extends State<ArtPage1> {
+class _Art1State extends State<ArticleDetailsPage> {
   final ArticleBloc articleBloc = ArticleBloc();
   bool downloading = false;
   final pdf = pw.Document();

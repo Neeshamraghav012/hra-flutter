@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CertPage extends StatefulWidget {
+class CertificatePage extends StatefulWidget {
   @override
-  State<CertPage> createState() => _CertState();
+  State<CertificatePage> createState() => _CertificateState();
 }
 
-class _CertState extends State<CertPage> {
+class _CertificateState extends State<CertificatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

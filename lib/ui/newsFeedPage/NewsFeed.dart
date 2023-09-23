@@ -10,10 +10,10 @@ import 'package:path/path.dart' as p;
 import 'package:hra/config/app-config.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:hra/ui/home.dart';
-import 'package:hra/admin/Articles.dart';
-import 'package:hra/admin/Gallery.dart';
-import 'package:hra/admin/Event-list.dart';
-import 'package:hra/admin/Network.dart';
+import 'package:hra/admin/articlelist.dart';
+import 'package:hra/admin/gallery.dart';
+import 'package:hra/admin/eventlist.dart';
+import 'package:hra/admin/networkmembers.dart';
 import 'package:hra/admin/training-material.dart';
 import 'package:hra/admin/brochures.dart';
 import 'package:video_player/video_player.dart';
@@ -269,7 +269,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NetworkPage()),
+                  MaterialPageRoute(builder: (context) => NetworkMembersPage()),
                 );
               },
             ),
@@ -281,7 +281,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EventPage1()),
+                  MaterialPageRoute(builder: (context) => EventListPage()),
                 );
               },
             ),
@@ -305,7 +305,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BroPage()),
+                  MaterialPageRoute(builder: (context) => BrochurePage()),
                 );
               },
             ),
@@ -329,7 +329,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ArtPage()),
+                  MaterialPageRoute(builder: (context) => ArticlesPage()),
                 );
               },
             ),

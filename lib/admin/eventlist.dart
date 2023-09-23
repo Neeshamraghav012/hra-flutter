@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hra/admin/Events-details.dart';
+import 'package:hra/admin/eventdetails.dart';
 import 'package:hra/admin/eventblock.dart';
 
-class EventPage1 extends StatefulWidget {
+class EventListPage extends StatefulWidget {
   @override
-  State<EventPage1> createState() => _Event1State();
+  State<EventListPage> createState() => _EventListState();
 }
 
-class _Event1State extends State<EventPage1> {
-  final EventBloc eventBloc = EventBloc();
+class _EventListState extends State<EventListPage> {
+  final EventBlock eventBlock = EventBlock();
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +58,9 @@ class _Event1State extends State<EventPage1> {
                   childAspectRatio:
                       0.8, // You can adjust the aspect ratio as needed
                 ),
-                itemCount: eventBloc.eventList.length,
+                itemCount: eventBlock.eventList.length,
                 itemBuilder: (context, index) {
-                  Event event = eventBloc.eventList[index];
+                  Event event = eventBlock.eventList[index];
                   return EventCard(
                     imagePath:
                         event.bannerImg, // You can use the bannerImg here
@@ -71,7 +71,7 @@ class _Event1State extends State<EventPage1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => EventPage(
+                            builder: (context) => EventDetailsPage(
                                   eventId: index,
                                 )),
                       );
