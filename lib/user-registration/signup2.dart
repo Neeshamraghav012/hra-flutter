@@ -528,74 +528,73 @@ class _SignupPage2State extends State<SignupPage2> {
                             )
                           : Text(''),
                     ),
-                    Row(children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupPage()),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  30), // Adjust the value for the desired corner radius
+                    Row(
+                      children: [
+                        Container(
+                          width: 139, // Set the width for the Cancel button
+                          height: 35, // Set the height for the Cancel button
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignupPage(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              side: BorderSide(
+                                color: Color(0xFFFF4D4D),
+                                width: 2.0,
+                              ),
+                              backgroundColor: Colors.white,
                             ),
-                            side: BorderSide(
-                              color:
-                                  Color(0xFFFF4D4D), // Specify the border color
-                              width: 2.0, // Specify the border width
-                            ),
-                            backgroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 40,
-                                vertical:
-                                    15), // Change the color to your desired color
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFFFF4D4D), // Text color
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Poppins',
+                                color: Color(0xFFFF4D4D),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Spacer(),
-                      loading
-                          ? Padding(
-                              padding: EdgeInsets.only(right: 5),
-                              child: CircularProgressIndicator())
-                          : Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  register();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        30), // Adjust the value for the desired corner radius
+                        SizedBox(
+                            width:
+                                9), // Add some space between Cancel and Submit
+                        Container(
+                          width: 180, // Set the width for the Submit button
+                          height: 35, // Set the height for the Submit button
+                          child: loading
+                              ? Padding(
+                                  padding: EdgeInsets.only(right: 5),
+                                  child: CircularProgressIndicator(),
+                                )
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    register();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    backgroundColor: Color(0xFFFF4D4D),
                                   ),
-                                  backgroundColor: Color(0xFFFF4D4D),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 40,
-                                      vertical:
-                                          15), // Change the color to your desired color
-                                ),
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white, // Text color
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                    ]),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: error != ''

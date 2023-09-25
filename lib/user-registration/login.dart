@@ -95,13 +95,16 @@ class _LoginPageState extends State<LoginPage> {
   bool is_admin = false;
   String username = '';
   String email = '';
+  String profile_picture = '';
 
-  Future<void> saveUser(String userId, String username, String email) async {
+  Future<void> saveUser(String userId, String username, String email, String profile_picture) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString("userId", userId);
     await prefs.setString("username", username);
     await prefs.setString("email", email);
+    await prefs.setString("profilePicture", profile_picture);
+
   }
 
   Future<void> fetchPost() async {
@@ -143,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
         username = jsonData['data'][0]['username'];
         email = jsonData['data'][0]['email'];
         is_admin = jsonData['is_admin'];
+        profile_picture = jsonData['data'][0]['profile_picure'];
       });
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       if (rememberMe == true) {
@@ -150,17 +154,19 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('loginPassword', password);
         await prefs.setBool('rememberMe', true);
         await prefs.setString("userId", id);
+        await prefs.setString("profilePicture", profile_picture);
 
       } else {
         await prefs.setString('loginEmail_Phone', '');
         await prefs.setString('loginPassword', '');
         await prefs.setBool('rememberMe', false);
         await prefs.setString("userId", id);
+        await prefs.setString("profilePicture", profile_picture);
 
       }
 
       if (is_admin) {
-        saveUser(id, username, email);
+        saveUser(id, username, email, profile_picture);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -175,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      saveUser(id, username, email);
+      saveUser(id, username, email, profile_picture);
 
       if (status) {
         Navigator.push(

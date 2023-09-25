@@ -153,7 +153,17 @@ class _SignupPage1State extends State<SignupPage1> {
   XFile? pan_image;
   XFile? rera_image;
   XFile? profile_image;
-  TextEditingController textFieldController = TextEditingController();
+  TextEditingController panController = TextEditingController();
+  TextEditingController aadharController = TextEditingController();
+  TextEditingController reraController = TextEditingController();
+
+  GlobalKey<FormState> panFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> aadharFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> reraFormKey = GlobalKey<FormState>();
+
+  String panError = "";
+  String aadharError = "";
+  String reraError = "";
 
   Future<void> chooseImage(String doc) async {
     var choosedimage = await picker.pickImage(source: ImageSource.gallery);
@@ -229,6 +239,20 @@ class _SignupPage1State extends State<SignupPage1> {
       setState(() {
         error = "";
       });
+    }
+
+    if (doc == 'PAN') {
+      if (panFormKey.currentState!.validate()) {
+        // PAN form is valid, proceed with your logic
+      }
+    } else if (doc == 'Aadhar') {
+      if (aadharFormKey.currentState!.validate()) {
+        // Aadhar form is valid, proceed with your logic
+      }
+    } else if (doc == 'RERA') {
+      if (reraFormKey.currentState!.validate()) {
+        // RERA form is valid, proceed with your logic
+      }
     }
 
     print(pan_number);
@@ -417,11 +441,11 @@ class _SignupPage1State extends State<SignupPage1> {
 
     // Set the initial controller text based on doc
     if (doc == 'PAN') {
-      textFieldController.text = pan_number;
+      panController.text = pan_number;
     } else if (doc == 'Aadhaar') {
-      textFieldController.text = aadhar_number;
+      aadharController.text = aadhar_number;
     } else if (doc == 'RERA') {
-      textFieldController.text = rera_number;
+      reraController.text = rera_number;
     }
   }
 
@@ -462,7 +486,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
-                              textFieldController.text = pan_number;
+                              panController.text = pan_number;
 
                               setState(() {
                                 doc = "PAN";
@@ -472,8 +496,10 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: doc == "PAN"
-                                  ? Color(0xFF376F92)
+                              backgroundColor: doc == "PAN" || pan_uploaded
+                                  ? pan_uploaded
+                                      ? Color(0xFFA1FF89)
+                                      : Color(0xFF376F92)
                                   : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
@@ -495,7 +521,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
-                              textFieldController.text = aadhar_number;
+                              aadharController.text = aadhar_number;
 
                               setState(() {
                                 doc = "Aadhar";
@@ -505,9 +531,12 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: doc == "Aadhar"
-                                  ? Color(0xFF376F92)
-                                  : Color(0xFFD3DFE7),
+                              backgroundColor:
+                                  doc == "Aadhar" || aadhar_uploaded
+                                      ? aadhar_uploaded
+                                          ? Color(0xFFA1FF89)
+                                          : Color(0xFF376F92)
+                                      : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                             ),
@@ -529,7 +558,7 @@ class _SignupPage1State extends State<SignupPage1> {
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () {
-                              textFieldController.text = rera_number;
+                              reraController.text = rera_number;
                               setState(() {
                                 doc = "RERA";
                               });
@@ -538,8 +567,10 @@ class _SignupPage1State extends State<SignupPage1> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: doc == "RERA"
-                                  ? Color(0xFF376F92)
+                              backgroundColor: doc == "RERA" || rera_uploaded
+                                  ? rera_uploaded
+                                      ? Color(0xFFA1FF89)
+                                      : Color(0xFF376F92)
                                   : Color(0xFFD3DFE7),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
@@ -573,9 +604,12 @@ class _SignupPage1State extends State<SignupPage1> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            backgroundColor: doc == "Profile"
-                                ? Color(0xFF376F92)
-                                : Color(0xFFD3DFE7),
+                            backgroundColor:
+                                doc == "Profile" || profile_uploaded
+                                    ? profile_uploaded
+                                        ? Color(0xFFA1FF89)
+                                        : Color(0xFF376F92)
+                                    : Color(0xFFD3DFE7),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),
                           ),
@@ -592,8 +626,12 @@ class _SignupPage1State extends State<SignupPage1> {
                       ),
                     ),
                     doc != 'Profile'
-                        ? Padding(
-                            padding: const EdgeInsets.all(6.0),
+                        ? Form(
+                            key: doc == 'PAN'
+                                ? panFormKey
+                                : (doc == 'Aadhar'
+                                    ? aadharFormKey
+                                    : reraFormKey),
                             child: Column(children: [
                               Padding(
                                 padding:
@@ -612,7 +650,11 @@ class _SignupPage1State extends State<SignupPage1> {
                                 ),
                               ),
                               TextFormField(
-                                controller: textFieldController,
+                                controller: doc == 'PAN'
+                                    ? panController
+                                    : (doc == 'Aadhar'
+                                        ? aadharController
+                                        : reraController),
                                 textCapitalization:
                                     doc == 'PAN' || doc == 'RERA'
                                         ? TextCapitalization.characters
@@ -646,14 +688,22 @@ class _SignupPage1State extends State<SignupPage1> {
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: 'Your ${doc}'),
+                                // errorText: doc == 'PAN'
+                                //     ? panError
+                                //     : (doc == 'Aadhar'
+                                //         ? aadharError
+                                //         : reraError),
                                 onChanged: (value) {
                                   setState(() {
                                     if (doc == "PAN") {
                                       pan_number = value;
+                                      panError = "";
                                     } else if (doc == "Aadhar") {
                                       aadhar_number = value;
+                                      aadharError = "";
                                     } else if (doc == "RERA") {
                                       rera_number = value;
+                                      reraError = "";
                                     }
                                   });
                                 },
@@ -1122,13 +1172,11 @@ class Info extends StatelessWidget {
               width: 91,
               height: 32,
               child: isuploaded
-                  ? Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text("Uploaded!"))
+                  ? Center(
+                      child: Text("Uploaded!"),
+                    )
                   : isloading
-                      ? Padding(
-                          padding: EdgeInsets.only(left: 10),
-                          child: CircularProgressIndicator())
+                      ? Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                           onPressed: () {
                             onUploadPressed!();

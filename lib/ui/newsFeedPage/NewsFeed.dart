@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
-import 'package:hra/ui/videoItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:path/path.dart' as p;
 import 'package:hra/config/app-config.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:hra/ui/home.dart';
@@ -16,7 +14,7 @@ import 'package:hra/admin/eventlist.dart';
 import 'package:hra/admin/networkmembers.dart';
 import 'package:hra/admin/training-material.dart';
 import 'package:hra/admin/brochures.dart';
-import 'package:video_player/video_player.dart';
+import 'package:hra/admin/certificate.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -30,6 +28,7 @@ class _NewsFeedState extends State<NewsFeed> {
   String username = "";
   String email = "";
   bool user_loading = false;
+  String profile_picture = '';
 
   Future<void> getUser() async {
     setState(() {
@@ -39,17 +38,20 @@ class _NewsFeedState extends State<NewsFeed> {
     String id = prefs.getString("userId") ?? "";
     String user_username = prefs.getString("username") ?? "";
     String user_email = prefs.getString("email") ?? "";
+    String profile = prefs.getString('profilePicture') ?? "";
 
     setState(() {
       userId = id;
       email = user_email;
       username = user_username;
       user_loading = false;
+      profile_picture = profile;
     });
 
     print(userId);
     print(email);
     print(username);
+    print(profile_picture);
   }
 
   Future<String> removeUser() async {
@@ -194,13 +196,13 @@ class _NewsFeedState extends State<NewsFeed> {
             width: 18,
           ),
           Padding(
-            padding: EdgeInsets.only(
-                right: 16.0), // Adjust the left padding as needed
-            child: Icon(
-              Icons.account_circle_rounded,
-              size: 30,
+            padding:
+                EdgeInsets.only(right: 24), // Adjust the left padding as needed
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              backgroundImage: NetworkImage(profile_picture),
             ),
-          ),
+          )
         ],
         title: Text("HRA"),
         backgroundColor: Colors.white,
@@ -229,7 +231,7 @@ class _NewsFeedState extends State<NewsFeed> {
                       currentAccountPictureSize: Size.square(50),
                       currentAccountPicture: CircleAvatar(
                         backgroundColor: Colors.white,
-                        backgroundImage: AssetImage('images/icon.png'),
+                        backgroundImage: NetworkImage(profile_picture),
                       ), //circleAvatar
                     ), //UserAccountDrawerHeader
                   ),
@@ -264,12 +266,24 @@ class _NewsFeedState extends State<NewsFeed> {
 
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-              leading: const Icon(Icons.network_locked),
+              leading: const Icon(Icons.group),
               title: const Text(' Network Members '),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => NetworkMembersPage()),
+                );
+              },
+            ),
+
+            ListTile(
+              visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+              leading: const Icon(Icons.school), // Use the certificate icon
+              title: const Text(' My certificates '),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CertificatePage()),
                 );
               },
             ),

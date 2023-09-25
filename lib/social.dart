@@ -25,6 +25,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           // automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false, // Disable the default back button
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(); // Navigate back if no custom action is provided
+              }),
         ),
       ),
     );
