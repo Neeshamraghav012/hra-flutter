@@ -96,7 +96,6 @@ class _LoginPageState extends State<LoginPage> {
   String username = '';
   String email = '';
 
-
   Future<void> saveUser(String userId, String username, String email) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -146,17 +145,19 @@ class _LoginPageState extends State<LoginPage> {
         is_admin = jsonData['is_admin'];
       });
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      if(rememberMe == true){
+      if (rememberMe == true) {
         await prefs.setString('loginEmail_Phone', email_or_phone);
         await prefs.setString('loginPassword', password);
         await prefs.setBool('rememberMe', true);
-      }
-      else{
+        await prefs.setString("userId", id);
+
+      } else {
         await prefs.setString('loginEmail_Phone', '');
         await prefs.setString('loginPassword', '');
         await prefs.setBool('rememberMe', false);
-      }
+        await prefs.setString("userId", id);
 
+      }
 
       if (is_admin) {
         saveUser(id, username, email);
@@ -182,9 +183,17 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(
               builder: (context) => SocialPage(user_id: id),
             ));
+
+        setState(() {
+          loading = false;
+        });
+        return;
       }
     } else {
-      print('API request failed with status code: ${response.statusCode}');
+      setState(() {
+        loading = false;
+      });
+      return;
     }
     setState(() {
       loading = false;
@@ -196,11 +205,11 @@ class _LoginPageState extends State<LoginPage> {
     getSavedloginCreds();
     super.initState();
   }
+
   getSavedloginCreds() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    email_or_phone =  prefs.getString('loginEmail_Phone')!;
+    email_or_phone = prefs.getString('loginEmail_Phone')!;
     password = prefs.getString('loginPassword')!;
-
 
     setState(() {
       _emailController.text = email_or_phone;
@@ -208,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
       rememberMe = prefs.getBool("rememberMe")!;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -352,6 +362,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Checkbox(
                           value: rememberMe,
+                          activeColor: Colors.blue,
                           onChanged: (value) {
                             setState(() {
                               rememberMe = value!;
@@ -359,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                         Text(
-                          'Remeber Me',
+                          'Remember Me',
                           style: TextStyle(
                             fontSize: 14,
                           ),

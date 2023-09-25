@@ -38,7 +38,7 @@ class _FollowingTabState extends State<FollowingTab> {
       loading = true;
     });
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/discover?user_id=$userId'),
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/following?user_id=$userId'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -63,8 +63,6 @@ class _FollowingTabState extends State<FollowingTab> {
     }
   }
 
-
-
   @override
   void initState() {
     print("hello");
@@ -80,13 +78,16 @@ class _FollowingTabState extends State<FollowingTab> {
       child: Column(
         children: [
           Padding(
-            padding:  EdgeInsets.only(top: height*0.01),
+            padding: EdgeInsets.only(top: height * 0.01),
             child: Text(
               'All followers',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: height*0.025 ),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300,
+                  fontSize: height * 0.025),
             ),
           ),
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.only(top: 13, left: 4, right: 17),
             child: Container(
               width: 369,
@@ -103,21 +104,23 @@ class _FollowingTabState extends State<FollowingTab> {
                 ),
               ),
             ),
-          ),
+          ),*/
           loading
               ? Center(
-            child: CircularProgressIndicator(),
-          )
-              : ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: peopleData.length,
-            itemBuilder: (context, index) {
-              final peopleItem = peopleData[index];
-              return Follow(
-                  peopleItem['username'], peopleItem['user_id'], index);
-            },
-          ),
+                  child: CircularProgressIndicator(),
+                )
+              : Center(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: peopleData.length,
+                    itemBuilder: (context, index) {
+                      final peopleItem = peopleData[index];
+                      return Follow(
+                          peopleItem['username'], peopleItem['user_id'], index);
+                    },
+                  ),
+                ),
         ],
       ),
     );
@@ -139,7 +142,7 @@ class _FollowingTabState extends State<FollowingTab> {
             ),
           ),
           child:
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Row(children: [
               Padding(
                 padding: EdgeInsets.only(left: 5, right: 5),

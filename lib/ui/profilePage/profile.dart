@@ -212,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     initializeData();
     _tabController = TabController(length: 4, vsync: this);
-    _followersTabController = TabController(length: 4, vsync: this);
+    _followersTabController = TabController(length: 3, vsync: this);
 
     _tabController.addListener(() {
       print('Tab index changed to ${_tabController.index}');

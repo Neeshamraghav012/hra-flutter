@@ -38,7 +38,7 @@ class _FollowersTabState extends State<FollowersTab> {
       loading = true;
     });
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/discover?user_id=$userId'),
+      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/followers?user_id=$userId'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -63,11 +63,8 @@ class _FollowersTabState extends State<FollowersTab> {
     }
   }
 
-
-
   @override
   void initState() {
-    print("hello");
     super.initState();
     initializeData();
   }
@@ -80,13 +77,16 @@ class _FollowersTabState extends State<FollowersTab> {
       child: Column(
         children: [
           Padding(
-            padding:  EdgeInsets.only(top: height*0.01),
+            padding: EdgeInsets.only(top: height * 0.01),
             child: Text(
               'People you follow',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: height*0.025 ),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300,
+                  fontSize: height * 0.025),
             ),
           ),
-          Padding(
+          /* Padding(
             padding: const EdgeInsets.only(top: 13, left: 4, right: 17),
             child: Container(
               width: 369,
@@ -103,20 +103,22 @@ class _FollowersTabState extends State<FollowersTab> {
                 ),
               ),
             ),
-          ),
+          ),*/
           loading
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: peopleData.length,
-                  itemBuilder: (context, index) {
-                    final peopleItem = peopleData[index];
-                    return Follow(
-                        peopleItem['username'], peopleItem['user_id'], index);
-                  },
+              : Center(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: peopleData.length,
+                    itemBuilder: (context, index) {
+                      final peopleItem = peopleData[index];
+                      return Follow(
+                          peopleItem['username'], peopleItem['user_id'], index);
+                    },
+                  ),
                 ),
         ],
       ),
