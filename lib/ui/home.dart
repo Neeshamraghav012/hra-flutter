@@ -9,6 +9,9 @@ import 'package:hra/ui/discoverPage.dart';
 import 'package:hra/ui/notifications.dart';
 
 class HomePage extends StatefulWidget {
+  final int index;
+
+  HomePage({required this.index});
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -44,7 +47,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _selectedTab(_selectedDrawerIndex);
+    // _selectedTab(_selectedDrawerIndex);
+    _selectedTab(widget.index);
     bottomMenuItems.add(new MenuModel('Camera', '', Icons.camera));
     bottomMenuItems
         .add(new MenuModel('Upload Image', '', Icons.browse_gallery));

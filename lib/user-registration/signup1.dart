@@ -846,9 +846,9 @@ class _SignupPage1State extends State<SignupPage1> {
                             isuploaded: profile_uploaded,
                           )
                         : Container(),
-                    if (profile_image != null &&
-                        doc == 'Profile' &&
-                        profile_uploaded)
+                    
+                        
+                       (profile_uploaded && rera_uploaded && pan_uploaded && aadhar_uploaded) && (aadhar_number.isNotEmpty && pan_number.isNotEmpty && rera_number.isNotEmpty) ?
                       Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: ElevatedButton(
@@ -871,7 +871,7 @@ class _SignupPage1State extends State<SignupPage1> {
                             ),
                           ),
                         ),
-                      ),
+                      ) : Container(),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: error != null

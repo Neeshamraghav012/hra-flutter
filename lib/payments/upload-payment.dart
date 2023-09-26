@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:hra/payments/payment1.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -100,7 +101,6 @@ class _UploadPaymentPageState extends State<UploadPaymentPage> {
           isUploading = false;
           uploaded = true;
         });
-
       } else {
         print('File upload failed');
         setState(() {
@@ -193,15 +193,26 @@ class _UploadPaymentPageState extends State<UploadPaymentPage> {
                 uploadimage != null
                     ? uploaded
                         ? Center(
-                            child: Padding(padding: EdgeInsets.all(6.0), child: Text('Image uploaded, wait for admin\'s approval!')),
+                            child: Padding(
+                                padding: EdgeInsets.all(6.0),
+                                child: Text(
+                                    'Image uploaded, wait for admin\'s approval!')),
                           )
                         : isUploading
-                            ? Padding(padding: EdgeInsets.all(6.0), child: CircularProgressIndicator())
+                            ? Padding(
+                                padding: EdgeInsets.all(6.0),
+                                child: CircularProgressIndicator())
                             : Padding(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     uploadImage();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PayPage1()), // Replace "Membership1Page" with the actual name of your membership-1 page
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(

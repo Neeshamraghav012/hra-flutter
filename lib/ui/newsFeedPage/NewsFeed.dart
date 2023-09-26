@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
+import 'package:hra/ui/profilePage/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -248,7 +249,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => HomePage(index: 1,)),
                   (route) => false,
                 );
               },
@@ -261,7 +262,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => HomePage(index: 3,)),
                   (route) => false,
                 );
               },

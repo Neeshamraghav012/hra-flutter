@@ -302,6 +302,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Container(
         color: Colors.white,
         child: Column(
@@ -491,40 +492,48 @@ class _ProfilePageState extends State<ProfilePage>
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 10),
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-                                                      itemCount:
-                                                          feedListData.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        final feedItem =
-                                                            feedListData[index];
-                                                        return GestureDetector(
-                                                          onTap: () =>
-                                                              viewDetailPage(
-                                                                  feedItem
-                                                                      .feedId
-                                                                      .toString(),
-                                                                  feedItem),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: <Widget>[
-                                                              feedNewsCardWithImageItem(
-                                                                  context,
-                                                                  feedItem,
-                                                                  userId,
-                                                                  feedItem
-                                                                      .likes),
-                                                              topSpace(),
-                                                            ],
+                                                    child: feedListData.isEmpty
+                                                        ? Center(
+                                                            child: Text(
+                                                                "No posts yet"),
+                                                          )
+                                                        : ListView.builder(
+                                                            shrinkWrap: true,
+                                                            physics:
+                                                                NeverScrollableScrollPhysics(),
+                                                            itemCount:
+                                                                feedListData
+                                                                    .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              final feedItem =
+                                                                  feedListData[
+                                                                      index];
+                                                              return GestureDetector(
+                                                                onTap: () => viewDetailPage(
+                                                                    feedItem
+                                                                        .feedId
+                                                                        .toString(),
+                                                                    feedItem),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    feedNewsCardWithImageItem(
+                                                                        context,
+                                                                        feedItem,
+                                                                        userId,
+                                                                        feedItem
+                                                                            .likes),
+                                                                    topSpace(),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
                                                           ),
-                                                        );
-                                                      },
-                                                    ),
                                                   ),
                                           ],
                                         ),
@@ -586,40 +595,48 @@ class _ProfilePageState extends State<ProfilePage>
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 10),
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-                                                      itemCount:
-                                                          feedListData.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        final feedItem =
-                                                            feedListData[index];
-                                                        return GestureDetector(
-                                                          onTap: () =>
-                                                              viewDetailPage(
-                                                                  feedItem
-                                                                      .feedId
-                                                                      .toString(),
-                                                                  feedItem),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: <Widget>[
-                                                              feedNewsCardWithImageItem(
-                                                                  context,
-                                                                  feedItem,
-                                                                  userId,
-                                                                  feedItem
-                                                                      .likes),
-                                                              topSpace(),
-                                                            ],
+                                                    child: feedListData.isEmpty
+                                                        ? Center(
+                                                            child: Text(
+                                                                "No saved posts yet"),
+                                                          )
+                                                        : ListView.builder(
+                                                            shrinkWrap: true,
+                                                            physics:
+                                                                NeverScrollableScrollPhysics(),
+                                                            itemCount:
+                                                                feedListData
+                                                                    .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              final feedItem =
+                                                                  feedListData[
+                                                                      index];
+                                                              return GestureDetector(
+                                                                onTap: () => viewDetailPage(
+                                                                    feedItem
+                                                                        .feedId
+                                                                        .toString(),
+                                                                    feedItem),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    feedNewsCardWithImageItem(
+                                                                        context,
+                                                                        feedItem,
+                                                                        userId,
+                                                                        feedItem
+                                                                            .likes),
+                                                                    topSpace(),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
                                                           ),
-                                                        );
-                                                      },
-                                                    ),
                                                   ),
                                           ],
                                         ),

@@ -25,9 +25,11 @@ Future<bool> LikeButtonTapped(String user_id, String post_id, bool isLiked,
     message = jsonData['message'];
     print(jsonData);
 
-    // listFeed.likes = true;
+    if (jsonData['status']) {
+      return true;
+    }
 
-    return true;
+    return false;
   }
 
   return false;
@@ -84,16 +86,31 @@ Widget likeCommentShare(
               child: IconButton(
                 onPressed: () async {
                   if (isLiked) {
-                    print('You already liked this post.');
+                    // print('You already liked this post.');
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('You already liked this post.'),
                         duration: Duration(seconds: 2),
                       ),
                     );
+
                   } else {
-                    await LikeButtonTapped(
-                        user_id, listFeed.feedId, isLiked, listFeed, liked);
+                    if (await LikeButtonTapped(
+                        user_id, listFeed.feedId, isLiked, listFeed, liked)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Post Liked.'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('You already liked this post.'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   }
                 },
                 icon: Icon(
@@ -107,7 +124,7 @@ Widget likeCommentShare(
       ),
       GestureDetector(
         onTap: () {
-          print('Comment Tapped');
+          // print('Comment Tapped');
           viewDetailPage(context, listFeed.feedId.toString(), listFeed);
           // Handle commenting on the post here
         },
