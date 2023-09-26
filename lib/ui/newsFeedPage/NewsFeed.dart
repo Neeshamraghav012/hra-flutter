@@ -38,7 +38,7 @@ class _NewsFeedState extends State<NewsFeed> {
     String id = prefs.getString("userId") ?? "";
     String user_username = prefs.getString("username") ?? "";
     String user_email = prefs.getString("email") ?? "";
-    String profile = prefs.getString('profilePicture') ?? "";
+    String profile = prefs.getString("profilePicture") ?? "";
 
     setState(() {
       userId = id;
@@ -178,12 +178,15 @@ class _NewsFeedState extends State<NewsFeed> {
   Future<void> initializeData() async {
     await getUser();
     fetchPosts();
+    print("profile picture is: ");
+    print(profile_picture);
   }
 
   @override
   void initState() {
     super.initState();
     initializeData();
+
   }
 
   @override
