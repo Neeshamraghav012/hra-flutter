@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:core';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data';
 import 'dart:math';
 
@@ -20,12 +21,13 @@ class ArticleDetailsPage extends StatefulWidget {
 class _Art1State extends State<ArticleDetailsPage> {
   final ArticleBloc articleBloc = ArticleBloc();
   bool downloading = false;
-  final pdf = pw.Document();
+
 
   Future<void> writeOnPdf() async {
     setState(() {
       downloading = true;
     });
+    final pdf = pw.Document();
     pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       margin: pw.EdgeInsets.all(32),
@@ -66,14 +68,21 @@ class _Art1State extends State<ArticleDetailsPage> {
       },
     ));
 
-    // Save the PDF to a file
-    final pdfData = await pdf.save();
-    final Uint8List uint8List = Uint8List.fromList(pdfData);
-    final directory = await getApplicationDocumentsDirectory();
 
-    String name = generateRandomName();
-    final file = File('${directory.path}/${name}.pdf');
-    await file.writeAsBytes(uint8List);
+    final directory = await getExternalStorageDirectory();
+
+    final file = File(
+        "${directory?.path}/HRA_Article${DateTime.now().toString().replaceAll(" ", "-")}.pdf");
+    if (await Permission.storage.request().isGranted) {
+      await file.writeAsBytes(await pdf.save());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Article saved Successfully in ${file.path}"),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Permissione denied"),
+      ));
+    }
 
     setState(() {
       downloading = false;
