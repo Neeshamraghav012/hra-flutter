@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:http/http.dart' as http;
@@ -54,7 +56,9 @@ class _ForgotPageState extends State<ForgotPage> {
   bool status = false;
   String otp = '';
   String user_id = '';
+  int _counter = 15;
   String otp_message = '';
+  bool reSendEmailStatus = false;
 
   TextEditingController textController = TextEditingController();
 
@@ -118,6 +122,19 @@ class _ForgotPageState extends State<ForgotPage> {
     });
   }
 
+  void startTimer() {
+    _counter = 15;
+    Timer _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_counter > 0) {
+          _counter--;
+        } else {
+          reSendEmailStatus = true;
+          timer.cancel();
+        }
+      });
+    });
+  }
   Future<void> verifyOTP() async {
     setState(() {
       loading = true;
@@ -204,18 +221,42 @@ class _ForgotPageState extends State<ForgotPage> {
                               hintText: 'Your Email',
                             ),
                           )
-                        : TextField(
-                            controller: textController,
-                            onChanged: (value) => setState(() {
-                              otp = value;
-                            }),
-                            decoration: InputDecoration(
-                              labelText: 'OTP',
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.lock),
-                              hintText: 'Enter OTP',
-                            ),
-                          ),
+                        : Column(
+                          children: [
+                            TextField(
+                                controller: textController,
+                                onChanged: (value) => setState(() {
+                                  otp = value;
+                                }),
+                                decoration: InputDecoration(
+                                  labelText: 'OTP',
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.lock),
+                                  hintText: 'Enter OTP',
+                                ),
+                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: InkWell(
+                                  onTap: (){
+                                    if(reSendEmailStatus==true)
+                                      {
+                                        sendOTP();
+                                        setState(() {
+                                          reSendEmailStatus = false;
+                                        });
+                                        startTimer();
+                                      }
+                                  },
+                                  child: reSendEmailStatus==true?Text("Resend Email?",style: TextStyle(color: Colors.blue),):Text("You can resend email in $_counter seconds",style: TextStyle(color: Colors.grey),),
+                                ),
+                              )
+                            ],)
+                          ],
+                        ),
    
                     Padding(
                       padding: EdgeInsets.only(top: 10),
@@ -237,6 +278,7 @@ class _ForgotPageState extends State<ForgotPage> {
                               ? ElevatedButton(
                                   onPressed: () {
                                     sendOTP();
+                                    startTimer();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(

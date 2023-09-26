@@ -24,6 +24,13 @@ class _NotificationState extends State<NotificationPage> {
             bottomRight: Radius.circular(60), // Adjust the radius as needed
           ),
         ),
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          color: Colors.black,
+          onPressed: () {
+            //Navigator.pop(context); // Add navigation functionality here
+          },
+        ),
         actions: [
           Container(
             margin: EdgeInsets.all(8.0), // Adjust margin as needed
