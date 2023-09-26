@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hra/payments/make-payment.dart';
 
 class MembershipPage1 extends StatefulWidget {
   @override
@@ -61,7 +62,10 @@ class _Membership1State extends State<MembershipPage1> {
               SizedBox(height: 44.8),
               ElevatedButton(
                   onPressed: () {
-                    // Add your payment logic here
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PayPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

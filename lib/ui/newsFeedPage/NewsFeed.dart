@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/ui/newsFeedPage/widgets/widgetFeed.dart';
+import 'package:hra/ui/profilePage/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,7 +39,7 @@ class _NewsFeedState extends State<NewsFeed> {
     String id = prefs.getString("userId") ?? "";
     String user_username = prefs.getString("username") ?? "";
     String user_email = prefs.getString("email") ?? "";
-    String profile = prefs.getString('profilePicture') ?? "";
+    String profile = prefs.getString("profilePicture") ?? "";
 
     setState(() {
       userId = id;
@@ -178,12 +179,15 @@ class _NewsFeedState extends State<NewsFeed> {
   Future<void> initializeData() async {
     await getUser();
     fetchPosts();
+    print("profile picture is: ");
+    print(profile_picture);
   }
 
   @override
   void initState() {
     super.initState();
     initializeData();
+
   }
 
   @override
@@ -245,7 +249,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => HomePage(index: 1,)),
                   (route) => false,
                 );
               },
@@ -258,7 +262,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => HomePage(index: 3,)),
                   (route) => false,
                 );
               },

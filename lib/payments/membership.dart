@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hra/payments/membership-1.dart';
+import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
+import 'dart:math' as math;
 
 class MembershipPage extends StatefulWidget {
   @override
@@ -9,6 +12,14 @@ class _MembershipState extends State<MembershipPage> {
   bool isNetworkMemberSelected = false;
   bool isNetworkMemberSelected1 = false; // Track checkbox state
   bool isNetworkMemberSelected2 = false;
+  bool canProceed = false;
+
+  bool isAnyCheckboxSelected() {
+    return isNetworkMemberSelected ||
+        isNetworkMemberSelected1 ||
+        isNetworkMemberSelected2;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +77,7 @@ class _MembershipState extends State<MembershipPage> {
                   width: 328,
                   height: 61,
 
-                  padding: EdgeInsets.all(2),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -76,17 +87,17 @@ class _MembershipState extends State<MembershipPage> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: Colors.grey.withOpacity(1),
                           spreadRadius: 2,
-                          blurRadius: 4,
+                          blurRadius: 6,
                           offset: Offset(0, 3),
                         ),
                       ]), // Adjust padding as needed
                   child: Row(
                     children: <Widget>[
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       Text.rich(
                         TextSpan(
                           text: 'Network Member\n',
@@ -111,33 +122,22 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 153.75),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: isNetworkMemberSelected
-                              ? Colors.red
-                              : Colors
-                                  .transparent, // Change the color to red when checked
-                          border: Border.all(
-                              color: Colors
-                                  .black), // Add a border for the checkbox
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isNetworkMemberSelected =
-                                  !isNetworkMemberSelected; // Toggle the checkbox value
-                              isNetworkMemberSelected1 = false;
-                              isNetworkMemberSelected2 = false;
-                            });
-                            // Handle checkbox state change here
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                          ),
-                        ),
-                      )
+                      Spacer(),
+                      Checkbox(
+                        value: isNetworkMemberSelected,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isNetworkMemberSelected = !isNetworkMemberSelected;
+                            isNetworkMemberSelected1 = false;
+                            isNetworkMemberSelected2 = false;
+                          });
+                          // Handle checkbox state change here
+                        },
+                        activeColor:
+                            Colors.blue, // Change the color to red when checked
+                        checkColor:
+                            Colors.white, // Change the color of the checkmark
+                      ),
                     ],
                   ),
                 ),
@@ -146,7 +146,7 @@ class _MembershipState extends State<MembershipPage> {
                   width: 328,
                   height: 61,
 
-                  padding: EdgeInsets.all(2),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -156,17 +156,17 @@ class _MembershipState extends State<MembershipPage> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: Colors.grey.withOpacity(1),
                           spreadRadius: 2,
-                          blurRadius: 4,
+                          blurRadius: 6,
                           offset: Offset(0, 3),
                         ),
                       ]), // Adjust padding as needed
                   child: Row(
                     children: <Widget>[
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       Text.rich(
                         TextSpan(
                           text: 'Professinal Member\n',
@@ -191,34 +191,23 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 133),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: isNetworkMemberSelected1
-                              ? Colors.red
-                              : Colors
-                                  .transparent, // Change the color to red when checked
-                          border: Border.all(
-                              color: Colors
-                                  .black), // Add a border for the checkbox
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isNetworkMemberSelected = false;
-                              // Toggle the checkbox value
-                              isNetworkMemberSelected1 =
-                                  !isNetworkMemberSelected1;
-                              isNetworkMemberSelected2 = false;
-                            });
-                            // Handle checkbox state change here
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                          ),
-                        ),
-                      )
+                      Spacer(),
+                      Checkbox(
+                        value: isNetworkMemberSelected1,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isNetworkMemberSelected = false;
+                            isNetworkMemberSelected1 =
+                                !isNetworkMemberSelected1;
+                            isNetworkMemberSelected2 = false;
+                          });
+                          // Handle checkbox state change here
+                        },
+                        activeColor:
+                            Colors.blue, // Change the color to red when checked
+                        checkColor:
+                            Colors.white, // Change the color of the checkmark
+                      ),
                     ],
                   ),
                 ),
@@ -226,7 +215,7 @@ class _MembershipState extends State<MembershipPage> {
                 Container(
                   width: 328,
                   height: 61,
-                  padding: EdgeInsets.all(2),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -236,17 +225,17 @@ class _MembershipState extends State<MembershipPage> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: Colors.grey.withOpacity(1),
                           spreadRadius: 2,
-                          blurRadius: 4,
+                          blurRadius: 6,
                           offset: Offset(0, 3),
                         ),
                       ]),
                   child: Row(
                     children: <Widget>[
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       Text.rich(
                         TextSpan(
                           text: 'Corporate Member\n',
@@ -271,38 +260,58 @@ class _MembershipState extends State<MembershipPage> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(width: 142),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: isNetworkMemberSelected2
-                              ? Colors.red
-                              : Colors
-                                  .transparent, // Change the color to red when checked
-                          border: Border.all(
-                              color: Colors
-                                  .black), // Add a border for the checkbox
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isNetworkMemberSelected = false;
-                              // Toggle the checkbox value
-                              isNetworkMemberSelected1 = false;
-
-                              isNetworkMemberSelected2 =
-                                  !isNetworkMemberSelected2;
-                            });
-                            // Handle checkbox state change here
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                          ),
-                        ),
-                      )
+                      Spacer(),
+                      Checkbox(
+                        value: isNetworkMemberSelected2,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isNetworkMemberSelected = false;
+                            isNetworkMemberSelected1 = false;
+                            isNetworkMemberSelected2 =
+                                !isNetworkMemberSelected2;
+                          });
+                          // Handle checkbox state change here
+                        },
+                        activeColor:
+                            Colors.blue, // Change the color to red when checked
+                        checkColor:
+                            Colors.white, // Change the color of the checkmark
+                      ),
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: isAnyCheckboxSelected()
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MembershipPage1()),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: Colors.red,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 11,
+                      ),
+                    ),
+                    child: Text(
+                      "PROCEED",
+                      style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        height: 20 / 16,
+                      ),
+                      textAlign: TextAlign.left,
+                    )),
               ],
             ),
           ],

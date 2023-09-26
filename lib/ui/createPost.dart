@@ -9,7 +9,6 @@ import 'package:hra/custom/fab_bottom_app_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hra/ui/newsFeedPage/NewsFeed.dart';
 import 'package:hra/ui/profilePage/profile.dart';
-import 'package:hra/ui/createPost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +16,7 @@ import 'dart:math';
 import 'package:hra/ui/discoverPage.dart';
 import 'package:hra/ui/notifications.dart';
 import 'dart:io';
+import 'package:hra/ui/home.dart';
 // import 'package:hra/common-services/services.dart';
 
 class createPage extends StatefulWidget {
@@ -240,7 +240,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
         });
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => NewsFeed()));
+            context, MaterialPageRoute(builder: (context) => HomePage(index: 1)));
       } else {
         print('Post request failed');
       }

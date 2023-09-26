@@ -162,10 +162,8 @@ Widget feedNewsCardWithImageItem(
                         Uri.parse(feed.bannerImg)),
                     looping: false,
                     autoplay: true)
-                : Image.network(
-                    feed.bannerImg != ''
-                        ? feed.bannerImg
-                        : 'https://res.cloudinary.com/hire-easy/image/upload/v1659026436/media/images/WhatsApp_Image_2022-07-26_at_6.45.36_PM_xs9x6b.jpg',
+                : feed.bannerImg != '' ? Image.network(
+                    feed.bannerImg,
                     fit: BoxFit.cover,
                     height: 180,
                     width: double.infinity,
@@ -198,7 +196,7 @@ Widget feedNewsCardWithImageItem(
                         ),
                       );
                     },
-                  ),
+                  ) : Container(),
 
             space15(),
             // shows location
