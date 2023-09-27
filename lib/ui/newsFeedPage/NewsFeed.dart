@@ -179,8 +179,6 @@ class _NewsFeedState extends State<NewsFeed> {
   Future<void> initializeData() async {
     await getUser();
     fetchPosts();
-    print("profile picture is: ");
-    print(profile_picture);
   }
 
   @override

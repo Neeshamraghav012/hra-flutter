@@ -23,6 +23,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
   bool isloading = false;
   bool isuploading = false;
   String userId = "";
+  bool isdeleting = false;
+  String username = "";
 
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,6 +32,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
 
     setState(() {
       userId = id;
+      username = prefs.getString('username') ?? "";
     });
 
     return id;
@@ -115,7 +118,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
       print(jsonData);
       if (jsonData['status']) {
         Feed latestcomment = Feed(
-            feedId: " ",
+            feedId: jsonData['data']['uuid'],
             type: 1,
             title: comment,
             description: " ",
@@ -227,8 +230,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
           color: Colors.black,
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(
-                context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -240,7 +242,8 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                feedNewsCardWithImageItem(context, widget.feed, userId, widget.feed.likes),
+                feedNewsCardWithImageItem(
+                    context, widget.feed, userId, widget.feed.likes),
                 topSpace(),
 
                 _buildMessageComposer(widget.feed.feedId),
@@ -265,7 +268,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                               children: <Widget>[
                                 topSpace(),
                                 const SizedBox(height: 30),
-                                othersComment(context, feedItem),
+                                othersComment(context, feedItem, username),
                               ],
                             );
                           },

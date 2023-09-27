@@ -11,7 +11,7 @@ Widget linearProgressIndicator() {
   );
 }
 
-Widget othersComment(BuildContext context, Feed feed) {
+Widget othersComment(BuildContext context, Feed feed, String username) {
   return Container(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -35,7 +35,7 @@ Widget othersComment(BuildContext context, Feed feed) {
               child: Column(
                 children: <Widget>[
                   usernameSectionWithoutAvatar(
-                      context, feed.name == " " ? "User" : feed.name),
+                      context, feed.name == " " ? "User" : feed.name, feed, username),
                   space15(),
                   Align(
                     alignment: Alignment.topLeft,
@@ -64,9 +64,7 @@ Widget othersComment(BuildContext context, Feed feed) {
 }
 
 
-
-
-Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
+Widget usernameSectionWithoutAvatar(BuildContext context, String username, Feed feed, String user) {
   return Row(
     children: <Widget>[
       Expanded(
@@ -93,7 +91,7 @@ Widget usernameSectionWithoutAvatar(BuildContext context, String username) {
                 )
               ],
             ),
-            // moreOptions3Dots(context),
+            username == user || username == "You" ? moreOptions3Dots(context, feed) : Container(),
           ],
         ),
       )

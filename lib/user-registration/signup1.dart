@@ -337,6 +337,7 @@ class _SignupPage1State extends State<SignupPage1> {
 
       final Map<String, dynamic> requestBody = {
         "image_input": {
+          "file_type": "image",
           "base64_image_string": base64Image,
           "image_name": filename,
           "document_type": "documents"

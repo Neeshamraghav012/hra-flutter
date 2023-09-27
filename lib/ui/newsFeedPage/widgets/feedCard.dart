@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:hra/home.dart';
+import 'package:hra/ui/home.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:share/share.dart';
@@ -93,7 +95,6 @@ Widget likeCommentShare(
                         duration: Duration(seconds: 2),
                       ),
                     );
-
                   } else {
                     if (await LikeButtonTapped(
                         user_id, listFeed.feedId, isLiked, listFeed, liked)) {
@@ -248,11 +249,11 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
   );
 }
 
-Widget moreOptions3Dots(BuildContext context) {
+Widget moreOptions3Dots(BuildContext context, Feed feed) {
   return GestureDetector(
     // Just For Demo, Doesn't Work As Needed
-    onTap: () =>
-        _onCenterBottomMenuOn3DotsPressed(context), //_showPopupMenu(context),
+    onTap: () => _onCenterBottomMenuOn3DotsPressed(
+        context, feed), //_showPopupMenu(context),
     child: Container(
       child: Icon(FontAwesomeIcons.ellipsisV, size: 18),
     ),
@@ -279,23 +280,22 @@ Widget renderCategoryTime(Feed listFeed) {
   );
 }
 
-_onCenterBottomMenuOn3DotsPressed(BuildContext context) {
+_onCenterBottomMenuOn3DotsPressed(BuildContext context, Feed feed) {
   showModalBottomSheet(
       context: context,
       builder: (context) {
         return Container(
           color: Color(0xFF737373),
-          child: _buildBottomNavMenu(context),
+          child: _buildBottomNavMenu(context, feed),
         );
       });
 }
 
-Widget _buildBottomNavMenu(BuildContext context) {
+Widget _buildBottomNavMenu(BuildContext context, Feed feed) {
   List<Menu3DotsModel> listMore = [];
-  listMore.add(Menu3DotsModel(
-      'I don\'t want to see this', '', Icons.visibility_off_outlined));
+  listMore.add(Menu3DotsModel('Delete post', '', Icons.delete));
 
-  listMore.add(Menu3DotsModel('Report Post', '', Icons.flag_outlined));
+  // listMore.add(Menu3DotsModel('Report Post', '', Icons.flag_outlined));
 
   /*
   listMore.add(Menu3DotsModel(
@@ -303,6 +303,103 @@ Widget _buildBottomNavMenu(BuildContext context) {
 
   listMore.add(Menu3DotsModel(
       'Copy <Post type> link', 'See fewer posts like this', Icons.insert_link));*/
+
+  Future<void> deleteComment(String feedId) async {
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/delete_comment?comment_id=$feedId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData['status']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Comment deleted'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(index: 1,)),
+        );
+        // Delete the comment from the given index
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Something went wrong.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Something went wrong.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    return;
+  }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('Are you sure you want to delete?'),
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 110,
+                      height: 30,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                        ),
+                        child: Text('Cancel'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      width: 110,
+                      height: 30, // Add some spacing between the buttons
+                      child: ElevatedButton(
+                        onPressed: () {
+                          deleteComment(feed.feedId);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red, // Set the background color
+                        ),
+                        child: Text('Delete'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   return Container(
     height: 120,
@@ -321,6 +418,9 @@ Widget _buildBottomNavMenu(BuildContext context) {
               listMore[index].title,
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
+            onTap: () {
+              _showConfirmationDialog(context);
+            },
             subtitle: Text(listMore[index].subtitle),
             leading: Icon(
               listMore[index].icons,

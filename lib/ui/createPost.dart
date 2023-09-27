@@ -32,7 +32,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
   String caption = "";
   String image_url = "";
   XFile? uploadedContent;
-  String uploadedContentType= "";
+  String uploadedContentType = "";
   String userId = "";
   String error = "";
 
@@ -112,6 +112,7 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
       uploadedContentType = "Image";
     });
   }
+
   Future<void> chooseVideoFromGallery() async {
     var choosedMedia = await picker.pickVideo(source: ImageSource.gallery);
     print("video selected");
@@ -130,47 +131,63 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
       List<int> contentBytes = File(content!.path).readAsBytesSync();
 
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('https://api.cloudinary.com/v1_1/hire-easy/upload'),
-      );
+      String base64Image = base64Encode(contentBytes);
 
-      String filename = generateRandomName();
+      Map<String, dynamic> body = {};
 
-      request.fields['upload_preset'] = 'cyberbolt';
-      if(uploadedContentType == "Image") {
+      if (uploadedContentType == "Image") {
+        String randomName = generateRandomName();
 
+        String filename = '$randomName.jpg';
 
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'file',
-            contentBytes,
-            filename: '${filename}.jpg',
-            contentType: MediaType('image', 'jpg'),
-          ),
-        );
-      }
-      else{
+        final Map<String, dynamic> requestBody = {
+          "image_input": {
+            "file_type": "image",
+            "base64_image_string": base64Image,
+            "image_name": filename,
+            "document_type": "Posts"
+          }
+        };
+
+        setState(() {
+          body = requestBody;
+        });
+      } else {
         print("video upload");
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'file',
-            contentBytes,
-            filename: '${filename}.mp4',
-            contentType: MediaType('video', 'mp4'),
-          ),
-        );
-      }
-      final response = await request.send();
-      final responseString = await response.stream.bytesToString();
 
-      final jsonResponse = json.decode(responseString);
+        String randomName = generateRandomName();
+
+        String filename = '$randomName.mp4';
+
+        final Map<String, dynamic> requestBody = {
+          "image_input": {
+            "file_type": "video",
+            "base64_image_string": base64Image,
+            "image_name": filename,
+            "document_type": "Videos"
+          }
+        };
+
+        setState(() {
+          body = requestBody;
+        });
+      }
+
+      print(body);
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/admin/api/file-upload-base64'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(body),
+      );
+      final jsonResponse = json.decode(response.body);
 
       print(jsonResponse);
 
       if (response.statusCode == 200) {
         setState(() {
-          image_url = jsonResponse['secure_url'];
+          image_url = jsonResponse['data'];
         });
         print('File uploaded successfully');
       } else {
@@ -239,8 +256,8 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
           isUploading = false;
         });
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage(index: 1)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HomePage(index: 1)));
       } else {
         print('Post request failed');
       }
@@ -259,10 +276,10 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
     super.initState();
 
     bottomMenuItems.add(new MenuModel('Camera', 'camera', Icons.camera));
-    bottomMenuItems
-        .add(new MenuModel('Upload Photo from Gallery', 'scan_photo', Icons.browse_gallery));
-    bottomMenuItems
-        .add(new MenuModel('Upload video from Gallery', 'scan_video', Icons.video_library_outlined));
+    bottomMenuItems.add(new MenuModel(
+        'Upload Photo from Gallery', 'scan_photo', Icons.browse_gallery));
+    bottomMenuItems.add(new MenuModel('Upload video from Gallery', 'scan_video',
+        Icons.video_library_outlined));
     bottomMenuItems.add(new MenuModel('Take Video', 'video', Icons.video_call));
 
     // bottomMenuItems.add(new MenuModel('Add Location', '', Icons.location_city));
@@ -394,11 +411,18 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                             padding: EdgeInsets.all(6.0),
                             child: AspectRatio(
                               aspectRatio: 16 / 8,
-                              child: uploadedContentType=="Image"?Image.file(
-                                File(uploadedContent!.path),
-                                fit: BoxFit.cover,
-                                height: 200,
-                              ):VideoItems(videoPlayerController: VideoPlayerController.file(File(uploadedContent!.path)), looping: true, autoplay: true),
+                              child: uploadedContentType == "Image"
+                                  ? Image.file(
+                                      File(uploadedContent!.path),
+                                      fit: BoxFit.cover,
+                                      height: 200,
+                                    )
+                                  : VideoItems(
+                                      videoPlayerController:
+                                          VideoPlayerController.file(
+                                              File(uploadedContent!.path)),
+                                      looping: true,
+                                      autoplay: true),
                             ),
                           ),
                         )
@@ -457,14 +481,11 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
                                               .subtitle ==
                                           'scan_photo') {
                                         choosePhotoFromGallery();
-                                      }
-                                      else if (bottomMenuItems[index]
-                                          .subtitle ==
+                                      } else if (bottomMenuItems[index]
+                                              .subtitle ==
                                           'scan_video') {
                                         chooseVideoFromGallery();
-                                      }
-
-                                      else {
+                                      } else {
                                         chooseVideoFromCamera();
                                       }
                                       debugPrint(bottomMenuItems[index].title);
