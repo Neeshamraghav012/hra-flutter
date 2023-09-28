@@ -76,6 +76,7 @@ bool liked = false;
 
 Widget likeCommentShare(
     BuildContext context, Feed listFeed, String user_id, bool isLiked) {
+
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,6 +105,8 @@ Widget likeCommentShare(
                           duration: Duration(seconds: 2),
                         ),
                       );
+
+
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

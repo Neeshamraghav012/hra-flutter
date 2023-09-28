@@ -220,6 +220,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
       );
     }
 
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -243,7 +244,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 feedNewsCardWithImageItem(
-                    context, widget.feed, userId, widget.feed.likes),
+                    context, widget.feed, userId, widget.feed.likes, ),
                 topSpace(),
 
                 _buildMessageComposer(widget.feed.feedId),

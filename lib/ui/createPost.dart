@@ -16,6 +16,7 @@ import 'dart:math';
 import 'package:hra/ui/discoverPage.dart';
 import 'package:hra/ui/notifications.dart';
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:hra/ui/home.dart';
 // import 'package:hra/common-services/services.dart';
 
@@ -83,9 +84,32 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
   Future<void> choosePhotoFromCamera() async {
     var choosedimage = await picker.pickImage(source: ImageSource.camera);
-
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: choosedimage!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Edit your image',
+            toolbarColor: Colors.red,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+        WebUiSettings(
+          context: context,
+        ),
+      ],
+    );
     setState(() {
-      uploadedContent = choosedimage;
+      uploadedContent = XFile(croppedFile!.path);
       uploadedContentType = "Image";
     });
   }
@@ -106,9 +130,33 @@ class _createPageState extends State<createPage> with TickerProviderStateMixin {
 
   Future<void> choosePhotoFromGallery() async {
     var choosedMedia = await picker.pickImage(source: ImageSource.gallery);
-    print(choosedMedia?.name);
+
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: choosedMedia!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Edit your image',
+            toolbarColor: Colors.red,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+        WebUiSettings(
+          context: context,
+        ),
+      ],
+    );
     setState(() {
-      uploadedContent = choosedMedia;
+      uploadedContent = XFile(croppedFile!.path);
       uploadedContentType = "Image";
     });
   }
