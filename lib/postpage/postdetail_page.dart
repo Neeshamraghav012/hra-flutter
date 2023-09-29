@@ -220,6 +220,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
       );
     }
 
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

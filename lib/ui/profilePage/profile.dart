@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage>
   String userId = "";
   String username = "";
 
+
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
