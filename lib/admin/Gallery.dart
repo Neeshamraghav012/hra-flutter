@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hra/admin/gallary-image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -51,13 +53,13 @@ class _GalleryState extends State<GalleryPage> {
           },
         ),
         actions: [
-          Container(
+         /* Container(
             margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20,
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(
@@ -93,13 +95,23 @@ class _GalleryState extends State<GalleryPage> {
                       .length, // Assuming you have 15 images in your gallery
                   itemBuilder: (context, index) {
                     // Replace 'images/image_$index.jpg' with your actual image paths
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        //borderRadius: BorderRadius.circular(10.0),
-                        image: DecorationImage(
-                          image: AssetImage('images/' + imgs[index] + '.jpg'),
-                          fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GalleryImagePage(image: imgs[index],)),
+                          
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          //borderRadius: BorderRadius.circular(10.0),
+                          image: DecorationImage(
+                            image: AssetImage('images/' + imgs[index] + '.jpg'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );

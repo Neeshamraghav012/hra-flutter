@@ -33,13 +33,13 @@ class _NetworkPageMembersState extends State<NetworkMembersPage> {
           },
         ),
         actions: [
-          Container(
+          /*Container(
             margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20,
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(

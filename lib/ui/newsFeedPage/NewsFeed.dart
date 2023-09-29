@@ -185,7 +185,6 @@ class _NewsFeedState extends State<NewsFeed> {
   void initState() {
     super.initState();
     initializeData();
-
   }
 
   @override
@@ -200,9 +199,21 @@ class _NewsFeedState extends State<NewsFeed> {
           Padding(
             padding:
                 EdgeInsets.only(right: 24), // Adjust the left padding as needed
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              backgroundImage: NetworkImage(profile_picture),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            index: 3,
+                          )),
+                  (route) => false,
+                );
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                backgroundImage: NetworkImage(profile_picture),
+              ),
             ),
           )
         ],
@@ -231,9 +242,21 @@ class _NewsFeedState extends State<NewsFeed> {
                         style: TextStyle(color: Colors.black),
                       ),
                       currentAccountPictureSize: Size.square(50),
-                      currentAccountPicture: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: NetworkImage(profile_picture),
+                      currentAccountPicture: GestureDetector(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      index: 3,
+                                    )),
+                            (route) => false,
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: NetworkImage(profile_picture),
+                        ),
                       ), //circleAvatar
                     ), //UserAccountDrawerHeader
                   ),
@@ -247,7 +270,10 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage(index: 1,)),
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            index: 1,
+                          )),
                   (route) => false,
                 );
               },
@@ -260,7 +286,10 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage(index: 3,)),
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            index: 3,
+                          )),
                   (route) => false,
                 );
               },
@@ -305,7 +334,7 @@ class _NewsFeedState extends State<NewsFeed> {
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
               leading: const Icon(Icons.image),
-              title: const Text(' Images '),
+              title: const Text(' Gallary '),
               onTap: () {
                 Navigator.push(
                   context,
@@ -349,7 +378,7 @@ class _NewsFeedState extends State<NewsFeed> {
                 );
               },
             ),
-
+            /*
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
               leading: const Icon(Icons.help),
@@ -357,7 +386,7 @@ class _NewsFeedState extends State<NewsFeed> {
               onTap: () {
                 Navigator.pop(context);
               },
-            ),
+            ),*/
 
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -408,7 +437,7 @@ class _NewsFeedState extends State<NewsFeed> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     feedNewsCardWithImageItem(context, feedItem,
-                                        userId, feedItem.likes),
+                                        userId, feedItem.likes, username),
                                     topSpace(),
                                   ],
                                 ),

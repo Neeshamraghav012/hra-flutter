@@ -148,13 +148,13 @@ class _ArtState extends State<ArticlesPage> {
           },
         ),
         actions: [
-          Container(
+          /*Container(
             margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20,
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(

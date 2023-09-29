@@ -150,7 +150,7 @@ class _SignupPageState extends State<SignupPage> {
   String? user_type;
   String user_type_id = "2";
   String? team_size;
-  String? core_buisness;
+  String? core_business;
   String establishment_date = "";
   String password = "";
   String error = "";
@@ -161,6 +161,8 @@ class _SignupPageState extends State<SignupPage> {
   List speciality_list = [];
   List region_list = [];
   List selected_speciality = [];
+  List selected_business = [];
+  List core_business_list = ["Primary", "Secondary", "Lease"];
 
   Future<void> saveData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -178,7 +180,7 @@ class _SignupPageState extends State<SignupPage> {
     await prefs.setString("region", region!);
     await prefs.setString("user_type", user_type!);
     await prefs.setString("team_size", team_size!);
-    await prefs.setString("core_buisness", core_buisness!);
+    await prefs.setString("core_business", core_business!);
     await prefs.setString("establishment_date", establishment_date);
   }
 
@@ -197,7 +199,7 @@ class _SignupPageState extends State<SignupPage> {
     region = prefs.getString("region");
     user_type = prefs.getString("user_type");
     team_size = prefs.getString("team_size");
-    core_buisness = prefs.getString("core_buisness");
+    core_business = prefs.getString("core_business");
     establishment_date = prefs.getString("establishment_date")!;
   }
 
@@ -280,7 +282,7 @@ class _SignupPageState extends State<SignupPage> {
       'region': region_id,
       'user_type': user_type_id,
       'team_size': team_size,
-      'core_buisness': core_buisness,
+      'core_business': core_business,
       'establishment_date': establishment_date,
       'password': password,
     };
@@ -817,107 +819,7 @@ class _SignupPageState extends State<SignupPage> {
                             ]),
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Column(children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 5, bottom: 5, top: 5),
-                                  child: Text(
-                                    'Speciality',
-                                    style: TextStyle(
-                                      color: Color(0xFF312E49),
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: Color.fromRGBO(245, 251, 252, 1),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(2),
-                                  child: MultiSelectDialogField(
-                                      chipDisplay:
-                                          MultiSelectChipDisplay.none(),
-                                      buttonText: Text(
-                                        "Select",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color.fromARGB(
-                                                255, 120, 118, 118)),
-                                      ),
-                                      items: speciality_list
-                                          .map((e) => MultiSelectItem(e, e))
-                                          .toList(),
-                                      decoration: BoxDecoration(),
-                                      listType: MultiSelectListType.CHIP,
-                                      buttonIcon: Icon(
-                                        Icons.keyboard_arrow_down,
-                                        color: Color.fromARGB(255, 88, 87, 87),
-                                      ),
-                                      onSelectionChanged: (p0) => {
-                                            setState(() {
-                                              selected_speciality = p0;
-                                            })
-                                          },
-                                      onConfirm: (values) {
-                                        print(values);
-                                        setState(() {
-                                          selected_speciality = values;
-                                          speciality =
-                                              speciality_map[values.first];
-                                        });
-                                      }),
-                                ),
-                              )
-                            ]),
-                          ),
-                        ),
                       ],
-                    ),
-                    Visibility(
-                      visible: selected_speciality
-                          .isNotEmpty, // Hide if selected_speciality is empty
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 4, bottom: 4),
-                            child: Text(
-                              'Selected Specialties are:',
-                              style: TextStyle(
-                                fontSize: 14, // adjust the font size
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
-                            child: Wrap(
-                              spacing: 6.0, // Adjust spacing between chips
-                              runSpacing:
-                                  6.0, // Adjust spacing between rows of chips
-                              children: selected_speciality.map((category) {
-                                return Chip(
-                                  label: Text(category),
-                                  backgroundColor: Color(0xFF376F92),
-                                  labelStyle: TextStyle(color: Colors.white),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
@@ -1261,36 +1163,46 @@ class _SignupPageState extends State<SignupPage> {
                                             BorderRadius.circular(10.0),
                                         color: Color.fromRGBO(245, 251, 252, 1),
                                       ),
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 8),
-                                          border: InputBorder.none,
-                                          hintText: 'Business type',
-                                        ),
-                                        value: core_buisness,
-                                        icon: const Icon(
-                                            Icons.keyboard_arrow_down),
-                                        isExpanded: true,
-                                        items: <String>[
-                                          "Primary",
-                                          "Secondary",
-                                          "Lease",
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(
-                                              value,
-                                              style: TextStyle(fontSize: 16),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2),
+                                        child: MultiSelectDialogField(
+                                            chipDisplay:
+                                                MultiSelectChipDisplay.none(),
+                                            buttonText: Text(
+                                              "Select",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color.fromARGB(
+                                                      255, 120, 118, 118)),
                                             ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            core_buisness = newValue!;
-                                          });
-                                        },
+                                            items: core_business_list
+                                                .map((e) =>
+                                                    MultiSelectItem(e, e))
+                                                .toList(),
+                                            decoration: BoxDecoration(),
+                                            listType: MultiSelectListType.CHIP,
+                                            buttonIcon: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Color.fromARGB(
+                                                  255, 88, 87, 87),
+                                            ),
+                                            onSelectionChanged: (p0) => {
+                                                  setState(() {
+                                                    selected_business = p0;
+                                                  })
+                                                },
+                                            onConfirm: (values) {
+                                              print(values);
+
+                                              setState(() {
+                                                selected_business = values;
+                                                core_business =
+                                                    selected_business
+                                                        .join(', ');
+                                              });
+                                              print('core business is: ');
+                                              print(core_business);
+                                            }),
                                       ),
                                     ),
                                   ]),
@@ -1299,6 +1211,136 @@ class _SignupPageState extends State<SignupPage> {
                             ],
                           )
                         : Text(''),
+                    Visibility(
+                      visible: selected_business
+                          .isNotEmpty, // Hide if selected_business is empty
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 4, bottom: 4),
+                            child: Text(
+                              'Selected business are:',
+                              style: TextStyle(
+                                fontSize: 14, // adjust the font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: Wrap(
+                              spacing: 6.0, // Adjust spacing between chips
+                              runSpacing:
+                                  6.0, // Adjust spacing between rows of chips
+                              children: selected_business.map((category) {
+                                return Chip(
+                                  label: Text(category),
+                                  backgroundColor: Color(0xFF376F92),
+                                  labelStyle: TextStyle(color: Colors.white),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 5, bottom: 5, top: 5),
+                            child: Text(
+                              'Speciality',
+                              style: TextStyle(
+                                color: Color(0xFF312E49),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Color.fromRGBO(245, 251, 252, 1),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(2),
+                            child: MultiSelectDialogField(
+                                chipDisplay: MultiSelectChipDisplay.none(),
+                                buttonText: Text(
+                                  "Select",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color:
+                                          Color.fromARGB(255, 120, 118, 118)),
+                                ),
+                                items: speciality_list
+                                    .map((e) => MultiSelectItem(e, e))
+                                    .toList(),
+                                decoration: BoxDecoration(),
+                                listType: MultiSelectListType.CHIP,
+                                buttonIcon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: Color.fromARGB(255, 88, 87, 87),
+                                ),
+                                onSelectionChanged: (p0) => {
+                                      setState(() {
+                                        selected_speciality = p0;
+                                      })
+                                    },
+                                onConfirm: (values) {
+                                  print(values);
+                                  setState(() {
+                                    selected_speciality = values;
+                                    speciality = speciality_map[values.first];
+                                  });
+                                }),
+                          ),
+                        )
+                      ]),
+                    ),
+                    Visibility(
+                      visible: selected_speciality
+                          .isNotEmpty, // Hide if selected_speciality is empty
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 4, bottom: 4),
+                            child: Text(
+                              'Selected Specialties are:',
+                              style: TextStyle(
+                                fontSize: 14, // adjust the font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: Wrap(
+                              spacing: 6.0, // Adjust spacing between chips
+                              runSpacing:
+                                  6.0, // Adjust spacing between rows of chips
+                              children: selected_speciality.map((category) {
+                                return Chip(
+                                  label: Text(category),
+                                  backgroundColor: Color(0xFF376F92),
+                                  labelStyle: TextStyle(color: Colors.white),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(

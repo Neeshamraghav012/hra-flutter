@@ -202,7 +202,7 @@ Widget setLocation(Feed listFeed) {
   );
 }
 
-Widget userAvatarSection(BuildContext context, Feed listFeed) {
+Widget userAvatarSection(BuildContext context, Feed listFeed, String user) {
   return Row(
     children: <Widget>[
       Expanded(
@@ -213,7 +213,9 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
               children: <Widget>[
                 CircleAvatar(
                     backgroundColor: Colors.grey,
-                    child: ClipOval(child: Image.asset('images/icon.png')),
+                    child: listFeed.avatarImg != ''
+                        ? ClipOval(child: Image.network(listFeed.avatarImg))
+                        : ClipOval(child: Image.asset('images/icon.png')),
                     radius: 20),
                 SizedBox(width: 10),
                 Column(
@@ -241,7 +243,8 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
                 )
               ],
             ),
-            // moreOptions3Dots(context),
+            listFeed.name == user ? moreOptions3Dots(context, listFeed, "post") : Container(),
+            // moreOptions3Dots(context, listFeed, "post"),
           ],
         ),
       )
@@ -249,11 +252,11 @@ Widget userAvatarSection(BuildContext context, Feed listFeed) {
   );
 }
 
-Widget moreOptions3Dots(BuildContext context, Feed feed) {
+Widget moreOptions3Dots(BuildContext context, Feed feed, String parent) {
   return GestureDetector(
     // Just For Demo, Doesn't Work As Needed
     onTap: () => _onCenterBottomMenuOn3DotsPressed(
-        context, feed), //_showPopupMenu(context),
+        context, feed, parent), //_showPopupMenu(context),
     child: Container(
       child: Icon(FontAwesomeIcons.ellipsisV, size: 18),
     ),
@@ -280,20 +283,21 @@ Widget renderCategoryTime(Feed listFeed) {
   );
 }
 
-_onCenterBottomMenuOn3DotsPressed(BuildContext context, Feed feed) {
+_onCenterBottomMenuOn3DotsPressed(
+    BuildContext context, Feed feed, String parent) {
   showModalBottomSheet(
       context: context,
       builder: (context) {
         return Container(
           color: Color(0xFF737373),
-          child: _buildBottomNavMenu(context, feed),
+          child: _buildBottomNavMenu(context, feed, parent),
         );
       });
 }
 
-Widget _buildBottomNavMenu(BuildContext context, Feed feed) {
+Widget _buildBottomNavMenu(BuildContext context, Feed feed, String parent) {
   List<Menu3DotsModel> listMore = [];
-  listMore.add(Menu3DotsModel('Delete post', '', Icons.delete));
+  listMore.add(Menu3DotsModel('Delete $parent', '', Icons.delete));
 
   // listMore.add(Menu3DotsModel('Report Post', '', Icons.flag_outlined));
 
@@ -323,7 +327,10 @@ Widget _buildBottomNavMenu(BuildContext context, Feed feed) {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(index: 1,)),
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    index: 1,
+                  )),
         );
         // Delete the comment from the given index
       } else {
@@ -332,6 +339,61 @@ Widget _buildBottomNavMenu(BuildContext context, Feed feed) {
             content: Text('Something went wrong.'),
             duration: Duration(seconds: 2),
           ),
+        );
+      }
+
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Something went wrong.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    return;
+  }
+
+  Future<void> deletePost(String feedId) async {
+    print("Delete post called");
+    final response = await http.get(
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/delete-post?post_id=$feedId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData['status']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Post deleted'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    index: 1,
+                  )),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Something went wrong.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    index: 1,
+                  )),
         );
       }
 
@@ -383,7 +445,11 @@ Widget _buildBottomNavMenu(BuildContext context, Feed feed) {
                       height: 30, // Add some spacing between the buttons
                       child: ElevatedButton(
                         onPressed: () {
-                          deleteComment(feed.feedId);
+                          if (parent == 'comment') {
+                            deleteComment(feed.feedId);
+                          } else {
+                            deletePost(feed.feedId);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.red, // Set the background color

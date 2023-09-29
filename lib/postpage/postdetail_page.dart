@@ -243,7 +243,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 feedNewsCardWithImageItem(
-                    context, widget.feed, userId, widget.feed.likes),
+                    context, widget.feed, userId, widget.feed.likes, username),
                 topSpace(),
 
                 _buildMessageComposer(widget.feed.feedId),

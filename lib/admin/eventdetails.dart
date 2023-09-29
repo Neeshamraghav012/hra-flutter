@@ -39,14 +39,14 @@ class _EventState extends State<EventDetailsPage> {
           },
         ),
         actions: [
-          Container(
+          /*Container(
             margin: EdgeInsets.all(8.0), // Adjust margin as needed
             child: CircleAvatar(
               backgroundImage:
                   NetworkImage(eventBlock.eventList[widget.eventId].bannerImg),
               radius: 20, // Adjust the radius to control the size of the circle
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(

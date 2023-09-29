@@ -37,13 +37,13 @@ class _EventListState extends State<EventListPage> {
           },
         ),
         actions: [
-          Container(
+          /*Container(
             margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20,
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(

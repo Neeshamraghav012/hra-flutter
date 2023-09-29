@@ -133,7 +133,7 @@ Widget topSpace() {
 }
 
 Widget feedNewsCardWithImageItem(
-    BuildContext context, Feed feed, String user_id, bool likes) {
+    BuildContext context, Feed feed, String user_id, bool likes, String username) {
   return Container(
     decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -148,7 +148,7 @@ Widget feedNewsCardWithImageItem(
           children: <Widget>[
             // renderCategoryTime(feed),
             space10(),
-            userAvatarSection(context, feed),
+            userAvatarSection(context, feed, username),
             space15(),
 
             space15(),

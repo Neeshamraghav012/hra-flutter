@@ -23,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage>
   late TabController _tabController;
   late TabController _followersTabController;
   String userId = "";
+  String username = "";
 
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     setState(() {
       userId = id;
+      username = prefs.getString("username") ?? "";
     });
 
     return id;
@@ -302,7 +304,6 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Container(
         color: Colors.white,
         child: Column(
@@ -520,14 +521,13 @@ class _ProfilePageState extends State<ProfilePage>
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
                                                                           .start,
-                                                                  children: <
-                                                                      Widget>[
+                                                                  children: <Widget>[
                                                                     feedNewsCardWithImageItem(
                                                                         context,
                                                                         feedItem,
                                                                         userId,
                                                                         feedItem
-                                                                            .likes),
+                                                                            .likes, username),
                                                                     topSpace(),
                                                                   ],
                                                                 ),
@@ -623,14 +623,13 @@ class _ProfilePageState extends State<ProfilePage>
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
                                                                           .start,
-                                                                  children: <
-                                                                      Widget>[
+                                                                  children: <Widget>[
                                                                     feedNewsCardWithImageItem(
                                                                         context,
                                                                         feedItem,
                                                                         userId,
                                                                         feedItem
-                                                                            .likes),
+                                                                            .likes, username),
                                                                     topSpace(),
                                                                   ],
                                                                 ),

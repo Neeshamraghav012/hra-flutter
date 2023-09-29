@@ -33,13 +33,13 @@ class _TrainState extends State<TrainPage> {
           },
         ),
         actions: [
-          Container(
+         /* Container(
             margin: EdgeInsets.all(8.0), // Adjust margin as needed
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20, // Adjust the radius to control the size of the circle
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(

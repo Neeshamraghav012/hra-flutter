@@ -19,7 +19,7 @@ Widget othersComment(BuildContext context, Feed feed, String username) {
       children: <Widget>[
         CircleAvatar(
             backgroundColor: Colors.grey,
-            child: ClipOval(child: Image.asset('images/icon.png')),
+            child: feed.avatarImg != '' ? ClipOval(child: Image.network(feed.avatarImg)) : ClipOval(child: Image.asset('images/icon.png')),
             radius: 20),
         SizedBox(width: 20),
         Expanded(
@@ -91,7 +91,7 @@ Widget usernameSectionWithoutAvatar(BuildContext context, String username, Feed 
                 )
               ],
             ),
-            username == user || username == "You" ? moreOptions3Dots(context, feed) : Container(),
+            username == user || username == "You" ? moreOptions3Dots(context, feed, "comment") : Container(),
           ],
         ),
       )

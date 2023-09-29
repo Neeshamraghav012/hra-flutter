@@ -154,7 +154,7 @@ class _DiscoverState extends State<DiscoverPage> {
                   itemBuilder: (context, index) {
                     final peopleItem = peopleData[index];
                     return Follow(
-                        peopleItem['username'], peopleItem['user_id'], index);
+                        peopleItem['username'], peopleItem['user_id'], index, peopleItem['avatarImg']);
                   },
                 ),
         ],
@@ -162,7 +162,7 @@ class _DiscoverState extends State<DiscoverPage> {
     );
   }
 
-  Center Follow(String username, String user_id, int index) {
+  Center Follow(String username, String user_id, int index, String avatarImg) {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 14, left: 5, right: 17),
@@ -189,7 +189,7 @@ class _DiscoverState extends State<DiscoverPage> {
                     height: 48,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("images/icon.png"),
+                        image: NetworkImage(avatarImg),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -235,37 +235,38 @@ class _DiscoverState extends State<DiscoverPage> {
               child: Padding(
                 padding: EdgeInsets.only(right: 0),
                 child: ElevatedButton(
-                        onPressed: () {
-                          var snackdemo = SnackBar(
-                            content: Text("You started following $username"),
-                            backgroundColor: Colors.green,
-                            elevation: 10,
-                            behavior: SnackBarBehavior.floating,
-                            margin: EdgeInsets.all(5),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackdemo);
-                          follow(user_id, index);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: Colors.red,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 1,
-                            vertical: 5,
-                          ),
-                        ),
-                        child: Text(
-                          "Follow +",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.left,
-                        )),
+                  onPressed: () {
+                    var snackdemo = SnackBar(
+                      content: Text("You started following $username"),
+                      backgroundColor: Colors.green,
+                      elevation: 10,
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.all(5),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+                    follow(user_id, index);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Colors.red,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 1,
+                      vertical: 5,
+                    ),
+                  ),
+                  child: Text(
+                    "Follow +",
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
               ),
             ),
             // ),
