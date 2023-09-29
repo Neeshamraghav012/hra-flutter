@@ -173,7 +173,8 @@ Widget likeCommentShare(
         onTap: () {
           print('Share Tapped');
           // Handle sharing the post here
-          Share.share('https://www.onfocussoft.com');
+          // Share.share('https://www.onfocussoft.com');
+          Share.shareFiles([listFeed.bannerImg], text: listFeed.description);
         },
         child: Icon(FontAwesomeIcons.shareAlt, size: 18),
       ),
