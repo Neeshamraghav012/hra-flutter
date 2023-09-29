@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hra/common-services/services.dart';
 // import 'package:hra/home.dart';
 import 'package:hra/ui/home.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/postpage/postdetail_page.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:like_button/like_button.dart';
 import 'package:http/http.dart' as http;
@@ -170,11 +174,15 @@ Widget likeCommentShare(
         ),
       ),
       GestureDetector(
-        onTap: () {
+        onTap: () async {
           print('Share Tapped');
           // Handle sharing the post here
           // Share.share('https://www.onfocussoft.com');
-          Share.shareFiles([listFeed.bannerImg], text: listFeed.description);
+          final imagedata  = await http.get(Uri.parse(listFeed.bannerImg));
+          final directory = await getApplicationDocumentsDirectory();
+          String imagepath = '${directory.path}/${(listFeed.bannerImg.split("/")[listFeed.bannerImg.split("/").length - 1])}';
+          await File(imagepath).writeAsBytes(imagedata.bodyBytes);;
+          await Share.shareFiles([imagepath], text: listFeed.bannerImg);
         },
         child: Icon(FontAwesomeIcons.shareAlt, size: 18),
       ),
