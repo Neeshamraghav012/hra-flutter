@@ -22,6 +22,8 @@ import 'package:hra/ui/videoItem.dart';
 import 'package:hra/ui/newsFeedPage/widgets/feedCard.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -400,11 +402,17 @@ class _NewsFeedState extends State<NewsFeed> {
           ),
         ),
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             print('Share Tapped');
             // Handle sharing the post here
             // Share.share('https://www.onfocussoft.com');
-            Share.shareFiles([listFeed.bannerImg], text: listFeed.description);
+            final imagedata = await http.get(Uri.parse(listFeed.bannerImg));
+            final directory = await getApplicationDocumentsDirectory();
+            String imagepath =
+                '${directory.path}/${(listFeed.bannerImg.split("/")[listFeed.bannerImg.split("/").length - 1])}';
+            await File(imagepath).writeAsBytes(imagedata.bodyBytes);
+            ;
+            await Share.shareFiles([imagepath], text: listFeed.bannerImg);
           },
           child: Icon(FontAwesomeIcons.shareAlt, size: 18),
         ),
