@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hra/ui/profilePage/user-profile.dart';
 
 class FollowingTab extends StatefulWidget {
   @override
@@ -38,7 +39,8 @@ class _FollowingTabState extends State<FollowingTab> {
       loading = true;
     });
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/socialmedia/api/following?user_id=$userId'),
+      Uri.parse(
+          '${AppConfig.apiUrl}/socialmedia/api/following?user_id=$userId'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -74,7 +76,7 @@ class _FollowingTabState extends State<FollowingTab> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         children: [
           Padding(
@@ -87,46 +89,42 @@ class _FollowingTabState extends State<FollowingTab> {
                   fontSize: height * 0.025),
             ),
           ),
-          /*Padding(
-            padding: const EdgeInsets.only(top: 13, left: 4, right: 17),
-            child: Container(
-              width: 369,
-              height: 38,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
-          ),*/
           loading
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : Center(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: peopleData.length,
-                    itemBuilder: (context, index) {
-                      final peopleItem = peopleData[index];
-                      return Follow(
-                          peopleItem['username'], peopleItem['user_id'], index);
-                    },
-                  ),
-                ),
+              : peopleData.isEmpty
+                  ? Center(
+                      child: Text("No followers yet."),
+                    )
+                  : Column(
+                      children: [
+                        for (int i = 0; i < peopleData.length; i++)
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserProfile(
+                                    user_id: peopleData[i]['user_id'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Follow(
+                                peopleData[i]['username'],
+                                peopleData[i]['user_id'],
+                                i,
+                                peopleData[i]['avatarImg']),
+                          ),
+                      ],
+                    ),
         ],
       ),
     );
   }
 
-  Center Follow(String username, String user_id, int index) {
+  Center Follow(String username, String user_id, int index, String avatarImg) {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 14, left: 5, right: 17),
@@ -153,7 +151,9 @@ class _FollowingTabState extends State<FollowingTab> {
                     height: 48,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("images/icon.png"),
+                        image: avatarImg.isEmpty
+                            ? AssetImage('images/icon.png')
+                            : NetworkImage(avatarImg) as ImageProvider,
                         fit: BoxFit.fill,
                       ),
                     ),

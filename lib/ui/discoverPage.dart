@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hra/ui/profilePage/user-profile.dart';
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -98,7 +99,6 @@ class _DiscoverState extends State<DiscoverPage> {
 
   @override
   void initState() {
-    print("hello");
     super.initState();
     initializeData();
   }
@@ -153,8 +153,21 @@ class _DiscoverState extends State<DiscoverPage> {
                   itemCount: peopleData.length,
                   itemBuilder: (context, index) {
                     final peopleItem = peopleData[index];
-                    return Follow(
-                        peopleItem['username'], peopleItem['user_id'], index, peopleItem['avatarImg']);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserProfile(
+                                      user_id: peopleItem['user_id'],
+                                    )));
+                      },
+                      child: Follow(
+                          peopleItem['username'],
+                          peopleItem['user_id'],
+                          index,
+                          peopleItem['avatarImg']),
+                    );
                   },
                 ),
         ],

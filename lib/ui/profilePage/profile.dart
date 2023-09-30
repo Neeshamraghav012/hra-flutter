@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:hra/ui/profilePage/followersTab.dart';
 import 'package:hra/ui/profilePage/followingTab.dart';
@@ -12,6 +10,7 @@ import 'package:hra/ui/newsFeedPage/widgets/feedBloc.dart';
 import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hra/ui/profilePage/user-profile.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -24,15 +23,17 @@ class _ProfilePageState extends State<ProfilePage>
   late TabController _followersTabController;
   String userId = "";
   String username = "";
-
+  String profile_picture = '';
 
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("userId") ?? "";
+    String profile = prefs.getString("profilePicture") ?? "";
 
     setState(() {
       userId = id;
       username = prefs.getString("username") ?? "";
+      profile_picture = profile;
     });
 
     return id;
@@ -325,18 +326,31 @@ class _ProfilePageState extends State<ProfilePage>
                   padding: EdgeInsets.only(top: 140),
                   child: Align(
                     alignment: Alignment.center,
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('images/profile.png'),
-                          fit: BoxFit.fill,
-                        ),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Color(0xFFF7F7F7),
-                          width: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserProfile(
+                                      user_id: userId,
+                                    )));
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: profile_picture.isNotEmpty
+                                ? NetworkImage(profile_picture)
+                                : AssetImage('images/profile.png')
+                                    as ImageProvider,
+                            fit: BoxFit.fill,
+                          ),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Color(0xFFF7F7F7),
+                            width: 1,
+                          ),
                         ),
                       ),
                     ),
@@ -528,7 +542,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                                         feedItem,
                                                                         userId,
                                                                         feedItem
-                                                                            .likes, username),
+                                                                            .likes,
+                                                                        username),
                                                                     topSpace(),
                                                                   ],
                                                                 ),
@@ -630,7 +645,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                                         feedItem,
                                                                         userId,
                                                                         feedItem
-                                                                            .likes, username),
+                                                                            .likes,
+                                                                        username),
                                                                     topSpace(),
                                                                   ],
                                                                 ),
@@ -647,7 +663,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                   FollowersTab(),
-                  FollowingTab()
+                  FollowingTab(),
                 ],
               ),
             )
