@@ -125,6 +125,7 @@ class _DiscoverState extends State<DiscoverPage> {
       ),
       body: Column(
         children: [
+          /*
           Padding(
             padding: const EdgeInsets.only(top: 13, left: 4, right: 17),
             child: Container(
@@ -142,33 +143,37 @@ class _DiscoverState extends State<DiscoverPage> {
                 ),
               ),
             ),
-          ),
+          ),*/
           loading
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: peopleData.length,
-                  itemBuilder: (context, index) {
-                    final peopleItem = peopleData[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserProfile(
-                                      user_id: peopleItem['user_id'],
-                                    )));
-                      },
-                      child: Follow(
-                          peopleItem['username'],
-                          peopleItem['user_id'],
-                          index,
-                          peopleItem['avatarImg']),
-                    );
-                  },
+              : Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        for (int index = 0; index < peopleData.length; index++)
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserProfile(
+                                    user_id: peopleData[index]['user_id'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Follow(
+                              peopleData[index]['username'],
+                              peopleData[index]['user_id'],
+                              index,
+                              peopleData[index]['avatarImg'],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
         ],
       ),
@@ -215,7 +220,8 @@ class _DiscoverState extends State<DiscoverPage> {
                   children: [
                     Text.rich(
                       TextSpan(
-                        text: "$username\n",
+                        text:
+                            "${username.length <= 15 ? username : username.substring(0, 15) + '...'}\n",
                         style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 14,
@@ -230,7 +236,6 @@ class _DiscoverState extends State<DiscoverPage> {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff000000),
-                              //height: 20 / 14,
                             ),
                           ),
                         ],

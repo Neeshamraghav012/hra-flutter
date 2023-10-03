@@ -100,8 +100,8 @@ Widget banner() {
     width: double.infinity,
     height: 100,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(4.0),
-      border: Border.all(color: Colors.grey, width: 0.5),
+      borderRadius: BorderRadius.circular(8.0),
+      // border: Border.all(color: Colors.grey, width: 0.5),
     ),
     child: ClipRRect(
       borderRadius: BorderRadius.circular(4.0),

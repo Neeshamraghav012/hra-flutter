@@ -36,6 +36,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
   String message = "";
   bool liked = false;
   bool saved = false;
+  String profile_picture = "";
 
   Future<String> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -44,6 +45,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
     setState(() {
       userId = id;
       username = prefs.getString('username') ?? "";
+      profile_picture = prefs.getString('profilePicture') ?? "";
     });
 
     return id;
@@ -86,7 +88,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                   subcategory: ' ',
                   time: ' ',
                   name: data['username'],
-                  avatarImg: "",
+                  avatarImg: data["avatarImg"],
                   bannerImg: "",
                   location: ' ',
                   likes: true,
@@ -138,7 +140,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             subcategory: " ",
             time: " ",
             name: "You",
-            avatarImg: "",
+            avatarImg: profile_picture,
             bannerImg: "",
             location: " ",
             likes: false,
@@ -306,7 +308,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
                     }
                   },
                   icon: Icon(
-                    Icons.thumb_up_outlined,
+                    Icons.thumb_up,
                     color: isLiked || liked ? Color(0xFFFF4D4D) : Colors.black,
                   ),
                 ),
@@ -364,7 +366,7 @@ class _PostPageDetailsState extends State<PostPageDetails> {
             }
           },
           child: Icon(
-            FontAwesomeIcons.bookmark,
+            FontAwesomeIcons.solidBookmark,
             size: 18,
             color: listFeed.isSaved || saved ? Color(0xFFFF4D4D) : Colors.black,
           ),

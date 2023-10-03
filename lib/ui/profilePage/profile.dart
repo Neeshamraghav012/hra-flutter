@@ -115,12 +115,17 @@ class _ProfilePageState extends State<ProfilePage>
       if (jsonData['status']) {
         // Extract image URLs from jsonData and add them to imageList
         final List<dynamic> data = jsonData['data'];
-        List<String> images =
-            data.map((item) => item['photo_url'] as String).toList();
+        List<String> images = data
+            .map((item) => item['photo_url'] as String)
+            .where((url) => url.isNotEmpty) // Filter out non-empty URLs
+            .toList();
 
         setState(() {
           imageList = images;
         });
+
+        print("image list is: ");
+        print(imageList);
       }
     } else {
       print('API request failed with status code: ${response.statusCode}');

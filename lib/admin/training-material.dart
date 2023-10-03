@@ -28,7 +28,7 @@ class _TrainState extends State<TrainPage> {
               child: pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: <pw.Widget>[
-                    pw.Text('Geeksforgeeks', textScaleFactor: 2),
+                    pw.Text('HRA', textScaleFactor: 2),
                   ])),
           pw.Header(level: 1, text: 'What is Lorem Ipsum?'),
           pw.Paragraph(
@@ -64,9 +64,14 @@ class _TrainState extends State<TrainPage> {
         "${directory?.path}/HRA_Article${DateTime.now().toString().replaceAll(" ", "-")}.pdf");
     if (await Permission.storage.request().isGranted) {
       await file.writeAsBytes(await pdf.save());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Article saved Successfully in ${file.path}"),
-      ));
+      var snackdemo = SnackBar(
+        content: Text("Training Material downloaded!"),
+        backgroundColor: Colors.green,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackdemo);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Permissione denied"),
@@ -124,7 +129,7 @@ class _TrainState extends State<TrainPage> {
                 width: 342,
                 height: 68,
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  // border: Border.all(),
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
                     image: AssetImage(
@@ -158,27 +163,29 @@ class _TrainState extends State<TrainPage> {
                                       downloading[index]
                                           ? CircularProgressIndicator()
                                           : GestureDetector(
-                                        onTap: () {
-                                          // Add your download functionality here
-                                          writeOnPdf(index);
-                                        },
-                                        child: Container(
-                                          width: 50, // Increase the width
-                                          height: 50, // Increase the height
-                                          child: Image.asset(
-                                            'images/dow.jpg',
-                                            fit: BoxFit
-                                                .cover, // You can use BoxFit to control how the image fits within the container
-                                          ),
-                                        ), // Replace with your image asset path
-                                      ),
+                                              onTap: () {
+                                                // Add your download functionality here
+                                                writeOnPdf(index);
+                                              },
+                                              child: Container(
+                                                width: 50, // Increase the width
+                                                height:
+                                                    50, // Increase the height
+                                                child: Image.asset(
+                                                  'images/dow.jpg',
+                                                  fit: BoxFit
+                                                      .cover, // You can use BoxFit to control how the image fits within the container
+                                                ),
+                                              ), // Replace with your image asset path
+                                            ),
                                       SizedBox(width: 20),
                                       Flexible(
                                         child: RichText(
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                text: "Guidance for Agent details\n\n",
+                                                text:
+                                                    "Guidance for Agent details\n\n",
                                                 style: const TextStyle(
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w600,
@@ -187,10 +194,10 @@ class _TrainState extends State<TrainPage> {
                                               ),
                                               TextSpan(
                                                 text:
-                                                "Real Estate Agents are essential element of Real Estate Sector, who connect Allottees...",
+                                                    "Real Estate Agents are essential element of Real Estate Sector, who connect Allottees...",
                                                 style: const TextStyle(
                                                   fontSize:
-                                                  9, // Change the font size for the remaining text
+                                                      9, // Change the font size for the remaining text
                                                   fontWeight: FontWeight
                                                       .w400, // Use a different font weight if needed
                                                   color: Colors.black,
@@ -209,7 +216,8 @@ class _TrainState extends State<TrainPage> {
                           ],
                         ),
                         Container(
-                          width: 340, // Adjust the width of the divider as needed
+                          width:
+                              340, // Adjust the width of the divider as needed
                           child: Divider(
                             color: Color.fromARGB(255, 156, 151, 151),
                             thickness: 0.0,
@@ -219,7 +227,6 @@ class _TrainState extends State<TrainPage> {
                     );
                   }),
             ),
-
 
             Column(
               children: [
@@ -231,7 +238,7 @@ class _TrainState extends State<TrainPage> {
                       width: 342,
                       height: 68, // Adjust the height as needed
                       decoration: BoxDecoration(
-                        border: Border.all(),
+                        // border: Border.all(),
                         borderRadius: BorderRadius.circular(10.0),
                         image: DecorationImage(
                           image: AssetImage('images/ad1.jpg'),

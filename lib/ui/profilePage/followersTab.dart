@@ -37,7 +37,8 @@ class _FollowersTabState extends State<FollowersTab> {
       isfollowing = true;
     });
     final response = await http.post(
-        Uri.parse('${AppConfig.apiUrl}/socialmedia/api/unfollow?user_id=$userId'),
+        Uri.parse(
+            '${AppConfig.apiUrl}/socialmedia/api/unfollow?user_id=$userId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "unfollow_input": {
@@ -108,51 +109,53 @@ class _FollowersTabState extends State<FollowersTab> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: height * 0.01),
-            child: Text(
-              'People you follow',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                  fontSize: height * 0.025),
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: height * 0.01),
+          child: Text(
+            'People you follow',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+                fontSize: height * 0.025),
           ),
-          loading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : peopleData.isEmpty
-                  ? Center(
-                      child: Text("No followings yet."),
-                    )
-                  : Column(
-                      children: [
-                        for (int i = 0; i < peopleData.length; i++)
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UserProfile(
-                                    user_id: peopleData[i]['user_id'],
+        ),
+        loading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : peopleData.isEmpty
+                ? Center(
+                    child: Text("No followings yet."),
+                  )
+                : Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                        children: [
+                          for (int i = 0; i < peopleData.length; i++)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserProfile(
+                                      user_id: peopleData[i]['user_id'],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: Follow(
-                                peopleData[i]['username'],
-                                peopleData[i]['user_id'],
-                                i,
-                                peopleData[i]['avatarImg']),
-                          ),
-                      ],
-                    ),
-        ],
-      ),
+                                );
+                              },
+                              child: Follow(
+                                  peopleData[i]['username'],
+                                  peopleData[i]['user_id'],
+                                  i,
+                                  peopleData[i]['avatarImg']),
+                            ),
+                        ],
+                      ),
+                  ),
+                ),
+      ],
     );
   }
 

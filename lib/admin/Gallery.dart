@@ -71,7 +71,7 @@ class _GalleryState extends State<GalleryPage> {
                 width: 342,
                 height: 68,
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  // border: Border.all(),
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
                     image: AssetImage('images/ad.jpg'),
@@ -129,7 +129,7 @@ class _GalleryState extends State<GalleryPage> {
                       width: 342,
                       height: 68, // Adjust the height as needed
                       decoration: BoxDecoration(
-                        border: Border.all(),
+                        // border: Border.all(),
                         borderRadius: BorderRadius.circular(10.0),
                         image: DecorationImage(
                           image: AssetImage('images/ad.jpg'),

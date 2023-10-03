@@ -76,51 +76,53 @@ class _FollowingTabState extends State<FollowingTab> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: height * 0.01),
-            child: Text(
-              'All followers',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                  fontSize: height * 0.025),
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: height * 0.01),
+          child: Text(
+            'All followers',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+                fontSize: height * 0.025),
           ),
-          loading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : peopleData.isEmpty
-                  ? Center(
-                      child: Text("No followers yet."),
-                    )
-                  : Column(
-                      children: [
-                        for (int i = 0; i < peopleData.length; i++)
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UserProfile(
-                                    user_id: peopleData[i]['user_id'],
+        ),
+        loading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : peopleData.isEmpty
+                ? Center(
+                    child: Text("No followers yet."),
+                  )
+                : Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < peopleData.length; i++)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserProfile(
+                                      user_id: peopleData[i]['user_id'],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: Follow(
-                                peopleData[i]['username'],
-                                peopleData[i]['user_id'],
-                                i,
-                                peopleData[i]['avatarImg']),
-                          ),
-                      ],
+                                );
+                              },
+                              child: Follow(
+                                  peopleData[i]['username'],
+                                  peopleData[i]['user_id'],
+                                  i,
+                                  peopleData[i]['avatarImg']),
+                            ),
+                        ],
+                      ),
                     ),
-        ],
-      ),
+                  ),
+      ],
     );
   }
 

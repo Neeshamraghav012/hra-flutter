@@ -46,15 +46,18 @@ class _NetworkPageMembersState extends State<NetworkMembersPage> {
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 68,
-              decoration: BoxDecoration(
-                border: Border.all(),
-                borderRadius: BorderRadius.circular(10.0),
-                image: DecorationImage(
-                  image: AssetImage('images/ad.jpg'),
-                  fit: BoxFit.cover,
+            Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Container(
+                width: double.infinity,
+                height: 68,
+                decoration: BoxDecoration(
+                  // border: Border.all(),
+                  borderRadius: BorderRadius.circular(10.0),
+                  image: DecorationImage(
+                    image: AssetImage('images/ad.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -69,15 +72,18 @@ class _NetworkPageMembersState extends State<NetworkMembersPage> {
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 68,
-              decoration: BoxDecoration(
-                border: Border.all(),
-                borderRadius: BorderRadius.circular(10.0),
-                image: DecorationImage(
-                  image: AssetImage('images/ad.jpg'),
-                  fit: BoxFit.cover,
+            Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Container(
+                width: double.infinity,
+                height: 68,
+                decoration: BoxDecoration(
+                  // border: Border.all(),
+                  borderRadius: BorderRadius.circular(10.0),
+                  image: DecorationImage(
+                    image: AssetImage('images/ad.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

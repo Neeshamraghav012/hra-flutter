@@ -338,8 +338,9 @@ class _NewsFeedState extends State<NewsFeed> {
                     }
                   },
                   icon: Icon(
-                    Icons.thumb_up_outlined,
+                    Icons.thumb_up,
                     color: isLiked || liked ? Color(0xFFFF4D4D) : Colors.black,
+                    
                   ),
                 ),
               ),
@@ -396,7 +397,7 @@ class _NewsFeedState extends State<NewsFeed> {
             }
           },
           child: Icon(
-            FontAwesomeIcons.bookmark,
+            FontAwesomeIcons.solidBookmark,
             size: 18,
             color: listFeed.isSaved || saved ? Color(0xFFFF4D4D) : Colors.black,
           ),
@@ -553,7 +554,7 @@ class _NewsFeedState extends State<NewsFeed> {
               },
               child: CircleAvatar(
                 backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(profile_picture),
+                backgroundImage: profile_picture.isEmpty ? AssetImage('images/profile.png') : NetworkImage(profile_picture) as ImageProvider,
               ),
             ),
           )
@@ -596,7 +597,7 @@ class _NewsFeedState extends State<NewsFeed> {
                         },
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
-                          backgroundImage: NetworkImage(profile_picture),
+                          backgroundImage: profile_picture.isEmpty ? AssetImage('images/profile.png') : NetworkImage(profile_picture) as ImageProvider,
                         ),
                       ), //circleAvatar
                     ), //UserAccountDrawerHeader
@@ -675,7 +676,7 @@ class _NewsFeedState extends State<NewsFeed> {
             ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -4),
               leading: const Icon(Icons.image),
-              title: const Text(' Gallary '),
+              title: const Text(' Gallery '),
               onTap: () {
                 Navigator.push(
                   context,

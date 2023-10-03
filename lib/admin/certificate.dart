@@ -5,13 +5,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
+
 class CertificatePage extends StatefulWidget {
   @override
   State<CertificatePage> createState() => _CertificateState();
 }
 
 class _CertificateState extends State<CertificatePage> {
-  Map<String, bool> downloading = {"IdCard":false, "MembershipCertificate":false};
+  Map<String, bool> downloading = {
+    "IdCard": false,
+    "MembershipCertificate": false
+  };
   Future<void> writeOnPdf(index) async {
     setState(() {
       downloading[index] = true;
@@ -32,7 +36,7 @@ class _CertificateState extends State<CertificatePage> {
           pw.Header(level: 1, text: 'What is Lorem Ipsum?'),
           pw.Paragraph(
               text:
-              '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                  '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                   tempor incididunt ut labore et dolore magna aliqua. Nunc mi ipsum faucibus
                   vitae aliquet nec. Nibh cras pulvinar mattis nunc sed blandit libero
                   volutpat Vitae elementum curabitur vitae nunc sed velit. Nibh tellus
@@ -57,16 +61,20 @@ class _CertificateState extends State<CertificatePage> {
       },
     ));
 
-
     final directory = await getExternalStorageDirectory();
 
     final file = File(
         "${directory?.path}/HRA_${index}${DateTime.now().toString().replaceAll(" ", "-")}.pdf");
     if (await Permission.storage.request().isGranted) {
       await file.writeAsBytes(await pdf.save());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Article saved Successfully in ${file.path}"),
-      ));
+      var snackdemo = SnackBar(
+        content: Text("Certificate downloaded successfully!"),
+        backgroundColor: Colors.green,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackdemo);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Permissione denied"),
@@ -143,8 +151,8 @@ class _CertificateState extends State<CertificatePage> {
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Container(
-                      width: width*0.85,
-                      height: height*0.07,
+                      width: width * 0.85,
+                      height: height * 0.07,
                       decoration: BoxDecoration(
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(5.0),
@@ -177,8 +185,9 @@ class _CertificateState extends State<CertificatePage> {
                                 // Add your download functionality here
                                 writeOnPdf("IdCard");
                               },
-                              child: downloading["IdCard"]==false?Image.asset(
-                                  'images/download.jpg'):CircularProgressIndicator(), // Replace with your image asset path
+                              child: downloading["IdCard"] == false
+                                  ? Image.asset('images/download.jpg')
+                                  : CircularProgressIndicator(), // Replace with your image asset path
                             ),
                           ],
                         ),
@@ -197,8 +206,8 @@ class _CertificateState extends State<CertificatePage> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                     child: Container(
-                      width: width*0.85,
-                      height: height*0.07,
+                      width: width * 0.85,
+                      height: height * 0.07,
                       decoration: BoxDecoration(
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(5.0),
@@ -231,8 +240,10 @@ class _CertificateState extends State<CertificatePage> {
                                 // Add your download functionality here
                                 writeOnPdf("MembershipCertificate");
                               },
-                              child: downloading["MembershipCertificate"]==false?Image.asset(
-                                  'images/download.jpg'):CircularProgressIndicator(), // Replace with your image asset path
+                              child: downloading["MembershipCertificate"] ==
+                                      false
+                                  ? Image.asset('images/download.jpg')
+                                  : CircularProgressIndicator(), // Replace with your image asset path
                             ),
                           ],
                         ),

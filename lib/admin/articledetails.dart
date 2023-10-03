@@ -22,8 +22,7 @@ class _Art1State extends State<ArticleDetailsPage> {
   final ArticleBloc articleBloc = ArticleBloc();
   bool downloading = false;
 
-
-  Future<void> writeOnPdf() async {
+  Future<void> writeOnPdf(String title, String details) async {
     setState(() {
       downloading = true;
     });
@@ -38,36 +37,14 @@ class _Art1State extends State<ArticleDetailsPage> {
               child: pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: <pw.Widget>[
-                    pw.Text('Geeksforgeeks', textScaleFactor: 2),
+                    pw.Text('HRA', textScaleFactor: 2),
                   ])),
-          pw.Header(level: 1, text: 'What is Lorem Ipsum?'),
+          pw.Header(level: 1, text: title),
           pw.Paragraph(
-              text:
-                  '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Nunc mi ipsum faucibus
-                  vitae aliquet nec. Nibh cras pulvinar mattis nunc sed blandit libero
-                  volutpat Vitae elementum curabitur vitae nunc sed velit. Nibh tellus
-                  molestie nunc non blandit massa. Bibendum enim facilisis gravida neque.
-                  Arcu cursus euismod quis viverra nibh cras pulvinar mattis. Enim diam
-                  vulputate ut pharetra sit. Tellus pellentesque eu tincidunt tortor
-                  aliquam nulla facilisi cras fermentum. ''',
-              style: pw.TextStyle(font: pw.Font.symbol())),
-          pw.Header(level: 1, text: 'This is Header'),
-          pw.Padding(padding: const pw.EdgeInsets.all(10)),
-          pw.Table.fromTextArray(
-            context: context,
-            data: const <List<String>>[
-              <String>['Year', 'Sample'],
-              <String>['SN0', 'GFG1'],
-              <String>['SN1', 'GFG2'],
-              <String>['SN2', 'GFG3'],
-              <String>['SN3', 'GFG4'],
-            ],
-          ),
+              text: details, style: pw.TextStyle(font: pw.Font.symbol())),
         ];
       },
     ));
-
 
     final directory = await getExternalStorageDirectory();
 
@@ -75,9 +52,14 @@ class _Art1State extends State<ArticleDetailsPage> {
         "${directory?.path}/HRA_Article${DateTime.now().toString().replaceAll(" ", "-")}.pdf");
     if (await Permission.storage.request().isGranted) {
       await file.writeAsBytes(await pdf.save());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Article saved Successfully in ${file.path}"),
-      ));
+      var snackdemo = SnackBar(
+        content: Text("Article downloaded!"),
+        backgroundColor: Colors.green,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackdemo);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Permissione denied"),
@@ -127,13 +109,13 @@ class _Art1State extends State<ArticleDetailsPage> {
           },
         ),
         actions: [
-          Container(
+          /*Container(
             margin: EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/pp.jpg'),
               radius: 20,
             ),
-          ),
+          ),*/
         ],
       ),
       body: Padding(
@@ -195,8 +177,12 @@ class _Art1State extends State<ArticleDetailsPage> {
                           ? CircularProgressIndicator()
                           : IconButton(
                               onPressed: () {
-                                writeOnPdf();
-
+                                writeOnPdf(
+                                    articleBloc
+                                        .articleList[widget.articleId].title,
+                                    articleBloc.articleList[widget.articleId]
+                                        .description);
+                                /*
                                 var snackdemo = SnackBar(
                                   content: Text("Article downloaded!"),
                                   backgroundColor: Colors.green,
@@ -205,7 +191,7 @@ class _Art1State extends State<ArticleDetailsPage> {
                                   margin: EdgeInsets.all(5),
                                 );
                                 ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackdemo);
+                                    .showSnackBar(snackdemo);*/
                               },
                               icon: Icon(Icons.download),
                             ),

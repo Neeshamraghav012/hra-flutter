@@ -59,7 +59,7 @@ class _EventState extends State<EventDetailsPage> {
                 width: 342,
                 height: 68,
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  // border: Border.all(),
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
                     image: AssetImage(
