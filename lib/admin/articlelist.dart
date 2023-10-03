@@ -23,32 +23,21 @@ class ArticleCard extends StatelessWidget {
       width: 163,
       height: 200,
       margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0),
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.circular(10.0),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.5),
-      //       spreadRadius: 1,
-      //       blurRadius: 5,
-      //       offset: Offset(0, 3),
-      //     ),
-      //   ],
-      // ),
       child: GestureDetector(
         onTap: onPressed, // Trigger the callback when the card is tapped
         child: Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
+              // borderRadius: BorderRadius.circular(10.0),
+              ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10.0),
-                  topRight: Radius.circular(10.0),
-                ),
+                // borderRadius: BorderRadius.only(
+                //   topLeft: Radius.circular(10.0),
+                //   topRight: Radius.circular(10.0),
+                // ),
                 child: GestureDetector(
                   onTap:
                       onPressed, // Trigger the callback when the image is tapped
@@ -125,7 +114,6 @@ class _ArtState extends State<ArticlesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
           "Articles",
           style: const TextStyle(
@@ -147,6 +135,13 @@ class _ArtState extends State<ArticlesPage> {
             Navigator.pop(context);
           },
         ),
+        backgroundColor: Colors.white,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         actions: [
           /*Container(
             margin: EdgeInsets.all(8.0),
@@ -157,33 +152,59 @@ class _ArtState extends State<ArticlesPage> {
           ),*/
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: 10.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 cards in a row
-            childAspectRatio: 0.8, // You can adjust the aspect ratio as needed
+      backgroundColor: Colors.white,
+      body: Column(children: [
+        Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 8, right: 8),
+          //  child: Column(
+          // children: [
+          child: Center(
+            child: Container(
+              height: 68,
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(10.0),
+                image: DecorationImage(
+                  image: AssetImage(
+                      'images/adssss.jpg'), // Replace with your image path
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
-          itemCount: articleBloc.articleList.length,
-          itemBuilder: (context, index) {
-            Article article = articleBloc.articleList[index];
-            return ArticleCard(
-              imagePath: article.bannerImg,
-              title: article.title,
-              description: article.description,
-              date: article.date, // Use the date from your event data
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ArticleDetailsPage(articleId: index),
-                  ),
-                );
-              },
-            );
-          },
         ),
-      ),
+        // ],
+        // ),
+        SizedBox(height: 12),
+        Expanded(
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // 2 cards in a row
+              childAspectRatio:
+                  0.8, // You can adjust the aspect ratio as needed
+            ),
+            itemCount: articleBloc.articleList.length,
+            itemBuilder: (context, index) {
+              Article article = articleBloc.articleList[index];
+              return ArticleCard(
+                imagePath: article.bannerImg,
+                title: article.title,
+                description: article.description,
+                date: article.date, // Use the date from your event data
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ArticleDetailsPage(articleId: index),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ]),
     );
   }
 }

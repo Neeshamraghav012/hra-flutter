@@ -36,6 +36,12 @@ class _EventListState extends State<EventListPage> {
             Navigator.pop(context);
           },
         ),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         actions: [
           /*Container(
             margin: EdgeInsets.all(8.0),
@@ -47,10 +53,28 @@ class _EventListState extends State<EventListPage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: EdgeInsets.all(2),
         child: Column(
           children: [
-            // Use ListView.builder to build the EventCard widgets
+            Padding(
+              padding: EdgeInsets.only(top: 16.0, left: 8, right: 8),
+              // Use ListView.builder to build the EventCard widgets
+              child: Center(
+                child: Container(
+                  height: 68,
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(10.0),
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'images/adssss.jpg'), // Replace with your image path
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -104,59 +128,87 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+        // Add padding around the container
+        Container(
       width: 164,
-      padding: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            imagePath,
-            width: 164,
-            height: 133,
-          ),
-          SizedBox(height: 5),
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: "Inter",
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
+      // height: 233,
+      margin: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
+      // decoration: BoxDecoration(
+      //   border: Border.all(
+      //     color: Colors.black, // Specify the border color here
+      //     width: 1.0, // Specify the border width here
+      //   ),
+      // ),
+      // Trigger the callback when the card is tapped
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+            // borderRadius: BorderRadius.circular(10.0),
             ),
-            textAlign: TextAlign.left,
-          ),
-          SizedBox(height: 5),
-          Text(
-            subTitle,
-            style: TextStyle(
-              fontFamily: "Roboto",
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: Color(0xff3c4042),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Container(
+          // width: 164,
+          // height: 133,
+          ClipRRect(
+            child: Image.network(
+              imagePath,
+              fit: BoxFit.cover,
             ),
-            textAlign: TextAlign.left,
           ),
-          if (buttonLabel.isNotEmpty) SizedBox(height: 5),
+
+          SizedBox(height: 6),
           Container(
-            width: MediaQuery.of(context).size.width, // Adjust width as needed
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      10.0), // Adjust the radius as needed
+            padding: EdgeInsets.only(
+                left: 5.0), // Add left padding to the text and button container
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: "Inter",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10), // Adjust vertical padding as needed
-                child: Text(buttonLabel),
-              ),
+                SizedBox(height: 4),
+                Text(
+                  subTitle,
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff3c4042),
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                if (buttonLabel.isNotEmpty) SizedBox(height: 6),
+                Container(
+                  width: 145,
+                  height: 28, // Adjust width as needed
+                  child: ElevatedButton(
+                    onPressed: onPressed,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            10.0), // Adjust the radius as needed
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4), // Adjust vertical padding as needed
+                      child: Text(buttonLabel),
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
+          ),
+        ]),
       ),
     );
   }
