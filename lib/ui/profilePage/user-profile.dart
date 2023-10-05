@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 10, right: 20),
+            padding: EdgeInsets.only(top: 10, right: 30),
             child: Align(
               alignment: Alignment.topCenter,
               child: Text(
@@ -221,7 +221,7 @@ class _UserProfileState extends State<UserProfile>
   void initState() {
     super.initState();
     fetchUsers();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -233,12 +233,83 @@ class _UserProfileState extends State<UserProfile>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      // appBar: CustomAppBar(),
       body: Container(
         color: Colors.white,
         child: Column(
           children: [
-            Padding(
+            // User Avatar
+            Stack(
+              children: [
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFF4D4D),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 140),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: userData.profile_url!.isNotEmpty
+                                ? NetworkImage(userData.profile_url!)
+                                : AssetImage('images/profile.png')
+                                    as ImageProvider,
+                            fit: BoxFit.fill,
+                          ),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Color(0xFFF7F7F7),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 30),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      "Profile",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            /*Padding(
               padding: EdgeInsets.only(top: 10),
               child: Align(
                 alignment: Alignment.center,
@@ -261,9 +332,9 @@ class _UserProfileState extends State<UserProfile>
                   ),
                 ),
               ),
-            ),
+            ),*/
             DefaultTabController(
-              length: 2,
+              length: 3,
               child: Expanded(
                 child: Column(
                   children: <Widget>[
@@ -288,7 +359,7 @@ class _UserProfileState extends State<UserProfile>
                                     Tab(text: "Personal Info"),
                                     Tab(text: "Organisation"),
                                     // Tab(text: "Documents"),
-                                    // Tab(text: "References"),
+                                    Tab(text: "References"),
                                   ]),
                             ),
                           ),
@@ -378,6 +449,34 @@ class _UserProfileState extends State<UserProfile>
                                           label: "Core Business",
                                           val: userData.core_business!,
                                         )
+                                      : Container(),
+                                ]),
+                              ),
+
+                              // Reference Tab
+                              Container(
+                                child: Column(children: [
+                                  userData.ref_name != ''
+                                      ? Info(
+                                          label: "Reference name",
+                                          val: userData.ref_name)
+                                      : Container(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 40),
+                                            child: Center(
+                                                child: Text(
+                                                    "References are not provided.")),
+                                          ),
+                                        ),
+                                  userData.ref_phone != ''
+                                      ? Info(
+                                          label: "Reference contact number",
+                                          val: userData.ref_phone)
+                                      : Container(),
+                                  userData.ref_email != ''
+                                      ? Info(
+                                          label: "Reference Email",
+                                          val: userData.ref_email)
                                       : Container(),
                                 ]),
                               ),

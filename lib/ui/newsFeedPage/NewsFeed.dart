@@ -356,7 +356,7 @@ class _NewsFeedState extends State<NewsFeed> {
           child: Row(
             children: <Widget>[
               Icon(
-                FontAwesomeIcons.comment,
+                FontAwesomeIcons.solidComment,
                 size: 18,
               ),
               SizedBox(width: 5),

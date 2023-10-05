@@ -11,6 +11,7 @@ import 'package:hra/postpage/postdetail_page.dart';
 import 'package:hra/user-registration/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hra/ui/profilePage/user-profile.dart';
+import 'package:hra/ui/profilePage/edit-profile.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -332,33 +333,55 @@ class _ProfilePageState extends State<ProfilePage>
                   child: Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UserProfile(
-                                      user_id: userId,
-                                    )));
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: profile_picture.isNotEmpty
-                                ? NetworkImage(profile_picture)
-                                : AssetImage('images/profile.png')
-                                    as ImageProvider,
-                            fit: BoxFit.fill,
-                          ),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Color(0xFFF7F7F7),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                    ),
+                              builder: (context) => EditProfile(
+                                user_id: userId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: profile_picture.isNotEmpty
+                                      ? NetworkImage(profile_picture)
+                                      : AssetImage('images/profile.png')
+                                          as ImageProvider,
+                                  fit: BoxFit.fill,
+                                ),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Color(0xFFF7F7F7),
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                width: 30, // Adjust the size as needed
+                                height: 30, // Adjust the size as needed
+                                decoration: BoxDecoration(
+                                  color: Color(
+                                      0xFFFF4D4D), // Adjust the color as needed
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
                   ),
                 ),
               ],

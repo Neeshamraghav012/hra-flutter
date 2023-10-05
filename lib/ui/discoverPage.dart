@@ -207,7 +207,7 @@ class _DiscoverState extends State<DiscoverPage> {
                     height: 48,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(avatarImg),
+                        image: avatarImg.isEmpty ? AssetImage('images/profile.png') : NetworkImage(avatarImg) as ImageProvider,
                         fit: BoxFit.fill,
                       ),
                     ),

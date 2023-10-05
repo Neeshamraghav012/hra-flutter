@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Color(0xFFFF4D4D), // Set the background color
         ),
         child: AppBar(
-          title: Text('Login'),
+          title: Text(''),
           centerTitle: true,
           backgroundColor:
               Colors.transparent, // Make the app bar background transparent
@@ -45,41 +45,33 @@ class AppBarClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class LoginApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ResetPage(),
-    );
-  }
-}
-
 class ResetPage extends StatefulWidget {
+  final String user_id;
+
+  ResetPage({Key? key, required this.user_id}) : super(key: key);
   @override
   _ResetPageState createState() => _ResetPageState();
 }
 
 class _ResetPageState extends State<ResetPage> {
   String password = '';
-  String user_id = '';
   bool loading = false;
   bool status = false;
   String message = '';
   String id = '';
 
   Future<void> resetPassword() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     setState(() {
       loading = true;
-      user_id = prefs.getString("userId")!;
     });
-
     final response = await http.post(
         Uri.parse('${AppConfig.apiUrl}/user/api/reset_password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          "reset_password_input": {"user_id": user_id, "password": password}
+          "reset_password_input": {
+            "user_id": widget.user_id,
+            "password": password
+          }
         }));
 
     if (response.statusCode == 200) {
@@ -92,6 +84,14 @@ class _ResetPageState extends State<ResetPage> {
       });
 
       if (status) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+        setState(() {
+          loading = false;
+        });
+      } else {
         setState(() {
           loading = false;
         });
@@ -199,7 +199,7 @@ class _ResetPageState extends State<ResetPage> {
                           ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: message != null
+                      child: message.isNotEmpty
                           ? Text(
                               message,
                               style: TextStyle(
@@ -210,23 +210,6 @@ class _ResetPageState extends State<ResetPage> {
                             )
                           : Text(''),
                     ),
-                    status ? InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              Colors.blue, // Change the text color when clicked
-                        ),
-                      ),
-                    ) : Container(),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(

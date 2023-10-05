@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hra/config/app-config.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Color(0xFFFF4D4D),
         ),
         child: AppBar(
-          title: Text('HRA'),
+          title: Text(''),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -59,6 +58,7 @@ class _ForgotPageState extends State<ForgotPage> {
   int _counter = 15;
   String otp_message = '';
   bool reSendEmailStatus = false;
+  String forgotPasswordId = '';
 
   TextEditingController textController = TextEditingController();
 
@@ -98,7 +98,7 @@ class _ForgotPageState extends State<ForgotPage> {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-
+      print(jsonData['data']['user_id']);
       setState(() {
         status = jsonData['status'];
         message = jsonData['message'];
@@ -109,17 +109,27 @@ class _ForgotPageState extends State<ForgotPage> {
         setState(() {
           message = "Enter the OTP sent to your email.";
           otp_message = "Enter the OTP sent to your email.";
+          forgotPasswordId = jsonData['data']['user_id'];
+          loading = false;
         });
       }
     } else {
       setState(() {
         message = "Enter valid email.";
+        loading = false;
       });
       print('API request failed with status code: ${response.statusCode}');
     }
     setState(() {
       loading = false;
     });
+
+    if (forgotPasswordId.isEmpty) {
+      setState(() {
+        message = "Something went wrong. Please try again.";
+        loading = false;
+      });
+    }
   }
 
   void startTimer() {
@@ -135,6 +145,7 @@ class _ForgotPageState extends State<ForgotPage> {
       });
     });
   }
+
   Future<void> verifyOTP() async {
     setState(() {
       loading = true;
@@ -162,12 +173,16 @@ class _ForgotPageState extends State<ForgotPage> {
         });
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ResetPage()),
+          MaterialPageRoute(
+              builder: (context) => ResetPage(
+                    user_id: forgotPasswordId,
+                  )),
         );
       }
     } else {
       setState(() {
         message = "OTP is not valid.";
+        loading = false;
       });
       print('API request failed with status code: ${response.statusCode}');
     }
@@ -222,8 +237,8 @@ class _ForgotPageState extends State<ForgotPage> {
                             ),
                           )
                         : Column(
-                          children: [
-                            TextField(
+                            children: [
+                              TextField(
                                 controller: textController,
                                 onChanged: (value) => setState(() {
                                   otp = value;
@@ -235,34 +250,43 @@ class _ForgotPageState extends State<ForgotPage> {
                                   hintText: 'Enter OTP',
                                 ),
                               ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: InkWell(
-                                  onTap: (){
-                                    if(reSendEmailStatus==true)
-                                      {
-                                        sendOTP();
-                                        setState(() {
-                                          reSendEmailStatus = false;
-                                        });
-                                        startTimer();
-                                      }
-                                  },
-                                  child: reSendEmailStatus==true?Text("Resend Email?",style: TextStyle(color: Colors.blue),):Text("You can resend email in $_counter seconds",style: TextStyle(color: Colors.grey),),
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (reSendEmailStatus == true) {
+                                          sendOTP();
+                                          setState(() {
+                                            reSendEmailStatus = false;
+                                          });
+                                          startTimer();
+                                        }
+                                      },
+                                      child: reSendEmailStatus == true
+                                          ? Text(
+                                              "Resend Email?",
+                                              style:
+                                                  TextStyle(color: Colors.blue),
+                                            )
+                                          : Text(
+                                              "You can resend email in $_counter seconds",
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                    ),
+                                  )
+                                ],
                               )
-                            ],)
-                          ],
-                        ),
-   
+                            ],
+                          ),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: Center(
                         child: Text(
-                          message  ?? '',
+                          message ?? '',
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFFFF4D4D),

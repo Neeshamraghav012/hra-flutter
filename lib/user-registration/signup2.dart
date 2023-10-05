@@ -570,10 +570,7 @@ class _SignupPage2State extends State<SignupPage2> {
                           width: 180, // Set the width for the Submit button
                           height: 35, // Set the height for the Submit button
                           child: loading
-                              ? Padding(
-                                  padding: EdgeInsets.only(right: 5),
-                                  child: CircularProgressIndicator(),
-                                )
+                              ? Center(child: CircularProgressIndicator())
                               : ElevatedButton(
                                   onPressed: () {
                                     register();
