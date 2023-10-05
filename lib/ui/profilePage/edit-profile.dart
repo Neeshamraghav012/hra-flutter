@@ -167,8 +167,6 @@ class _EditProfileState extends State<EditProfile>
       speciality_list = jsonData['data']['speciality_list'];
       region_list = jsonData['data']['operating_list'];
 
-      print(speciality_list);
-
       List<String> names = speciality_list
           .where((item) => item['name'] != null)
           .map<String>((item) => item['name'])
@@ -201,9 +199,8 @@ class _EditProfileState extends State<EditProfile>
       });
 
       print(regionNames);
-    } else {
-      print('API request failed with status code:');
-    }
+      print(specialityNames);
+    } else {}
   }
 
   Future<void> saveUser() async {
@@ -257,21 +254,40 @@ class _EditProfileState extends State<EditProfile>
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       print(jsonData);
-      var snackdemo = SnackBar(
-        content: Text("Profile Updated Successfully"),
-        backgroundColor: Colors.green,
-        elevation: 10,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(5),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+
+      if (jsonData['status']) {
+        var snackdemo = SnackBar(
+          content: Text("Profile Updated Successfully"),
+          backgroundColor: Colors.green,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+
+        setState(() {
+          loading = false;
+        });
+        Navigator.pop(context);
+      } else {
+        var snackdemo = SnackBar(
+          content: Text("Something went wrong"),
+          backgroundColor: Colors.green,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+
+        setState(() {
+          loading = false;
+        });
+      }
 
       setState(() {
         loading = false;
       });
-      Navigator.pop(context);
     } else {
-      print('API request failed with status code:');
       setState(() {
         loading = false;
       });
@@ -337,11 +353,12 @@ class _EditProfileState extends State<EditProfile>
 
       setState(() {
         dateinput.text = userData.rera_exp!;
-        selected_region = userData.operating_region;
-        selected_speciality = userData.Speciality;
+        // selected_region = userData.operating_region;
+        // selected_speciality = userData.Speciality;
+        selected_region = "North";
+        selected_speciality = "Residential";
       });
     } else {
-      print('API request failed with status code:');
       setState(() {
         loading = false;
       });
@@ -747,8 +764,13 @@ class _EditProfileState extends State<EditProfile>
                                                   Icons.keyboard_arrow_down),
                                               value: selected_speciality,
                                               isExpanded: true,
-                                              items: specialityNames.map<
-                                                      DropdownMenuItem<String>>(
+                                              items: <String>[
+                                                'Residential',
+                                                'Investment Deals',
+                                                'Commercial',
+                                                'Pre-Leased',
+                                                'Land'
+                                              ].map<DropdownMenuItem<String>>(
                                                   (String value) {
                                                 return DropdownMenuItem<String>(
                                                   value: value,
@@ -765,7 +787,7 @@ class _EditProfileState extends State<EditProfile>
                                                       newValue!;
 
                                                   userData.Speciality =
-                                                      speciality_map[newValue!];
+                                                      speciality_map[newValue];
                                                 });
                                               },
                                             ),
@@ -865,11 +887,9 @@ class _EditProfileState extends State<EditProfile>
                                               );
 
                                               if (pickedDate != null) {
-                                                print(pickedDate);
                                                 String formattedDate =
                                                     DateFormat('yyyy-MM-dd')
                                                         .format(pickedDate);
-                                                print(formattedDate);
 
                                                 setState(() {
                                                   dateinput.text =
@@ -877,9 +897,7 @@ class _EditProfileState extends State<EditProfile>
                                                   userData.rera_exp =
                                                       formattedDate;
                                                 });
-                                              } else {
-                                                print("Date is not selected");
-                                              }
+                                              } else {}
                                             },
                                             // initialValue: userData.rera_exp,
                                           ),
@@ -917,11 +935,14 @@ class _EditProfileState extends State<EditProfile>
                                               ),
                                               icon: const Icon(
                                                   Icons.keyboard_arrow_down),
-                                              value:
-                                                  selected_region, // region_map[userData.operating_region],
+                                              value: selected_region,
                                               isExpanded: true,
-                                              items: regionNames.map<
-                                                      DropdownMenuItem<String>>(
+                                              items: <String>[
+                                                'North',
+                                                'South',
+                                                'East',
+                                                'West'
+                                              ].map<DropdownMenuItem<String>>(
                                                   (String value) {
                                                 return DropdownMenuItem<String>(
                                                   value: value,
