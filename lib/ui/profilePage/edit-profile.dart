@@ -382,10 +382,10 @@ class _EditProfileState extends State<EditProfile>
 
       setState(() {
         dateinput.text = userData.rera_exp!;
-        // selected_region = userData.operating_region;
-        // selected_speciality = userData.Speciality;
-        selected_region = userData.operating_region;
-        selected_speciality = userData.Speciality;
+        selected_region = "North";
+        selected_speciality = "Residential";
+        // selected_region = userData.operating_region!.toUpperCase();
+        // selected_speciality = userData.Speciality!.toUpperCase();
       });
     } else {
       setState(() {
@@ -397,9 +397,9 @@ class _EditProfileState extends State<EditProfile>
   @override
   void initState() {
     super.initState();
+    fetchValues();
     fetchUsers();
     _tabController = TabController(length: 4, vsync: this);
-    fetchValues();
   }
 
   @override
@@ -794,11 +794,11 @@ class _EditProfileState extends State<EditProfile>
                                               value: selected_speciality,
                                               isExpanded: true,
                                               items: <String>[
-                                                'Residential',
-                                                'Investment Deals',
-                                                'Commercial',
-                                                'Pre-Leased',
-                                                'Land'
+                                                "Residential",
+                                                "Investment Deals",
+                                                "Commercial",
+                                                "Pre-Leased",
+                                                "Land"
                                               ].map<DropdownMenuItem<String>>(
                                                   (String value) {
                                                 return DropdownMenuItem<String>(
@@ -967,10 +967,10 @@ class _EditProfileState extends State<EditProfile>
                                               value: selected_region,
                                               isExpanded: true,
                                               items: <String>[
-                                                'North',
-                                                'South',
-                                                'East',
-                                                'West'
+                                                "North",
+                                                "South",
+                                                "East",
+                                                "West"
                                               ].map<DropdownMenuItem<String>>(
                                                   (String value) {
                                                 return DropdownMenuItem<String>(
