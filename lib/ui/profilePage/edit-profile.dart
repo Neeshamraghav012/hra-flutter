@@ -236,7 +236,35 @@ class _EditProfileState extends State<EditProfile>
               "phone": userData.ref_phone
             }
           ],
-          "documents":[],
+          "documents": [
+            {
+              "user_id": widget.user_id,
+              "name": "Aadhar",
+              "document_number": userData.aadhar_number,
+              "document_path": userData.aadhar_url,
+              "document_type": "Aadhar",
+              "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+              "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+            },
+            {
+              "user_id": widget.user_id,
+              "name": "PAN",
+              "document_number": userData.pan_number,
+              "document_path": userData.pan_url,
+              "document_type": "PAN",
+              "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+              "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+            },
+            {
+              "user_id": widget.user_id,
+              "name": "RERA",
+              "document_number": userData.rera_number,
+              "document_path": userData.rera_url,
+              "document_type": "RERA",
+              "created_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a",
+              "updated_by": "6957752d-9c8e-41b5-b17d-17111c3ed06a"
+            }
+          ],
           "address": [
             {
               "user_id": widget.user_id,
