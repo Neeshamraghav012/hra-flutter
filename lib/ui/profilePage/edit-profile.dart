@@ -233,9 +233,10 @@ class _EditProfileState extends State<EditProfile>
               "user_id": widget.user_id,
               "name": userData.ref_name,
               "email": userData.ref_email,
-              "phone": userData.phone
+              "phone": userData.ref_phone
             }
           ],
+          "documents":[],
           "address": [
             {
               "user_id": widget.user_id,
@@ -355,8 +356,8 @@ class _EditProfileState extends State<EditProfile>
         dateinput.text = userData.rera_exp!;
         // selected_region = userData.operating_region;
         // selected_speciality = userData.Speciality;
-        selected_region = "North";
-        selected_speciality = "Residential";
+        selected_region = userData.operating_region;
+        selected_speciality = userData.Speciality;
       });
     } else {
       setState(() {
