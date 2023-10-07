@@ -42,7 +42,7 @@ dependencies:
   like_button:
   image_picker:
   http:
-  file_picker: ^5.2.11
+  file_picker: ^5.5.0
   dio: ^4.0.6
   intl:
   shared_preferences: ^2.2.1
