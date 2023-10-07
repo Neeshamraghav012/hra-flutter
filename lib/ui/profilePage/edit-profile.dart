@@ -207,9 +207,12 @@ class _EditProfileState extends State<EditProfile>
       print(specialityNames);
     } else {}
   }
+
   File? adhaarFile, panFile, reraFile;
   bool isUploading = false; // loader for file upload
-  Future<String?> uploadContent(File? content, String uploadedContentType) async {
+
+  Future<String?> uploadContent(
+      File? content, String uploadedContentType) async {
     try {
       setState(() {
         isUploading = true; // Set the loading indicator
@@ -231,27 +234,26 @@ class _EditProfileState extends State<EditProfile>
             "file_type": "image",
             "base64_image_string": base64Image,
             "image_name": filename,
-            "document_type": "Posts"
+            "document_type": "Documents"
           }
         };
 
         setState(() {
           body = requestBody;
         });
-      }
-      else {
-        print("pdf upload");
+      } else {
+        print("IMage upload");
 
         String randomName = generateRandomName();
 
-        String filename = '$randomName.pdf';
+        String filename = '$randomName.jpg';
 
         final Map<String, dynamic> requestBody = {
           "image_input": {
-            "file_type": "pdf",
+            "file_type": "image",
             "base64_image_string": base64Image,
             "image_name": filename,
-            "document_type": "Videos"
+            "document_type": "Documents"
           }
         };
 
@@ -277,7 +279,7 @@ class _EditProfileState extends State<EditProfile>
         setState(() {
           isUploading = false;
         });
-          return jsonResponse['data'];
+        return jsonResponse['data'];
       } else {
         setState(() {
           isUploading = false;
@@ -314,6 +316,8 @@ class _EditProfileState extends State<EditProfile>
     setState(() {
       loading = true;
     });
+    print("document data is: ");
+    print(userData.aadhar_url);
     final response = await http.post(
       Uri.parse('${AppConfig.apiUrl}/user/api/save-user-profile'),
       headers: {'Content-Type': 'application/json'},
@@ -434,6 +438,7 @@ class _EditProfileState extends State<EditProfile>
     setState(() {
       loading = true;
     });
+
     final response = await http.get(Uri.parse(
         '${AppConfig.apiUrl}/user/api/user-detail?user_id=${widget.user_id}'));
 
@@ -486,6 +491,9 @@ class _EditProfileState extends State<EditProfile>
             ref_phone: data['ref_contact']);
         loading = false;
       });
+
+      print("doc data is : ");
+      print(userData.aadhar_url);
 
       setState(() {
         dateinput.text = userData.rera_exp!;
@@ -1336,33 +1344,46 @@ class _EditProfileState extends State<EditProfile>
                                       child: TextFormField(
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
-                                        readOnly: userData.aadhar_number!.isNotEmpty,
+                                        // readOnly: userData.aadhar_number!.isNotEmpty,
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Please enter Aadhar Card';
+                                          } else if (value.length != 12) {
+                                            return 'Please enter valid Aadhar Card';
+                                          } else if (!RegExp(r'^[0-9]+$')
+                                              .hasMatch(value)) {
+                                            return 'Please enter valid Aadhar Card (numeric only)';
                                           }
+
                                           return null; // Return null if the input is valid
                                         },
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          labelText:
-                                              'Aadhar Card', // Remove the labelText from here
-
+                                          hintText: 'Enter your Aadhar Number',
                                           contentPadding: EdgeInsets.symmetric(
                                             vertical: 8.0,
                                             horizontal: 8,
                                           ),
                                         ),
                                         onChanged: (value) {
-                                            userData.aadhar_number = value;
-
+                                          userData.aadhar_number = value;
                                         },
                                         initialValue: userData.aadhar_number,
                                       ),
                                     ),
-                                     // Add some spacing between the container and text/icons
+                                    // Add some spacing between the container and text/icons
+                                    adhaarFile != null
+                                        ? Text(
+                                            adhaarFile!.path.split('/').last,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.red,
+                                            ),
+                                          )
+                                        : Container(),
                                     Padding(
-                                      padding:  EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment
                                             .spaceBetween, // Align the text and icons
@@ -1374,23 +1395,37 @@ class _EditProfileState extends State<EditProfile>
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          IconButton(
-                                              onPressed: () async {
-                                                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                                  type: FileType.custom,
-                                                  allowedExtensions: ['jpg'],
-                                                );
-                                                if (result != null) {
-                                                  File file = File(result.files.single.path!);
-                                                  adhaarFile = file;
-                                                  String? adhaarUrl = await uploadContent(adhaarFile, "image");
-                                                  userData.aadhar_url = adhaarUrl;
-                                                } else {
-                                                  // User canceled the picker
-                                                }
-                                              },
-                                            icon: Icon(Icons
-                                              .cloud_download),),
+                                          isUploading && adhaarFile != null
+                                              ? Container()
+                                              : IconButton(
+                                                  onPressed: () async {
+                                                    FilePickerResult? result =
+                                                        await FilePicker
+                                                            .platform
+                                                            .pickFiles(
+                                                      type: FileType.custom,
+                                                      allowedExtensions: [
+                                                        'jpg',
+                                                        'png',
+                                                        'jpeg'
+                                                      ],
+                                                    );
+                                                    if (result != null) {
+                                                      File file = File(result
+                                                          .files.single.path!);
+                                                      adhaarFile = file;
+                                                      String? adhaarUrl =
+                                                          await uploadContent(
+                                                              adhaarFile,
+                                                              "image");
+                                                      userData.aadhar_url =
+                                                          adhaarUrl;
+                                                    } else {
+                                                      // User canceled the picker
+                                                    }
+                                                  },
+                                                  icon: Icon(Icons.file_upload),
+                                                ),
                                         ],
                                       ),
                                     ),
@@ -1399,147 +1434,218 @@ class _EditProfileState extends State<EditProfile>
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Column(children: [
-                                  Container(
-                                    height: 50,
-                                    //width: 170,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      color: Colors.white,
-                                    ),
-                                    child: TextFormField(
-                                      readOnly: userData.pan_number!.isNotEmpty,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Please enter Pan card';
-                                        }
-                                        return null; // Return null if the input is valid
-                                      },
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        labelText: 'Pan Card',
-                                        // hintText: 'Enter your city',
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8.0, horizontal: 8),
-                                      ),
-                                      onChanged: (value) {
-
-                                          userData.pan_number = value;
-
-                                      },
-                                      initialValue: userData.pan_number,
-                                    ),
-                                  ),
-                                   // Add some spacing between the container and text/icons
-                                  Padding(
-                                    padding:  EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween, // Align the text and icons
-                                      children: [
-                                        Text(
-                                          'Pan Card',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        //width: 170,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: Colors.white,
                                         ),
-                                IconButton(
-                                    onPressed: () async {
-                                      FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                        type: FileType.custom,
-                                        allowedExtensions: ['jpg'],
-                                      );
-                                      if (result != null) {
-                                        File file = File(result.files.single.path!);
-                                        panFile = file;
-                                        String? panUrl = await uploadContent(panFile, "image");
-                                        userData.pan_url = panUrl;
-                                      } else {
-                                        // User canceled the picker
-                                      }
-                                    },
-                                    icon: Icon(Icons
-                                        .cloud_download),),
-                                      ],
-                                    ),
-                                  ),
-                                ]),
+                                        child: TextFormField(
+                                          // readOnly: userData.pan_number!.isNotEmpty,
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Please enter Pan card';
+                                            } else if (value.length != 10) {
+                                              return 'Please enter valid Pan card';
+                                            }
+                                            return null; // Return null if the input is valid
+                                          },
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: 'Enter your PAN Number',
+
+                                            // hintText: 'Enter your city',
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 8.0,
+                                                    horizontal: 8),
+                                          ),
+                                          onChanged: (value) {
+                                            userData.pan_number = value;
+                                          },
+                                          initialValue: userData.pan_number,
+                                        ),
+                                      ),
+                                      panFile != null
+                                          ? Text(
+                                              panFile!.path.split('/').last,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.red,
+                                              ),
+                                            )
+                                          : Container(),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween, // Align the text and icons
+                                          children: [
+                                            Text(
+                                              'Pan Card',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            isUploading && panFile != null
+                                                ? Container()
+                                                : IconButton(
+                                                    onPressed: () async {
+                                                      FilePickerResult? result =
+                                                          await FilePicker
+                                                              .platform
+                                                              .pickFiles(
+                                                        type: FileType.custom,
+                                                        allowedExtensions: [
+                                                          'jpg',
+                                                          'png',
+                                                          'jpeg'
+                                                        ],
+                                                      );
+                                                      if (result != null) {
+                                                        File file = File(result
+                                                            .files
+                                                            .single
+                                                            .path!);
+                                                        panFile = file;
+                                                        String? panUrl =
+                                                            await uploadContent(
+                                                                panFile,
+                                                                "image");
+                                                        userData.pan_url =
+                                                            panUrl;
+                                                      } else {
+                                                        // User canceled the picker
+                                                      }
+                                                    },
+                                                    icon:
+                                                        Icon(Icons.file_upload),
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Column(children: [
-                                  Container(
-                                    height: 50,
-                                    //width: 170,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      color: Colors.white,
-                                    ),
-                                    child: TextFormField(
-                                      readOnly: userData.rera_number!.isNotEmpty,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Enter your rera card';
-                                        }
-                                        return null; // Return null if the input is valid
-                                      },
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        labelText: 'RERA Card',
-                                        // hintText: 'Enter your city',
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8.0, horizontal: 8),
-                                      ),
-                                      onChanged: (value) {
-
-                                          userData.rera_number = value;
-
-                                      },
-                                      initialValue: userData.rera_number,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:  EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween, // Align the text and icons
-                                      children: [
-                                        Text(
-                                          'RERA Card',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        //width: 170,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: Colors.white,
                                         ),
-                                        IconButton(
-                                          onPressed: () async {
-                                            FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                              type: FileType.custom,
-                                              allowedExtensions: ['jpg'],
-                                            );
-                                            if (result != null) {
-                                              File file = File(result.files.single.path!);
-                                              reraFile = file;
-                                              String? reraUrl = await uploadContent(reraFile, "image");
-                                              userData.rera_url = reraUrl;
-                                            } else {
-                                              // User canceled the picker
+                                        child: TextFormField(
+                                          // readOnly: userData.rera_number!.isNotEmpty,
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Enter your rera card';
                                             }
+                                            return null; // Return null if the input is valid
                                           },
-                                          icon: Icon(Icons
-                                              .cloud_download),),
-                                      ],
-                                    ),
-                                  ),
-                                ]),
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: 'Enter your RERA Number',
+                                            // hintText: 'Enter your city',
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 8.0,
+                                                    horizontal: 8),
+                                          ),
+                                          onChanged: (value) {
+                                            userData.rera_number = value;
+                                          },
+                                          initialValue: userData.rera_number,
+                                        ),
+                                      ),
+                                      reraFile != null
+                                          ? Text(
+                                              reraFile!.path.split('/').last,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.red,
+                                              ),
+                                            )
+                                          : Container(),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween, // Align the text and icons
+                                          children: [
+                                            Text(
+                                              'RERA Card',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            isUploading && reraFile != null
+                                                ? Container()
+                                                : IconButton(
+                                                    onPressed: () async {
+                                                      FilePickerResult? result =
+                                                          await FilePicker
+                                                              .platform
+                                                              .pickFiles(
+                                                        type: FileType.custom,
+                                                        allowedExtensions: [
+                                                          'jpg',
+                                                          'png',
+                                                          'jpeg'
+                                                        ],
+                                                      );
+                                                      if (result != null) {
+                                                        File file = File(result
+                                                            .files
+                                                            .single
+                                                            .path!);
+                                                        reraFile = file;
+                                                        String? reraUrl =
+                                                            await uploadContent(
+                                                                reraFile,
+                                                                "image");
+                                                        userData.rera_url =
+                                                            reraUrl;
+                                                      } else {
+                                                        // User canceled the picker
+                                                      }
+                                                    },
+                                                    icon:
+                                                        Icon(Icons.file_upload),
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
                               ),
+                              isUploading
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Container(),
                               SizedBox(height: 50),
                               SizedBox(
                                 width: 166, // Set your desired width
